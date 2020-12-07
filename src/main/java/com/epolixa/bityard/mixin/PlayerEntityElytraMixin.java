@@ -11,23 +11,36 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
-public abstract class ElytraMixin {
+public abstract class PlayerEntityElytraMixin {
 
     @Shadow public abstract String getEntityName();
-
     @Shadow public abstract void playSound(SoundEvent event, SoundCategory category, float volume, float pitch);
 
-    // Mixin to startFallFlying to add a dragon flap sound effect
+    // Inject to startFallFlying to add a dragon flap sound effect
     @Inject(method = "startFallFlying", at = @At("TAIL"))
     public void startFallFlying(CallbackInfo info) {
         try {
-            System.out.println("[ElytraMixin][startFallFlying] " + this.getEntityName() + " started elytra");
+            System.out.println("[PlayerEntityElytraMixin][startFallFlying] " + this.getEntityName() + " started elytra");
 
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2f);
 
         } catch (Exception e) {
-            System.out.println("[ElytraMixin][startFallFlying] caught error: " + e.toString());
+            System.out.println("[PlayerEntityElytraMixin][startFallFlying] caught error: " + e.toString());
+        }
+    }
+
+    // Inject to stopFallFlying to add a dragon flap sound effect
+    @Inject(method = "stopFallFlying", at = @At("TAIL"))
+    public void stopFallFlying(CallbackInfo info) {
+        try {
+            System.out.println("[PlayerEntityElytraMixin][stopFallFlying] " + this.getEntityName() + " stopped elytra");
+
+            // Play a dragon flap sound at the player's location
+            this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 1.5f);
+
+        } catch (Exception e) {
+            System.out.println("[PlayerEntityElytraMixin][stopFallFlying] caught error: " + e.toString());
         }
     }
 
