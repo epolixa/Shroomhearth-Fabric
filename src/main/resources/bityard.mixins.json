@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.epolixa.bityard.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BityardMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
