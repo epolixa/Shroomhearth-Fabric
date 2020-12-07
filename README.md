@@ -1,8 +1,8 @@
-# Fabric Example Mod
+# Bityard Fabric
 
-## Setup
+## About
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+This Fabric mod includes some custom functionality for the Bityard Minecraft server.
 
 ## License
 

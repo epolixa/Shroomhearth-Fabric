@@ -4,7 +4,8 @@
   "package": "com.epolixa.bityard.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BityardMixin"
+    "BityardMixin",
+    "ElytraMixin"
   ],
   "client": [],
   "server": [],
