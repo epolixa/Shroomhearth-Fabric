@@ -6,6 +6,7 @@
   "mixins": [
     "EntityElytraMixin",
     "PlayerEntityElytraMixin",
+    "BeaconBlockEntityAccessor",
     "BeaconBlockEntityMixin"
   ],
   "client": [],
