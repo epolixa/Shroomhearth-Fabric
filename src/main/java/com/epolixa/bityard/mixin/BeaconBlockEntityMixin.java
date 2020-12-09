@@ -23,7 +23,8 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
     }
 
     // Inject to applyPlayerChanges to look for signs and send title to newly affected players
-    @Inject(method = "applyPlayerEffects()V", at = @At("TAIL"))
+    // Inject at HEAD before status effects have been applied
+    @Inject(method = "applyPlayerEffects()V", at = @At("HEAD"))
     public void applyPlayerEffects(CallbackInfo info) {
         try {
             System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] enter");
@@ -44,17 +45,14 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                 PlayerEntity player;
                 while(playerListIterator.hasNext()) {
                     player = (PlayerEntity)playerListIterator.next();
-                    String entityName = player.getEntityName();
-                    System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] found player in range: " + entityName);
+                    System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] found player in range: " + player.getEntityName());
 
-                    // send a title message to the player
-                    String subtitle = "{\"text\":\"Hello, " + entityName + "!\"}";
-                    String subtitleCommand = "/title " + entityName + " subtitle " + subtitle;
-                    String titleCommand = "/title " + entityName + " title {\"text\":\"\"}";
-                    System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] executing command: " + subtitleCommand);
-                    MinecraftServer server = player.getServer();
-                    server.getCommandManager().execute(server.getCommandSource(), subtitleCommand);
-                    server.getCommandManager().execute(server.getCommandSource(), titleCommand);
+                    // check if player already has same status effect as primary
+                    // only show message to newly affected players
+                    if (!player.hasStatusEffect(primary)) {
+                        // send a title message to the player
+                        sendSubtitleToPlayer("{\"text\":\"Hello, epo!\"}", player);
+                    }
                 }
             }
 
@@ -62,5 +60,21 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
         } catch (Exception e) {
             System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] caught error: " + e.toString());
         }
+    }
+
+    private void sendSubtitleToPlayer(String subtitle, PlayerEntity player) {
+        System.out.println("[BeaconBlockEntityMixin][sendSubtitleToPlayer] enter - subtitle = " + subtitle);
+        try {
+            String entityName = player.getEntityName();
+            String subtitleCommand = "/title " + entityName + " subtitle " + subtitle;
+            String titleCommand = "/title " + entityName + " title {\"text\":\"\"}";
+            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] executing command: " + subtitleCommand);
+            MinecraftServer server = player.getServer();
+            server.getCommandManager().execute(server.getCommandSource(), subtitleCommand);
+            server.getCommandManager().execute(server.getCommandSource(), titleCommand);
+        } catch (Exception e) {
+            System.out.println("[BeaconBlockEntityMixin][sendSubtitleToPlayer] caught error: " + e);
+        }
+        System.out.println("[BeaconBlockEntityMixin][sendSubtitleToPlayer] exit");
     }
 }
