@@ -8,8 +8,7 @@
     "PlayerEntityElytraMixin",
     "BeaconBlockEntityAccessor",
     "SignBlockEntityAccessor",
-    "BeaconBlockEntityMixin",
-    "ServerQueryNetworkHandlerMixin"
+    "BeaconBlockEntityMixin"
   ],
   "client": [],
   "server": [],

@@ -4,8 +4,17 @@ import net.minecraft.util.DyeColor;
 
 public class BityardUtils {
 
+    public static void log(String msg) {
+        try {
+            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            System.out.println("[" + stackTraceElements[2].getClassName() + "] : " + msg);
+        } catch (Exception e) {
+            System.out.println("[BityardUtils.log] caught error: " + e);
+        }
+    }
+
     public static String getDyeHex(DyeColor color) {
-        System.out.println("[BeaconBlockEntityMixin][getDyeHex] enter - color = " + color.getName());
+        log("[getDyeHex] Enter: color = " + color.getName());
         String hex = "#1D1D21"; // default black
         try {
             // refer to https://minecraft.gamepedia.com/Dye#Item_data
@@ -63,9 +72,9 @@ public class BityardUtils {
                     break;
             }
         } catch (Exception e) {
-            System.out.println("[BeaconBlockEntityMixin][getDyeHex] caught error: " + e);
+            log("[getDyeHex] caught error: " + e);
         }
-        System.out.println("[BeaconBlockEntityMixin][getDyeHex] exit - hex = " + hex);
+        log("[getDyeHex] Exit: hex = " + hex);
         return hex;
     }
 
