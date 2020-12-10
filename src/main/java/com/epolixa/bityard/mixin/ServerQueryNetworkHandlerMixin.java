@@ -1,5 +1,6 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.BityardUtils;
 import net.minecraft.network.packet.c2s.query.QueryRequestC2SPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerQueryNetworkHandler;
@@ -25,8 +26,8 @@ public class ServerQueryNetworkHandlerMixin {
             System.out.println("[ServerQueryNetworkHandlerMixin][onRequest] enter");
 
             String motdMessage = "Hello, epo!";
-            DyeColor motdColor = DyeColor.GREEN;
-            String motdJSON = "[{\"text\":\"" + motdMessage + "\"}]";
+            String motdColor = BityardUtils.getDyeHex(DyeColor.GREEN);
+            String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\"}]";
 
             server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
 
