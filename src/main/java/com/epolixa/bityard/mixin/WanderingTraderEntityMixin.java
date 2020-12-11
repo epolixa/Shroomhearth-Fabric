@@ -4,12 +4,16 @@ import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -64,6 +68,8 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             for (int i = 0; i < NUM_OFFERS; i++) {
                 Item item = Registry.ITEM.getRandom(r); // next selected random item
+                //Item item = ENCHANTABLE.values().get(r.nextInt(ENCHANTABLE.values().size()));
+                //Item item = Items.ENCHANTED_BOOK;
                 BityardUtils.log("picked random item: " + item.toString());
 
                 // check if item should be added to offers
@@ -120,18 +126,30 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         try {
             BityardUtils.log("enter: itemStack = " + itemStack.toString());
 
-            List<Enchantment> possible = new ArrayList<Enchantment>();
-            Iterator<Enchantment> enchantmentIterator = Registry.ENCHANTMENT.iterator();
-            while (enchantmentIterator.hasNext()) {
-                Enchantment enchantment = enchantmentIterator.next();
-                if (enchantment.isAcceptableItem(itemStack)) {
-                    possible.add(enchantment);
-                }
-            }
-            if (possible.size() >= 1) {
-                Enchantment chosen = possible.get(r.nextInt(possible.size()));
+            if (itemStack.getItem() == Items.ENCHANTED_BOOK) {
+                BityardUtils.log("found enchanted book...");
+                Enchantment chosen = Registry.ENCHANTMENT.get(r.nextInt(Registry.ENCHANTMENT.getIds().size()));
                 int lvl = 1 + (int) (Math.random() * ((chosen.getMaxLevel() - 1) + 1));
-                itemStack.addEnchantment(chosen, lvl);
+                ListTag listTag = EnchantedBookItem.getEnchantmentTag(itemStack);
+                CompoundTag compoundTag = new CompoundTag();
+                compoundTag.putString("id", String.valueOf(Registry.ENCHANTMENT.getId(chosen)));
+                compoundTag.putShort("lvl", (short)lvl);
+                listTag.add(compoundTag);
+                itemStack.getOrCreateTag().put("StoredEnchantments", listTag);
+            } else {
+                List<Enchantment> possible = new ArrayList<Enchantment>();
+                Iterator<Enchantment> enchantmentIterator = Registry.ENCHANTMENT.iterator();
+                while (enchantmentIterator.hasNext()) {
+                    Enchantment enchantment = enchantmentIterator.next();
+                    if (enchantment.isAcceptableItem(itemStack)) {
+                        possible.add(enchantment);
+                    }
+                }
+                if (possible.size() >= 1) {
+                    Enchantment chosen = possible.get(r.nextInt(possible.size()));
+                    int lvl = 1 + (int) (Math.random() * ((chosen.getMaxLevel() - 1) + 1));
+                    itemStack.addEnchantment(chosen, lvl);
+                }
             }
 
             BityardUtils.log("exit");
