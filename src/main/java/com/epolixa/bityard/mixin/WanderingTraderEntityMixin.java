@@ -3,6 +3,7 @@ package com.epolixa.bityard.mixin;
 import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
@@ -21,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -89,10 +91,10 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             // Setup sell item
             ItemStack sellItem = new ItemStack(item, BityardUtils.inRange(r, this.MIN_AMOUNT, Math.min(item.getMaxCount(), this.MAX_AMOUNT)));
-            /*if (item.toString().equalsIgnoreCase("minecraft:enchanted_book") || item.isIn(ENCHANTABLE) && BityardUtils.inRange(r,0,1) == 1)) {
-                itemStack = addRandomEnchantment(itemStack);
+            if (item == Items.ENCHANTED_BOOK || item.isIn(ENCHANTABLE) && BityardUtils.inRange(r,0,1) == 1) {
+                sellItem = addRandomEnchantment(r, sellItem);
             }
-            if (this.potionMaterials.contains(material)) {
+            /*if (this.potionMaterials.contains(material)) {
                 sellItem = addRandomEffect(sellItem);
             }
             if (this.expensiveMaterials.contains(material)) {
@@ -102,7 +104,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             }*/
 
             // setup other offer vars
-            ItemStack buyItem = new ItemStack(Registry.ITEM.get(new Identifier("minecraft", "emerald")), BityardUtils.inRange(r, MIN_PRICE, MAX_PRICE));
+            ItemStack buyItem = new ItemStack(Items.EMERALD, BityardUtils.inRange(r, MIN_PRICE, MAX_PRICE));
 
             tradeOffer = new TradeOffer(buyItem, sellItem, MAX_USES, BityardUtils.inRange(r, 3, 6), 0.2f);
 
@@ -111,6 +113,32 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             BityardUtils.log("caught error: " + e);
         }
         return tradeOffer;
+    }
+
+    // sets up an enchantment for an itemstack
+    private ItemStack addRandomEnchantment(Random r, ItemStack itemStack) {
+        try {
+            BityardUtils.log("enter: itemStack = " + itemStack.toString());
+
+            List<Enchantment> possible = new ArrayList<Enchantment>();
+            Iterator<Enchantment> enchantmentIterator = Registry.ENCHANTMENT.iterator();
+            while (enchantmentIterator.hasNext()) {
+                Enchantment enchantment = enchantmentIterator.next();
+                if (enchantment.isAcceptableItem(itemStack)) {
+                    possible.add(enchantment);
+                }
+            }
+            if (possible.size() >= 1) {
+                Enchantment chosen = possible.get(r.nextInt(possible.size()));
+                int lvl = 1 + (int) (Math.random() * ((chosen.getMaxLevel() - 1) + 1));
+                itemStack.addEnchantment(chosen, lvl);
+            }
+
+            BityardUtils.log("exit");
+        } catch (Exception e) {
+            BityardUtils.log("caught error: " + e);
+        }
+        return itemStack;
     }
 
 }
