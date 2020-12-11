@@ -21,20 +21,20 @@ public class Bityard implements ModInitializer {
     @Override
     public void onInitialize() {
         try {
-            BityardUtils.log("[onInitialize] Enter");
+            BityardUtils.log("enter");
 
-            BityardUtils.log("[onInitialize] registering server lifecycle events");
+            BityardUtils.log("registering server lifecycle events");
             ServerLifecycleEvents.SERVER_STARTED.register((server) -> onServerStarted(server));
 
-            BityardUtils.log("[onInitialize] Exit");
+            BityardUtils.log("exit");
         } catch (Exception e) {
-            BityardUtils.log("[onInitialize] caught error: " + e);
+            BityardUtils.log("caught error: " + e);
         }
     }
 
     private void onServerStarted(MinecraftServer server) {
         try {
-            BityardUtils.log("[onServerStarted] Enter: server = " + server.toString());
+            BityardUtils.log("enter: server = " + server.toString());
 
             final int MOTD_X_MIN = 0;
             final int MOTD_Y_MIN = 64;
@@ -51,7 +51,7 @@ public class Bityard implements ModInitializer {
                     for (int z = MOTD_Z_MIN; z <= MOTD_Z_MAX; z++) {
                         BlockEntity blockEntity = world.getBlockEntity(new BlockPos(x,y,z));
                         if (blockEntity instanceof SignBlockEntity) {
-                            BityardUtils.log("[onServerStarted] sign block entity found at: " + x + ", " + y + ", " + z);
+                            BityardUtils.log("sign block entity found at: " + x + ", " + y + ", " + z);
                             signs.add((SignBlockEntity) blockEntity);
                         }
                     }
@@ -78,13 +78,13 @@ public class Bityard implements ModInitializer {
                 String motdMessage = sb.toString();
                 String motdColor = BityardUtils.getDyeHex(sign.getTextColor());
                 String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\"}]";
-                BityardUtils.log("[onServerStarted] selected motd: " + motdJSON);
+                BityardUtils.log("selected motd: " + motdJSON);
                 server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
             }
 
-            BityardUtils.log("[onServerStarted] Exit");
+            BityardUtils.log("exit");
         } catch (Exception e) {
-            BityardUtils.log("[onServerStarted] caught error: " + e);
+            BityardUtils.log("caught error: " + e);
         }
     }
 }
