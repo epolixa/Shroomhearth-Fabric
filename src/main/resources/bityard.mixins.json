@@ -5,7 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityElytraMixin",
-    "PlayerEntityElytraMixin"
+    "PlayerEntityElytraMixin",
+    "BeaconBlockEntityAccessor",
+    "SignBlockEntityAccessor",
+    "BeaconBlockEntityMixin"
   ],
   "client": [],
   "server": [],
