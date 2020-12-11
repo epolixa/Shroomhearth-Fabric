@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Mixin(WanderingTraderEntity.class)
@@ -49,16 +51,26 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         try {
             BityardUtils.log("enter");
 
-            // Overwrite offers
+            // capture and clear existing offers
             TradeOfferList tradeOfferList = this.getOffers();
             BityardUtils.log("trader started with offers: " + tradeOfferList.toString());
             tradeOfferList.clear();
 
-            // Try adding a random item as a recipe from the registry
+            // add trades for random items
             Random r = this.world.random;
-            Item item = Registry.ITEM.getRandom(r);
-            BityardUtils.log("picked random item: " + item.toString());
-            tradeOfferList.add(buildTradeOffer(r, item));
+            List<Item> pickedItems = new ArrayList<Item>(); // items already added to offers
+
+            for (int i = 0; i < NUM_OFFERS; i++) {
+                Item item = Registry.ITEM.getRandom(r); // next selected random item
+                BityardUtils.log("picked random item: " + item.toString());
+
+                // check if item should be added to offers
+                if (pickedItems.contains(item)) { i--; } // skip and try again
+                else {
+                    pickedItems.add(item); // add item to picked list so we don't pick it again
+                    tradeOfferList.add(buildTradeOffer(r, item)); // build an offer for the item
+                }
+            }
 
             BityardUtils.log("set offers to: " + tradeOfferList.toString());
 
