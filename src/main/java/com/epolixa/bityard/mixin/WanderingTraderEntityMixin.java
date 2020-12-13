@@ -65,7 +65,13 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             Random r = this.world.random;
             List<Item> pickedItems = new ArrayList<Item>(); // items already added to offers
 
-            for (int i = 0; i < NUM_OFFERS; i++) {
+            // add at least one nice item
+            Item expensiveItem = EXPENSIVE.values().get(r.nextInt(EXPENSIVE.values().size()));
+            pickedItems.add(expensiveItem);
+            tradeOfferList.add(buildTradeOffer(r, expensiveItem));
+
+            // add other random items
+            for (int i = 0; i < NUM_OFFERS - 1; i++) {
                 Item item = Registry.ITEM.getRandom(r); // next selected random item
                 //Item item = ENCHANTABLE.values().get(r.nextInt(ENCHANTABLE.values().size()));
                 //Item item = Items.ENCHANTED_BOOK;
