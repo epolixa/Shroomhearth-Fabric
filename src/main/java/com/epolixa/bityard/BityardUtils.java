@@ -2,19 +2,21 @@ package com.epolixa.bityard;
 
 import net.minecraft.util.DyeColor;
 
+import java.util.Random;
+
 public class BityardUtils {
 
     public static void log(String msg) {
         try {
             StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            System.out.println("[" + stackTraceElements[2].getClassName() + "] : " + msg);
+            System.out.println("[Bityard][" + stackTraceElements[2].getClassName() + "][" + stackTraceElements[2].getMethodName() + "]: " + msg);
         } catch (Exception e) {
-            System.out.println("[BityardUtils.log] caught error: " + e);
+            System.out.println("[Bityard][BityardUtils][log]: caught error: " + e);
         }
     }
 
     public static String getDyeHex(DyeColor color) {
-        log("[getDyeHex] Enter: color = " + color.getName());
+        log("enter: color = " + color.getName());
         String hex = "#1D1D21"; // default black
         try {
             // refer to https://minecraft.gamepedia.com/Dye#Item_data
@@ -72,10 +74,15 @@ public class BityardUtils {
                     break;
             }
         } catch (Exception e) {
-            log("[getDyeHex] caught error: " + e);
+            log("caught error: " + e);
         }
-        log("[getDyeHex] Exit: hex = " + hex);
+        log("exit: hex = " + hex);
         return hex;
+    }
+
+    // return a random value between two values
+    public static int inRange(Random r, int min, int max) {
+        return r.nextInt((max - min) + 1) + min;
     }
 
 }
