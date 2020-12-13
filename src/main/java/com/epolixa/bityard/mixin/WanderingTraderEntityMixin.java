@@ -4,16 +4,15 @@ import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -73,7 +72,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
                 BityardUtils.log("picked random item: " + item.toString());
 
                 // check if item should be added to offers
-                if (pickedItems.contains(item)) { i--; } // skip and try again
+                if (item.isIn(BLACKLIST) || pickedItems.contains(item)) { i--; } // skip and try again
                 else {
                     pickedItems.add(item); // add item to picked list so we don't pick it again
                     tradeOfferList.add(buildTradeOffer(r, item)); // build an offer for the item
@@ -96,23 +95,29 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             BityardUtils.log("enter: item = " + item.toString());
 
             // Setup sell item
-            ItemStack sellItem = new ItemStack(item, BityardUtils.inRange(r, this.MIN_AMOUNT, Math.min(item.getMaxCount(), this.MAX_AMOUNT)));
+            ItemStack sellItem = new ItemStack(item);
+
+            // Add applicable enchants
             if (item == Items.ENCHANTED_BOOK || item.isIn(ENCHANTABLE) && BityardUtils.inRange(r,0,1) == 1) {
                 sellItem = addRandomEnchantment(r, sellItem);
             }
-            /*if (this.potionMaterials.contains(material)) {
-                sellItem = addRandomEffect(sellItem);
+
+            // Add applicable effects
+            if (item.isIn(POTIONS)) {
+                sellItem = addRandomEffect(r, sellItem);
             }
-            if (this.expensiveMaterials.contains(material)) {
-                sellItem.setAmount(1);
+
+            // If item is rare, adjust sell price
+            if (item.isIn(EXPENSIVE)) {
+                sellItem.setCount(1);
             } else {
-                sellItem.setAmount(inRange(this.MIN_AMOUNT, Math.min(sellItem.getMaxStackSize(), this.MAX_AMOUNT)));
-            }*/
+                sellItem.setCount(BityardUtils.inRange(r, this.MIN_AMOUNT, Math.min(item.getMaxCount(), this.MAX_AMOUNT)));
+            }
 
-            // setup other offer vars
-            ItemStack buyItem = new ItemStack(Items.EMERALD, BityardUtils.inRange(r, MIN_PRICE, MAX_PRICE));
-
-            tradeOffer = new TradeOffer(buyItem, sellItem, MAX_USES, BityardUtils.inRange(r, 3, 6), 0.2f);
+            // Setup offer
+            ItemStack buyItem = new ItemStack(Items.EMERALD, BityardUtils.inRange(r, MIN_PRICE, MAX_PRICE) + (item.isIn(EXPENSIVE) ? this.BONUS_PRICE : 0));
+            int maxUses = BityardUtils.inRange(r, this.MIN_USES, item.isIn(EXPENSIVE) ? this.MAX_USES / 2 : this.MAX_USES);
+            tradeOffer = new TradeOffer(buyItem, sellItem, maxUses, BityardUtils.inRange(r, 3, 6), 0.2f);
 
             BityardUtils.log("exit");
         } catch (Exception e) {
@@ -121,7 +126,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         return tradeOffer;
     }
 
-    // sets up an enchantment for an itemstack
+    // setup an enchantment for an item
     private ItemStack addRandomEnchantment(Random r, ItemStack itemStack) {
         try {
             BityardUtils.log("enter: itemStack = " + itemStack.toString());
@@ -156,6 +161,28 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         } catch (Exception e) {
             BityardUtils.log("caught error: " + e);
         }
+        return itemStack;
+    }
+
+    // setup potion effect on an item
+    private ItemStack addRandomEffect(Random r, ItemStack itemStack) {
+        BityardUtils.log("enter: item = " + itemStack.toString());
+        try {
+            List<Potion> potionBlacklist = new ArrayList<Potion>();
+            potionBlacklist.add(Potions.AWKWARD);
+            potionBlacklist.add(Potions.MUNDANE);
+            potionBlacklist.add(Potions.THICK);
+            potionBlacklist.add(Potions.WATER);
+            potionBlacklist.add(Potions.EMPTY);
+            Potion chosen;
+            do {
+                chosen = Registry.POTION.getRandom(r);
+            } while (potionBlacklist.contains(chosen));
+            PotionUtil.setPotion(itemStack, chosen);
+        } catch (Exception e) {
+            BityardUtils.log("caught error: " + e);
+        }
+        BityardUtils.log("exit");
         return itemStack;
     }
 
