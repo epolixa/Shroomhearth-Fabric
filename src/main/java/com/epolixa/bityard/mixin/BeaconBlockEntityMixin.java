@@ -34,10 +34,9 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
             StatusEffect primary = ((BeaconBlockEntityAccessor)this).getPrimary();
             int level = ((BeaconBlockEntityAccessor)this).getLevel();
-            BityardUtils.log("captured primary as " + primary.getTranslationKey() + " " + level);
 
             if (!this.world.isClient && primary != null) { // check for same conditions as applying primary effect to a player
-                BityardUtils.log("world is not client and primary is not null");
+                BityardUtils.log("captured primary as " + primary.getTranslationKey() + " " + level);
 
                 double distance = (double)(level * 10 + 10);
 
@@ -57,7 +56,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
                         // check for a sign block directly on top of beacon block
                         BlockEntity aboveBeacon = this.world.getBlockEntity(pos.add(0,1,0));
-                        if (aboveBeacon instanceof SignBlockEntity) {
+                        if (aboveBeacon != null && aboveBeacon instanceof SignBlockEntity) {
                             BityardUtils.log("sign block exists above beacon");
 
                             SignBlockEntity sign = (SignBlockEntity)aboveBeacon;
@@ -78,8 +77,10 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                             }
                             BityardUtils.log("sign text interpreted as: " + sb.toString());
 
-                            // send a title message to the player
-                            sendSubtitleToPlayer("{\"text\":\"" + sb.toString() + "\",\"color\":\"" + BityardUtils.getDyeHex(color) + "\"}", player);
+                            if (sb.toString().length() > 0) {
+                                // send a title message to the player
+                                sendSubtitleToPlayer("{\"text\":\"" + sb.toString() + "\",\"color\":\"" + BityardUtils.getDyeHex(color) + "\"}", player);
+                            }
                         }
                     }
                 }
