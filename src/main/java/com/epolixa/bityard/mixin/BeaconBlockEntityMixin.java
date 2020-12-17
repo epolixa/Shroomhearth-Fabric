@@ -30,14 +30,14 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
     @Inject(method = "applyPlayerEffects()V", at = @At("HEAD"))
     public void applyPlayerEffects(CallbackInfo info) {
         try {
-            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] enter");
+            BityardUtils.log("enter");
 
             StatusEffect primary = ((BeaconBlockEntityAccessor)this).getPrimary();
             int level = ((BeaconBlockEntityAccessor)this).getLevel();
-            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] captured primary as " + primary.getTranslationKey() + " " + level);
+            BityardUtils.log("captured primary as " + primary.getTranslationKey() + " " + level);
 
             if (!this.world.isClient && primary != null) { // check for same conditions as applying primary effect to a player
-                System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] world is not client and primary is not null");
+                BityardUtils.log("world is not client and primary is not null");
 
                 double distance = (double)(level * 10 + 10);
 
@@ -48,17 +48,17 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                 PlayerEntity player;
                 while(playerListIterator.hasNext()) {
                     player = (PlayerEntity)playerListIterator.next();
-                    System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] found player in range: " + player.getEntityName());
+                    BityardUtils.log("found player in range: " + player.getEntityName());
 
                     // check if player already has same status effect as primary
                     // only show message to newly affected players
                     if (!player.hasStatusEffect(primary)) {
-                        System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] player is newly affected");
+                        BityardUtils.log("player is newly affected");
 
                         // check for a sign block directly on top of beacon block
                         BlockEntity aboveBeacon = this.world.getBlockEntity(pos.add(0,1,0));
                         if (aboveBeacon instanceof SignBlockEntity) {
-                            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] sign block exists above beacon");
+                            BityardUtils.log("sign block exists above beacon");
 
                             SignBlockEntity sign = (SignBlockEntity)aboveBeacon;
                             Text[] signText = ((SignBlockEntityAccessor)sign).getText(); // getTextOnRow is CLIENT-only
@@ -68,7 +68,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                             {
                                 Text rowText = signText[i];
                                 String row = rowText.getString();
-                                System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] parsing sign row " + (i + 1) + ": " + row);
+                                BityardUtils.log("parsing sign row " + (i + 1) + ": " + row);
                                 if (row.length() > 0) {
                                     if (sb.toString().length() > 0) {
                                         sb.append(" ");
@@ -76,7 +76,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                                     sb.append(row);
                                 }
                             }
-                            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] sign text interpreted as: " + sb.toString());
+                            BityardUtils.log("sign text interpreted as: " + sb.toString());
 
                             // send a title message to the player
                             sendSubtitleToPlayer("{\"text\":\"" + sb.toString() + "\",\"color\":\"" + BityardUtils.getDyeHex(color) + "\"}", player);
@@ -85,26 +85,24 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                 }
             }
 
-            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] exit");
-        } catch (Exception e) {
-            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] caught error: " + e.toString());
-        }
+            BityardUtils.log("exit");
+        } catch (Exception e) {BityardUtils.logError(e);}
     }
 
     private void sendSubtitleToPlayer(String subtitle, PlayerEntity player) {
-        System.out.println("[BeaconBlockEntityMixin][sendSubtitleToPlayer] enter - subtitle = " + subtitle);
         try {
+            BityardUtils.log("enter: subtitle = " + subtitle);
+
             String entityName = player.getEntityName();
             String subtitleCommand = "/title " + entityName + " subtitle " + subtitle;
             String titleCommand = "/title " + entityName + " title {\"text\":\"\"}";
-            System.out.println("[BeaconBlockEntityMixin][applyPlayerEffects] executing command: " + subtitleCommand);
+            BityardUtils.log("executing command: " + subtitleCommand);
             MinecraftServer server = player.getServer();
             server.getCommandManager().execute(server.getCommandSource(), subtitleCommand);
             server.getCommandManager().execute(server.getCommandSource(), titleCommand);
-        } catch (Exception e) {
-            System.out.println("[BeaconBlockEntityMixin][sendSubtitleToPlayer] caught error: " + e);
-        }
-        System.out.println("[BeaconBlockEntityMixin][sendSubtitleToPlayer] exit");
+
+            BityardUtils.log("exit");
+        } catch (Exception e) {BityardUtils.logError(e);}
     }
 
 }
