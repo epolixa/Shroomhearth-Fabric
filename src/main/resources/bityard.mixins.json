@@ -9,7 +9,8 @@
     "BeaconBlockEntityAccessor",
     "SignBlockEntityAccessor",
     "BeaconBlockEntityMixin",
-    "WanderingTraderEntityMixin"
+    "WanderingTraderEntityMixin",
+    "EnderPearlEntityMixin"
   ],
   "client": [],
   "server": [],
