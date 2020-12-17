@@ -1,5 +1,6 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.BityardUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -20,28 +21,26 @@ public abstract class PlayerEntityElytraMixin {
     @Inject(method = "startFallFlying", at = @At("TAIL"))
     public void startFallFlying(CallbackInfo info) {
         try {
-            System.out.println("[PlayerEntityElytraMixin][startFallFlying] " + this.getEntityName() + " started elytra");
+            BityardUtils.log("enter");
 
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2f);
 
-        } catch (Exception e) {
-            System.out.println("[PlayerEntityElytraMixin][startFallFlying] caught error: " + e.toString());
-        }
+            BityardUtils.log("exit");
+        } catch (Exception e) {BityardUtils.logError(e);}
     }
 
     // Inject to stopFallFlying to add a dragon flap sound effect
     @Inject(method = "stopFallFlying", at = @At("TAIL"))
     public void stopFallFlying(CallbackInfo info) {
         try {
-            System.out.println("[PlayerEntityElytraMixin][stopFallFlying] " + this.getEntityName() + " stopped elytra");
+            BityardUtils.log("enter");
 
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 1.5f);
 
-        } catch (Exception e) {
-            System.out.println("[PlayerEntityElytraMixin][stopFallFlying] caught error: " + e.toString());
-        }
+            BityardUtils.log("exit");
+        } catch (Exception e) {BityardUtils.logError(e);}
     }
 
 }

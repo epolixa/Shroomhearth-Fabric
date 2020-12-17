@@ -88,15 +88,14 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             BityardUtils.log("set offers to: " + tradeOfferList.toString());
 
             BityardUtils.log("exit");
-        } catch (Exception e) {
-            BityardUtils.log("caught error: " + e);
-        }
+        } catch (Exception e) {BityardUtils.logError(e);}
     }
 
 
     // Prepares a TradeOffer for an Item
     private TradeOffer buildTradeOffer(Random r, Item item) {
         TradeOffer tradeOffer = null;
+
         try {
             BityardUtils.log("enter: item = " + item.toString());
 
@@ -126,9 +125,8 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             tradeOffer = new TradeOffer(buyItem, sellItem, maxUses, BityardUtils.inRange(r, 3, 6), 0.2f);
 
             BityardUtils.log("exit");
-        } catch (Exception e) {
-            BityardUtils.log("caught error: " + e);
-        }
+        } catch (Exception e) {BityardUtils.logError(e);}
+
         return tradeOffer;
     }
 
@@ -164,16 +162,16 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             }
 
             BityardUtils.log("exit");
-        } catch (Exception e) {
-            BityardUtils.log("caught error: " + e);
-        }
+        } catch (Exception e) {BityardUtils.logError(e);}
+
         return itemStack;
     }
 
     // setup potion effect on an item
     private ItemStack addRandomEffect(Random r, ItemStack itemStack) {
-        BityardUtils.log("enter: item = " + itemStack.toString());
         try {
+            BityardUtils.log("enter: item = " + itemStack.toString());
+
             List<Potion> potionBlacklist = new ArrayList<Potion>();
             potionBlacklist.add(Potions.AWKWARD);
             potionBlacklist.add(Potions.MUNDANE);
@@ -185,10 +183,10 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
                 chosen = Registry.POTION.getRandom(r);
             } while (potionBlacklist.contains(chosen));
             PotionUtil.setPotion(itemStack, chosen);
-        } catch (Exception e) {
-            BityardUtils.log("caught error: " + e);
-        }
-        BityardUtils.log("exit");
+
+            BityardUtils.log("exit");
+        } catch (Exception e) {BityardUtils.logError(e);}
+
         return itemStack;
     }
 
