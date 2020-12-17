@@ -6,9 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.scoreboard.ScoreboardCriterion;
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ServerScoreboard;
+import net.minecraft.scoreboard.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -83,24 +81,50 @@ public class Bityard implements ModInitializer {
         }
     }
 
+    // returns either the current set config score value or the default if it does not exist
+    private int getConfig(MinecraftServer server, String key) {
+        int value = 0;
+
+        try {
+            BityardUtils.log("enter");
+
+            Scoreboard scoreboard = server.getScoreboard();
+            ScoreboardObjective objective = scoreboard.getObjective(key);
+            if (objective != null) {
+                ScoreboardPlayerScore score = scoreboard.getPlayerScore(MOD_ID, objective);
+                if (score != null) {
+                    value = score.getScore();
+                    return value;
+                }
+            }
+
+            value = defaultConfig.get(key);
+
+            BityardUtils.log("exit");
+        } catch (Exception e) {
+            BityardUtils.log("caught error: " + e);
+        }
+
+        return value;
+    }
 
     private void setMOTD(MinecraftServer server) {
         try {
             BityardUtils.log("enter: server = " + server.toString());
 
-            final int MOTD_X_MIN = 0;
-            final int MOTD_Y_MIN = 64;
-            final int MOTD_Z_MIN = 0;
-            final int MOTD_X_MAX = 10;
-            final int MOTD_Y_MAX = 74;
-            final int MOTD_Z_MAX = 0;
+            final int MOTD_X1 = getConfig(server, "MOTD_X1");
+            final int MOTD_Y1 = getConfig(server, "MOTD_Y1");
+            final int MOTD_Z1 = getConfig(server, "MOTD_Z1");
+            final int MOTD_X2 = getConfig(server, "MOTD_X2");
+            final int MOTD_Y2 = getConfig(server, "MOTD_Y2");
+            final int MOTD_Z2 = getConfig(server, "MOTD_Z2");
 
             // Look for signs within message board area
             ServerWorld world = server.getOverworld();
             List<SignBlockEntity> signs = new ArrayList<SignBlockEntity>();
-            for (int x = MOTD_X_MIN; x <= MOTD_X_MAX; x++) {
-                for (int y = MOTD_Y_MIN; y <= MOTD_Y_MAX; y++) {
-                    for (int z = MOTD_Z_MIN; z <= MOTD_Z_MAX; z++) {
+            for (int x = MOTD_X1; x <= MOTD_X2; x++) {
+                for (int y = MOTD_Y1; y <= MOTD_Y2; y++) {
+                    for (int z = MOTD_Z1; z <= MOTD_Z2; z++) {
                         BlockEntity blockEntity = world.getBlockEntity(new BlockPos(x,y,z));
                         if (blockEntity instanceof SignBlockEntity) {
                             BityardUtils.log("sign block entity found at: " + x + ", " + y + ", " + z);
@@ -139,7 +163,6 @@ public class Bityard implements ModInitializer {
             BityardUtils.log("caught error: " + e);
         }
     }
-
 
     private void setupScoreboardConfig(MinecraftServer server) {
         try {
