@@ -65,8 +65,8 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     BityardUtils.log("updating new end gateway exit coords");
                     EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(dragonEggPos);
                     endGatewayBlockEntity.setExitPortalPos(new BlockPos(BityardUtils.getConfig("GATE_EXIT_X", this.getServer()),
-                                                                        BityardUtils.getConfig("GATE_EXIT_X", this.getServer()),
-                                                                        BityardUtils.getConfig("GATE_EXIT_X", this.getServer())),
+                                                                        BityardUtils.getConfig("GATE_EXIT_Y", this.getServer()),
+                                                                        BityardUtils.getConfig("GATE_EXIT_Z", this.getServer())),
                                                 true);
 
                     BityardUtils.log("checking old gateway location");
@@ -83,6 +83,21 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     BityardUtils.setConfig("RET_GATE_X", dragonEggPos.getX(), this.getServer());
                     BityardUtils.setConfig("RET_GATE_Y", dragonEggPos.getY(), this.getServer());
                     BityardUtils.setConfig("RET_GATE_Z", dragonEggPos.getZ(), this.getServer());
+
+                    BityardUtils.log("updating spawn destination coords to position of player");
+                    BlockPos spawnGatewayPos = new BlockPos(BityardUtils.getConfig("GATE_X", this.getServer()),
+                                                            BityardUtils.getConfig("GATE_Y", this.getServer()),
+                                                            BityardUtils.getConfig("GATE_Z", this.getServer()));
+                    if (!(this.world.getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
+                        BityardUtils.log("spawn gateway not found, creating one");
+                        this.world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
+                        // play particle
+                    }
+                    EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(spawnGatewayPos);
+                    spawnGatewayBlockEntity.setExitPortalPos(new BlockPos(Math.round(this.getOwner().getX()),
+                                                                        Math.round(this.getOwner().getY()),
+                                                                        Math.round(this.getOwner().getZ())),
+                                                true);
 
                 }
 
