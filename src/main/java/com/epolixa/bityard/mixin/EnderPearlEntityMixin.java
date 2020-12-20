@@ -60,6 +60,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                 if (dragonEggBlock != null) {
                     BityardUtils.log("setting end gateway at dragon egg position");
                     this.world.setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
+                    // play particle
 
                     BityardUtils.log("updating new end gateway exit coords");
                     EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(dragonEggPos);
@@ -67,6 +68,22 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                                                                         BityardUtils.getConfig("GATE_EXIT_X", this.getServer()),
                                                                         BityardUtils.getConfig("GATE_EXIT_X", this.getServer())),
                                                 true);
+
+                    BityardUtils.log("checking old gateway location");
+                    BlockPos oldEndGatewayPos = new BlockPos(BityardUtils.getConfig("RET_GATE_X", this.getServer()),
+                                                            BityardUtils.getConfig("RET_GATE_Y", this.getServer()),
+                                                            BityardUtils.getConfig("RET_GATE_Z", this.getServer()));
+                    if (this.world.getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
+                        BityardUtils.log("found old end gateway, clearing it before updating coords");
+                        this.world.setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
+                        // play particle
+                    }
+
+                    BityardUtils.log("updating return gateway coords in scoreboard");
+                    BityardUtils.setConfig("RET_GATE_X", dragonEggPos.getX(), this.getServer());
+                    BityardUtils.setConfig("RET_GATE_Y", dragonEggPos.getY(), this.getServer());
+                    BityardUtils.setConfig("RET_GATE_Z", dragonEggPos.getZ(), this.getServer());
+
                 }
 
             }

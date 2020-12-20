@@ -140,6 +140,26 @@ public class BityardUtils {
         return value;
     }
 
+
+    public static void setConfig(String key, int value, MinecraftServer server) {
+        try {
+            if (server == null) {
+                server = Bityard.getServer();
+            }
+
+            if (server != null) {
+                String configPlayerName = Bityard.MOD_ID;
+                Scoreboard scoreboard = server.getScoreboard();
+                if (scoreboard.getObjective(key) == null) {
+                    scoreboard.addObjective(key, ScoreboardCriterion.DUMMY, Text.Serializer.fromJson("{\"text\":\"" + key + "\"}"), ScoreboardCriterion.RenderType.INTEGER);
+                }
+                ScoreboardObjective objective = scoreboard.getObjective(key);
+                scoreboard.getPlayerScore(configPlayerName, objective).setScore((Integer) value);
+            }
+        } catch (Exception e) {logError(e);}
+    }
+
+
     public static void setMOTD(MinecraftServer server) {
         try {
             log("enter: server = " + server.toString());
