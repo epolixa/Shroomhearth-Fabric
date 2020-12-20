@@ -1,7 +1,11 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DragonEggBlock;
+import net.minecraft.block.EndGatewayBlock;
+import net.minecraft.block.entity.EndGatewayBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
@@ -35,17 +39,34 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                 ((ServerWorld) this.world).getRegistryManager().getDimensionTypes().getId(this.world.getDimension()).equals(DimensionType.OVERWORLD_ID)) { // yikes
 
                 BlockPos hitPos = new BlockPos(hitResult.getPos());
+                BlockPos dragonEggPos = null;
+                DragonEggBlock dragonEggBlock = null;
+
                 // check for dragon egg around hit pos
                 for (int x = hitPos.getX() - 1; x <= hitPos.getX() + 1; x++) {
                     for (int y = hitPos.getY() - 1; y <= hitPos.getY() + 1; y++) {
                         for (int z = hitPos.getZ() - 1; z <= hitPos.getZ() + 1; z++) {
                             BlockPos blockPos = new BlockPos(x,y,z);
-                            if (world.getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
+                            if (this.world.getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
                                 BityardUtils.log("found dragon egg near ender pearl collision");
+                                dragonEggBlock = (DragonEggBlock) world.getBlockState(blockPos).getBlock();
+                                dragonEggPos = blockPos;
                                 this.remove();
                             }
                         }
                     }
+                }
+
+                if (dragonEggBlock != null) {
+                    BityardUtils.log("setting end gateway at dragon egg position");
+                    this.world.setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
+
+                    BityardUtils.log("updating new end gateway exit coords");
+                    EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(dragonEggPos);
+                    endGatewayBlockEntity.setExitPortalPos(new BlockPos(BityardUtils.getConfig("GATE_EXIT_X", this.getServer()),
+                                                                        BityardUtils.getConfig("GATE_EXIT_X", this.getServer()),
+                                                                        BityardUtils.getConfig("GATE_EXIT_X", this.getServer())),
+                                                true);
                 }
 
             }
