@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Bityard implements ModInitializer {
 
-    public static final String MOD_ID = "bityard";
+    public static final String MOD_ID = "bityard_fabric";
     public static final Map<String, Integer> defaultConfig = Maps.newHashMap();
     private static MinecraftServer server = null;
 

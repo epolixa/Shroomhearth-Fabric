@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "bityard",
+  "id": "bityard_fabric",
   "version": "${version}",
 
   "name": "Bityard",

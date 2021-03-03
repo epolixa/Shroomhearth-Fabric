@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "#bityard_fabric:redstone/fence_gates",
+    "#bityard_fabric:redstone/stone_buttons",
+    "#bityard_fabric:redstone/stone_pressure_plates",
+    "#bityard_fabric:redstone/wooden_buttons",
+    "#bityard_fabric:redstone/wooden_doors",
+    "#bityard_fabric:redstone/wooden_pressure_plates",
+    "#bityard_fabric:redstone/wooden_trapdoors",
+    "minecraft:lever",
+    "minecraft:redstone_torch",
+    "minecraft:tripwire_hook",
+    "minecraft:redstone",
+    "minecraft:carrot_on_a_stick",
+    "minecraft:warped_fungus_on_a_stick",
+    "minecraft:oak_boat",
+    "minecraft:spruce_boat",
+    "minecraft:birch_boat",
+    "minecraft:jungle_boat",
+    "minecraft:acacia_boat",
+    "minecraft:dark_oak_boat"
+  ]
+}

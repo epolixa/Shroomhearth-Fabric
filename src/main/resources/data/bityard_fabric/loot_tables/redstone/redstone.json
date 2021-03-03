@@ -1,0 +1,46 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "tag",
+          "expand": true,
+          "name": "bityard_fabric:redstone/redstone"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/stone_pressure_plates"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/wooden_pressure_plates"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/wooden_trapdoors"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/fence_gates"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/stone_buttons"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/wooden_buttons"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/weighted_pressure_plates"
+        },
+        {
+          "type": "loot_table",
+          "name": "bityard_fabric:redstone/wooden_doors"
+        }
+      ]
+    }
+  ]
+}

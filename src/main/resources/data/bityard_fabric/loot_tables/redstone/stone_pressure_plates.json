@@ -1,0 +1,14 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "tag",
+          "expand": true,
+          "name": "bityard_fabric:redstone/stone_pressure_plates"
+        }
+      ]
+    }
+  ]
+}
