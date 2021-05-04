@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Bityard",
-  "description": "Some custom server functionality for Bityard",
+  "description": "Custom server functionality for Bityard",
   "authors": [
     "epolixa",
     "kroteux"
@@ -15,7 +15,7 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/bityard/icon.png",
+  "icon": "assets/bityard_fabric/icon.png",
 
   "environment": "*",
   "entrypoints": {

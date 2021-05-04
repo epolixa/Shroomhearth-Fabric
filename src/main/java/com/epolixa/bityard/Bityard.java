@@ -3,6 +3,7 @@ package com.epolixa.bityard;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.*;
@@ -21,7 +22,10 @@ public class Bityard implements ModInitializer {
             BityardUtils.log("enter");
 
             BityardUtils.log("registering server lifecycle events");
-            ServerLifecycleEvents.SERVER_STARTED.register((server) -> onServerStarted(server));
+            ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
+
+            BityardUtils.log("registering event callback functions");
+            UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
 
             BityardUtils.log("exit");
         } catch (Exception e) {BityardUtils.logError(e);}
