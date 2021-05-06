@@ -1,0 +1,144 @@
+{
+  "values": [
+    {
+      "id": "minecraft:blaze_spawn_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:cave_spider_spawn_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:creeper_banner_pattern",
+      "required": false
+    },
+    {
+      "id": "minecraft:creeper_head",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_axe",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_boots",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_chestplate",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_helmet",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_hoe",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_horse_armor",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_leggings",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_pickaxe",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_shovel",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_sword",
+      "required": false
+    },
+    {
+      "id": "minecraft:enchanted_book",
+      "required": false
+    },
+    {
+      "id": "minecraft:filled_map",
+      "required": false
+    },
+    {
+      "id": "minecraft:flower_banner_pattern",
+      "required": false
+    },
+    {
+      "id": "minecraft:globe_banner_pattern",
+      "required": false
+    },
+    {
+      "id": "minecraft:gold_block",
+      "required": false
+    },
+    {
+      "id": "minecraft:iron_block",
+      "required": false
+    },
+    {
+      "id": "minecraft:magma_cube_spawn_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:piglin_banner_pattern",
+      "required": false
+    },
+    {
+      "id": "minecraft:player_head",
+      "required": false
+    },
+    {
+      "id": "minecraft:silverfish_spawn_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:skeleton_skull",
+      "required": false
+    },
+    {
+      "id": "minecraft:skeleton_spawn_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:skull_banner_pattern",
+      "required": false
+    },
+    {
+      "id": "minecraft:spider_spawn_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:trident",
+      "required": false
+    },
+    {
+      "id": "minecraft:turtle_egg",
+      "required": false
+    },
+    {
+      "id": "minecraft:turtle_helmet",
+      "required": false
+    },
+    {
+      "id": "minecraft:wither_skeleton_skull",
+      "required": false
+    },
+    {
+      "id": "minecraft:wither_rose",
+      "required": false
+    },
+    {
+      "id": "minecraft:zombie_head",
+      "required": false
+    },
+    {
+      "id": "minecraft:zombie_spawn_egg",
+      "required": false
+    }
+  ]
+}

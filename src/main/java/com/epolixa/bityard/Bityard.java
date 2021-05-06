@@ -5,41 +5,38 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.server.MinecraftServer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class Bityard implements ModInitializer {
 
     public static final String MOD_ID = "bityard_fabric";
+    public static final Logger LOG = LogManager.getLogger();
     public static final Map<String, Integer> defaultConfig = Maps.newHashMap();
     private static MinecraftServer server = null;
 
     @Override
     public void onInitialize() {
         try {
+            Bityard.LOG.info("Initializing...");
+
             initializeDefaultConfig();
 
-            BityardUtils.log("enter");
-
-            BityardUtils.log("registering server lifecycle events");
             ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
 
-            BityardUtils.log("registering event callback functions");
             UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
 
-            BityardUtils.log("exit");
+            Bityard.LOG.info("Finished initializing");
         } catch (Exception e) {BityardUtils.logError(e);}
     }
 
     private void onServerStarted(MinecraftServer server) {
         try {
-            BityardUtils.log("enter: server = " + server.toString());
-
             this.server = server;
             BityardUtils.setMOTD(server);
             BityardUtils.setupScoreboardConfig(server);
-
-            BityardUtils.log("exit");
         } catch (Exception e) {BityardUtils.logError(e);}
     }
 
@@ -48,11 +45,7 @@ public class Bityard implements ModInitializer {
         MinecraftServer s = null;
 
         try {
-            //BityardUtils.log("enter");
-
             s = server;
-
-            //BityardUtils.log("exit");
         } catch (Exception e) {BityardUtils.logError(e);}
 
         return s;

@@ -1,8 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "minecraft:tnt",
-    "minecraft:redstone_block",
-    "minecraft:tnt_minecart"
-  ]
-}

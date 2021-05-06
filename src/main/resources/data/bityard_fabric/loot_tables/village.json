@@ -1,0 +1,75 @@
+{
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_armorer"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_butcher"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_cartographer"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_mason"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_shepherd"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_tannery"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_weaponsmith"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_desert_house"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_plains_house"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_savanna_house"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_snowy_house"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_taiga_house"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_fisher"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_fletcher"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_temple"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/village/village_toolsmith"
+        }
+      ]
+    }
+  ]
+}
+
+

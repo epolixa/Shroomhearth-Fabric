@@ -1,0 +1,18 @@
+{
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/jungle_temple"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/jungle_temple_dispenser"
+        }
+      ]
+    }
+  ]
+}
+
