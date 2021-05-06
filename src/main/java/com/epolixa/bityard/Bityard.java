@@ -20,16 +20,14 @@ public class Bityard implements ModInitializer {
     @Override
     public void onInitialize() {
         try {
-            Bityard.LOG.info("Initializing...");
-
             initializeDefaultConfig();
 
             ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
 
             UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
 
-            Bityard.LOG.info("Finished initializing");
-        } catch (Exception e) {BityardUtils.logError(e);}
+            Bityard.LOG.info("Initialized");
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
     private void onServerStarted(MinecraftServer server) {
@@ -37,7 +35,7 @@ public class Bityard implements ModInitializer {
             this.server = server;
             BityardUtils.setMOTD(server);
             BityardUtils.setupScoreboardConfig(server);
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
 
@@ -46,7 +44,7 @@ public class Bityard implements ModInitializer {
 
         try {
             s = server;
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
 
         return s;
     }
@@ -56,7 +54,7 @@ public class Bityard implements ModInitializer {
             //BityardUtils.log("enter");
 
             // Enable/disable most logging (except errors)
-            defaultConfig.put("ENABLE_LOG", 1);
+            //defaultConfig.put("ENABLE_LOG", 1);
 
             // AFK idle time
             defaultConfig.put("IDLE_TIME", 240);
@@ -81,6 +79,6 @@ public class Bityard implements ModInitializer {
             defaultConfig.put("RET_GATE_Z", 1099);
 
             //BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 }

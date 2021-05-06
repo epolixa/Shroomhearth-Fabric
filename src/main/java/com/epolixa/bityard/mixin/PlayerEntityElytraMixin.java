@@ -1,5 +1,6 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -21,26 +22,18 @@ public abstract class PlayerEntityElytraMixin {
     @Inject(method = "startFallFlying", at = @At("TAIL"))
     public void startFallFlying(CallbackInfo info) {
         try {
-            BityardUtils.log("enter");
-
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2f);
-
-            BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
     // Inject to stopFallFlying to add a dragon flap sound effect
     @Inject(method = "stopFallFlying", at = @At("TAIL"))
     public void stopFallFlying(CallbackInfo info) {
         try {
-            BityardUtils.log("enter");
-
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 1.5f);
-
-            BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
 }

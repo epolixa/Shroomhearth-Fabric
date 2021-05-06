@@ -1,5 +1,6 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.Blocks;
@@ -36,8 +37,6 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     @Inject(method = "onCollision", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            BityardUtils.log("enter");
-
             if (!this.world.isClient &&
                 !this.removed &&
                 ((ServerWorld) this.world).getRegistryManager().getDimensionTypes().getId(this.world.getDimension()).equals(DimensionType.OVERWORLD_ID)) { // yikes
@@ -52,7 +51,6 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                         for (int z = hitPos.getZ() - 1; z <= hitPos.getZ() + 1; z++) {
                             BlockPos blockPos = new BlockPos(x,y,z);
                             if (this.world.getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
-                                BityardUtils.log("found dragon egg near ender pearl collision");
                                 dragonEggBlock = (DragonEggBlock) world.getBlockState(blockPos).getBlock();
                                 dragonEggPos = blockPos;
                             }
@@ -61,8 +59,6 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                 }
 
                 if (dragonEggBlock != null) {
-                    BityardUtils.log("setting end gateway at dragon egg position");
-
                     MinecraftServer s = this.getServer();
                     PlayerEntity p = (PlayerEntity) this.getOwner();
 
@@ -75,26 +71,20 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer((PlayerEntity) this.getOwner(), particlePacket);
                     this.world.playSound(this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.BLOCKS, 0.4f, 2f, true);*/
 
-                    BityardUtils.log("updating new end gateway exit coords");
                     EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(dragonEggPos);
                     endGatewayBlockEntity.setExitPortalPos(new BlockPos(BityardUtils.getConfig("GATE_EXIT_X", s), BityardUtils.getConfig("GATE_EXIT_Y", s), BityardUtils.getConfig("GATE_EXIT_Z", s)), true);
 
-                    BityardUtils.log("checking old gateway location");
                     BlockPos oldEndGatewayPos = new BlockPos(BityardUtils.getConfig("RET_GATE_X", s), BityardUtils.getConfig("RET_GATE_Y", s), BityardUtils.getConfig("RET_GATE_Z", s));
                     if (!dragonEggPos.equals(oldEndGatewayPos) && this.world.getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
-                        BityardUtils.log("found old end gateway, clearing it before updating coords");
                         this.world.setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
                     }
 
-                    BityardUtils.log("updating return gateway coords in scoreboard");
                     BityardUtils.setConfig("RET_GATE_X", dragonEggPos.getX(), s);
                     BityardUtils.setConfig("RET_GATE_Y", dragonEggPos.getY(), s);
                     BityardUtils.setConfig("RET_GATE_Z", dragonEggPos.getZ(), s);
 
-                    BityardUtils.log("updating spawn destination coords to position of player");
                     BlockPos spawnGatewayPos = new BlockPos(BityardUtils.getConfig("GATE_X", s), BityardUtils.getConfig("GATE_Y", s), BityardUtils.getConfig("GATE_Z", s));
                     if (!(this.world.getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
-                        BityardUtils.log("spawn gateway not found, creating one");
                         this.world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
                     }
                     EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(spawnGatewayPos);
@@ -105,14 +95,11 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     s.getCommandManager().execute(s.getCommandSource(), "tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColor + "\",\"text\": \"" + p.getEntityName() + "\"}]");
 
                     // grant advancement to player
-                    s.getCommandManager().execute(s.getCommandSource(), "advancement grant " + p.getEntityName() + " only community:relocate_community_portal");
+                    s.getCommandManager().execute(s.getCommandSource(), "advancement grant " + p.getEntityName() + " only community:community_coordinator");
 
                     this.remove();
                 }
-
             }
-
-            BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 }

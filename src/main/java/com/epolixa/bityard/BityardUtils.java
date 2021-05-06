@@ -17,32 +17,10 @@ import java.util.Random;
 
 public class BityardUtils {
 
-    public static void log(String msg) {
-        try {
-            if (getConfig("ENABLE_LOG", null) > 0) {
-                StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-                System.out.println("[" + Bityard.MOD_ID + "][" + stackTraceElements[2].getClassName() + "][" + stackTraceElements[2].getMethodName() + "]: " + msg);
-            }
-        } catch (Exception e) {logError(e);}
-    }
-
-    public static void logError(Exception ex) {
-        try {
-            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            System.out.println("**** [" + Bityard.MOD_ID + "][" + stackTraceElements[2].getClassName() + "][" + stackTraceElements[2].getMethodName() + "] ERROR: ");
-            ex.printStackTrace(System.out);
-        } catch (Exception e) {
-            System.out.println("**** [bityard][BityardUtils][logError] ERROR: ");
-            e.printStackTrace(System.out);
-        }
-    }
-
     public static String getDyeHex(DyeColor color) {
         String hex = "#1D1D21"; // default black
 
         try {
-            log("enter: color = " + color.getName());
-
             // refer to https://minecraft.gamepedia.com/Dye#Item_data
             switch(color) {
                 case RED:
@@ -97,9 +75,7 @@ public class BityardUtils {
                     hex = "#1D1D21";
                     break;
             }
-
-            log("exit: hex = " + hex);
-        } catch (Exception e) {logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
 
         return hex;
     }
@@ -135,7 +111,7 @@ public class BityardUtils {
             value = Bityard.defaultConfig.get(key) == null ? 0 : Bityard.defaultConfig.get(key); // if server is still null at this point (did not initialize) just use default config
 
             //log("exit");
-        } catch (Exception e) {logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
 
         return value;
     }
@@ -156,14 +132,12 @@ public class BityardUtils {
                 ScoreboardObjective objective = scoreboard.getObjective(key);
                 scoreboard.getPlayerScore(configPlayerName, objective).setScore((Integer) value);
             }
-        } catch (Exception e) {logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
 
     public static void setMOTD(MinecraftServer server) {
         try {
-            log("enter: server = " + server.toString());
-
             final int MOTD_X1 = getConfig("MOTD_X1", server);
             final int MOTD_Y1 = getConfig("MOTD_Y1", server);
             final int MOTD_Z1 = getConfig("MOTD_Z1", server);
@@ -179,7 +153,6 @@ public class BityardUtils {
                     for (int z = MOTD_Z1; z <= MOTD_Z2; z++) {
                         BlockEntity blockEntity = world.getBlockEntity(new BlockPos(x,y,z));
                         if (blockEntity instanceof SignBlockEntity) {
-                            BityardUtils.log("sign block entity found at: " + x + ", " + y + ", " + z);
                             signs.add((SignBlockEntity) blockEntity);
                         }
                     }
@@ -206,18 +179,14 @@ public class BityardUtils {
                 String motdMessage = sb.toString();
                 String motdColor = getDyeHex(sign.getTextColor());
                 String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\"}]";
-                BityardUtils.log("selected motd: " + motdJSON);
+                Bityard.LOG.info("MOTD set to: " + motdJSON);
                 server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
             }
-
-            log("exit");
-        } catch (Exception e) {logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
     public static void setupScoreboardConfig(MinecraftServer server) {
         try {
-            log("enter");
-
             // capture the scoreboard
             ServerScoreboard scoreboard = server.getScoreboard();
 
@@ -225,25 +194,19 @@ public class BityardUtils {
 
             // for each default value...
             for (Map.Entry<String, Integer> entry : Bityard.defaultConfig.entrySet()) {
-                BityardUtils.log("setting up config score \"" + entry.getKey() + "\"");
                 // first check if scoreboard objective exists
                 if (scoreboard.getObjective(entry.getKey()) == null) {
-                    BityardUtils.log("creating missing objective for \"" + entry.getKey() + "\"");
                     // if it does not exist, create it
                     scoreboard.addObjective(entry.getKey(), ScoreboardCriterion.DUMMY, Text.Serializer.fromJson("{\"text\":\"" + entry.getKey() + "\"}"), ScoreboardCriterion.RenderType.INTEGER);
                 }
                 ScoreboardObjective objective = scoreboard.getObjective(entry.getKey());
                 // check if objective has been set for fake player, then set it if not
                 if (!scoreboard.playerHasObjective(configPlayerName, objective)) {
-                    BityardUtils.log("setting \"" + entry.getKey() + "\" score for \"" + configPlayerName + "\" to default " + entry.getValue());
                     // then create a fake player for it with a default hardcoded value
                     scoreboard.getPlayerScore(configPlayerName, objective).setScore((Integer) entry.getValue());
                 }
-                BityardUtils.log("\"" + configPlayerName + "\" has score " + scoreboard.getPlayerScore(configPlayerName, objective).getScore() + " for \"" + entry.getKey() + "\"");
             }
-
-            log("exit");
-        } catch (Exception e) {logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
 }

@@ -1,5 +1,6 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,16 +16,12 @@ public abstract class EntityElytraMixin {
     @Inject(method = "setSneaking(Z)V", at = @At("TAIL"))
     public void setSneaking(boolean sneaking, CallbackInfo info) {
         try {
-            BityardUtils.log("enter");
-
             if ((Object)this instanceof PlayerEntity) { // check if this is a player
                 PlayerEntity player = (PlayerEntity)(Object)this; // cast to a player
                 if (player.isFallFlying() && sneaking) { // if sneaking is engaged while the player is gliding
                     player.stopFallFlying(); // stop gliding
                 }
             }
-
-            BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 }

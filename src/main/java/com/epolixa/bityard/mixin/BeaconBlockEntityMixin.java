@@ -1,5 +1,6 @@
 package com.epolixa.bityard.mixin;
 
+import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
 import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -30,14 +31,10 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
     @Inject(method = "applyPlayerEffects()V", at = @At("HEAD"))
     public void applyPlayerEffects(CallbackInfo info) {
         try {
-            BityardUtils.log("enter");
-
             StatusEffect primary = ((BeaconBlockEntityAccessor)this).getPrimary();
             int level = ((BeaconBlockEntityAccessor)this).getLevel();
 
             if (!this.world.isClient && primary != null) { // check for same conditions as applying primary effect to a player
-                BityardUtils.log("captured primary as " + primary.getTranslationKey() + " " + level);
-
                 double distance = (double)(level * 10 + 10);
 
                 Box box = (new Box(this.pos)).expand(distance).stretch(0.0D, (double)this.world.getHeight(), 0.0D);
@@ -47,17 +44,12 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                 PlayerEntity player;
                 while(playerListIterator.hasNext()) {
                     player = (PlayerEntity)playerListIterator.next();
-                    BityardUtils.log("found player in range: " + player.getEntityName());
-
                     // check if player already has same status effect as primary
                     // only show message to newly affected players
                     if (!player.hasStatusEffect(primary)) {
-                        BityardUtils.log("player is newly affected");
-
                         // check for a sign block directly on top of beacon block
                         BlockEntity aboveBeacon = this.world.getBlockEntity(pos.add(0,1,0));
                         if (aboveBeacon != null && aboveBeacon instanceof SignBlockEntity) {
-                            BityardUtils.log("sign block exists above beacon");
 
                             SignBlockEntity sign = (SignBlockEntity)aboveBeacon;
                             Text[] signText = ((SignBlockEntityAccessor)sign).getText(); // getTextOnRow is CLIENT-only
@@ -67,7 +59,6 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                             {
                                 Text rowText = signText[i];
                                 String row = rowText.getString();
-                                BityardUtils.log("parsing sign row " + (i + 1) + ": " + row);
                                 if (row.length() > 0) {
                                     if (sb.toString().length() > 0) {
                                         sb.append(" ");
@@ -75,7 +66,6 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                                     sb.append(row);
                                 }
                             }
-                            BityardUtils.log("sign text interpreted as: " + sb.toString());
 
                             if (sb.toString().length() > 0) {
                                 // send a title message to the player
@@ -85,25 +75,18 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                     }
                 }
             }
-
-            BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
     private void sendSubtitleToPlayer(String subtitle, PlayerEntity player) {
         try {
-            BityardUtils.log("enter: subtitle = " + subtitle);
-
             String entityName = player.getEntityName();
             String subtitleCommand = "/title " + entityName + " subtitle " + subtitle;
             String titleCommand = "/title " + entityName + " title {\"text\":\"\"}";
-            BityardUtils.log("executing command: " + subtitleCommand);
             MinecraftServer server = player.getServer();
             server.getCommandManager().execute(server.getCommandSource(), subtitleCommand);
             server.getCommandManager().execute(server.getCommandSource(), titleCommand);
-
-            BityardUtils.log("exit");
-        } catch (Exception e) {BityardUtils.logError(e);}
+        } catch (Exception e) {Bityard.LOG.error(e);}
     }
 
 }

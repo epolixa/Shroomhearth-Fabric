@@ -449,6 +449,22 @@
       "required": false
     },
     {
+      "id": "minecraft:sponge",
+      "required": false
+    },
+    {
+      "id": "minecraft:tnt",
+      "required": false
+    },
+    {
+      "id": "minecraft:tnt_minecart",
+      "required": false
+    },
+    {
+      "id": "minecraft:wet_sponge",
+      "required": false
+    },
+    {
       "id": "minecraft:water_bucket",
       "required": false
     },
