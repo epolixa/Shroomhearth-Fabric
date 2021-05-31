@@ -1,0 +1,17 @@
+{
+  "motd_x_min": -346,
+  "motd_x_max": -346,
+  "motd_y_min": 67,
+  "motd_y_max": 73,
+  "motd_z_min": 259,
+  "motd_z_max": 264,
+  "spawn_gateway_x": -354,
+  "spawn_gateway_y": 70,
+  "spawn_gateway_z": 270,
+  "spawn_gateway_exit_x": -350,
+  "spawn_gateway_exit_y": 67,
+  "spawn_gateway_exit_z": 269,
+  "return_gateway_x": -748,
+  "return_gateway_y": 93,
+  "return_gateway_z": 2420
+}

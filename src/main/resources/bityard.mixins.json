@@ -3,7 +3,10 @@
   "minVersion": "0.8",
   "package": "com.epolixa.bityard.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "server": [
     "EntityElytraMixin",
     "PlayerEntityElytraMixin",
     "BeaconBlockEntityAccessor",
@@ -11,10 +14,5 @@
     "BeaconBlockEntityMixin",
     "WanderingTraderEntityMixin",
     "EnderPearlEntityMixin"
-  ],
-  "client": [],
-  "server": [],
-  "injectors": {
-    "defaultRequire": 1
-  }
+  ]
 }

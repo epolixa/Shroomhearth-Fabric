@@ -32,7 +32,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
     private final Tag<Item> EPIC   = TagRegistry.item(new Identifier(Bityard.MOD_ID, "epic"));
     private final Tag<Item> OMINOUS   = TagRegistry.item(new Identifier(Bityard.MOD_ID, "ominous"));
 
-    private final LootTable TRADER = Bityard.getServer().getLootManager().getTable(new Identifier(Bityard.MOD_ID, "trader"));
+    private final LootTable TRADER = this.getServer().getLootManager().getTable(new Identifier(Bityard.MOD_ID, "trader"));
 
     public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, World world) {
         super(entityType, world);

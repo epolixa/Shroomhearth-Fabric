@@ -72,18 +72,18 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     this.world.playSound(this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.BLOCKS, 0.4f, 2f, true);*/
 
                     EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(dragonEggPos);
-                    endGatewayBlockEntity.setExitPortalPos(new BlockPos(BityardUtils.getConfig("GATE_EXIT_X", s), BityardUtils.getConfig("GATE_EXIT_Y", s), BityardUtils.getConfig("GATE_EXIT_Z", s)), true);
+                    endGatewayBlockEntity.setExitPortalPos(new BlockPos(Bityard.CONFIG.getSpawnGatewayExitX(), Bityard.CONFIG.getSpawnGatewayExitY(), Bityard.CONFIG.getSpawnGatewayExitZ()), true);
 
-                    BlockPos oldEndGatewayPos = new BlockPos(BityardUtils.getConfig("RET_GATE_X", s), BityardUtils.getConfig("RET_GATE_Y", s), BityardUtils.getConfig("RET_GATE_Z", s));
+                    BlockPos oldEndGatewayPos = new BlockPos(Bityard.CONFIG.getReturnGatewayX(), Bityard.CONFIG.getReturnGatewayY(), Bityard.CONFIG.getReturnGatewayZ());
                     if (!dragonEggPos.equals(oldEndGatewayPos) && this.world.getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
                         this.world.setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
                     }
 
-                    BityardUtils.setConfig("RET_GATE_X", dragonEggPos.getX(), s);
-                    BityardUtils.setConfig("RET_GATE_Y", dragonEggPos.getY(), s);
-                    BityardUtils.setConfig("RET_GATE_Z", dragonEggPos.getZ(), s);
+                    Bityard.CONFIG.setReturnGatewayX(dragonEggPos.getX());
+                    Bityard.CONFIG.setReturnGatewayY(dragonEggPos.getY());
+                    Bityard.CONFIG.setReturnGatewayZ(dragonEggPos.getZ());
 
-                    BlockPos spawnGatewayPos = new BlockPos(BityardUtils.getConfig("GATE_X", s), BityardUtils.getConfig("GATE_Y", s), BityardUtils.getConfig("GATE_Z", s));
+                    BlockPos spawnGatewayPos = new BlockPos(Bityard.CONFIG.getSpawnGatewayX(), Bityard.CONFIG.getSpawnGatewayX(), Bityard.CONFIG.getSpawnGatewayX());
                     if (!(this.world.getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
                         this.world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
                     }
