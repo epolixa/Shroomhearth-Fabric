@@ -53,7 +53,7 @@ public class MOTD {
                 server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
             }
         } catch (Exception e) {
-            Bityard.LOG.error("Caught error while setting MOTD: " + e);
+            Bityard.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
     }

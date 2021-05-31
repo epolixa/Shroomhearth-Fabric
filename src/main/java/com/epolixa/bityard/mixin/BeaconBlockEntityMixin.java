@@ -75,7 +75,10 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                     }
                 }
             }
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 
     private void sendSubtitleToPlayer(String subtitle, PlayerEntity player) {
@@ -86,7 +89,10 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             MinecraftServer server = player.getServer();
             server.getCommandManager().execute(server.getCommandSource(), subtitleCommand);
             server.getCommandManager().execute(server.getCommandSource(), titleCommand);
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 
 }

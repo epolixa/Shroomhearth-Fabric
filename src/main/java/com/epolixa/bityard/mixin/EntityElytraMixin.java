@@ -22,6 +22,9 @@ public abstract class EntityElytraMixin {
                     player.stopFallFlying(); // stop gliding
                 }
             }
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 }

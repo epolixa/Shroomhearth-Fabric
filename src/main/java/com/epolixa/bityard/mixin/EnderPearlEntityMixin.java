@@ -83,7 +83,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     Bityard.CONFIG.setReturnGatewayY(dragonEggPos.getY());
                     Bityard.CONFIG.setReturnGatewayZ(dragonEggPos.getZ());
 
-                    BlockPos spawnGatewayPos = new BlockPos(Bityard.CONFIG.getSpawnGatewayX(), Bityard.CONFIG.getSpawnGatewayX(), Bityard.CONFIG.getSpawnGatewayX());
+                    BlockPos spawnGatewayPos = new BlockPos(Bityard.CONFIG.getSpawnGatewayX(), Bityard.CONFIG.getSpawnGatewayY(), Bityard.CONFIG.getSpawnGatewayZ());
                     if (!(this.world.getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
                         this.world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
                     }
@@ -100,6 +100,9 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     this.remove();
                 }
             }
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 }

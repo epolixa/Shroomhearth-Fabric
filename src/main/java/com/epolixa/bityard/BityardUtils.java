@@ -63,7 +63,10 @@ public class BityardUtils {
                     hex = "#1D1D21";
                     break;
             }
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
 
         return hex;
     }

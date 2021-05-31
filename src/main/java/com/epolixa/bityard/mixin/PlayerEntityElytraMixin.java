@@ -24,7 +24,10 @@ public abstract class PlayerEntityElytraMixin {
         try {
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2f);
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 
     // Inject to stopFallFlying to add a dragon flap sound effect
@@ -33,7 +36,10 @@ public abstract class PlayerEntityElytraMixin {
         try {
             // Play a dragon flap sound at the player's location
             this.playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 1.5f);
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 
 }

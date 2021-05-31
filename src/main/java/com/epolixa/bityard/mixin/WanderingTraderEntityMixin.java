@@ -75,7 +75,8 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             logOffers(tradeOfferList);
         } catch (Exception e) {
-            Bityard.LOG.error(e);
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
         }
     }
 
@@ -112,7 +113,10 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             // Setup offer
             tradeOffer = new TradeOffer(buyStack, lootStack, uses, BityardUtils.inRange(r, 3, 6), 0.2f);
-        } catch (Exception e) {Bityard.LOG.error(e);}
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
 
         return tradeOffer;
     }
