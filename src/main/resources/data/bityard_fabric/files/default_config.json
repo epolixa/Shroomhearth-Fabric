@@ -13,5 +13,18 @@
   "spawn_gateway_exit_z": 269,
   "return_gateway_x": -748,
   "return_gateway_y": 93,
-  "return_gateway_z": 2420
+  "return_gateway_z": 2420,
+  "common_price_min": 1,
+  "common_price_max": 4,
+  "common_uses_bonus": 12,
+  "uncommon_price_min": 4,
+  "uncommon_price_max": 16,
+  "uncommon_uses_bonus": 6,
+  "rare_price_min": 16,
+  "rare_price_max": 32,
+  "rare_uses_bonus": 3,
+  "epic_price_min": 32,
+  "epic_price_max": 48,
+  "ominous_price_min": 48,
+  "ominous_price_max": 64
 }

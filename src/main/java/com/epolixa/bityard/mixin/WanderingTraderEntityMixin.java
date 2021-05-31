@@ -94,21 +94,21 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             lootStack.setCount(1);
 
             // Adjust item count, sell price, offer amount depending on if item is cheap, fair, or expensive
-            if (item.isIn(OMINOUS)) { buyStack.setCount(BityardUtils.inRange(r, 48, 64)); }
-            else if (item.isIn(EPIC)) { buyStack.setCount(BityardUtils.inRange(r, 32, 48)); }
+            if (item.isIn(OMINOUS)) { buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getOminousMinPrice(), Bityard.CONFIG.getOminousMaxPrice())); }
+            else if (item.isIn(EPIC)) { buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getEpicMinPrice(), Bityard.CONFIG.getEpicMaxPrice())); }
             else if (item.isIn(RARE)) {
-                buyStack.setCount(BityardUtils.inRange(r, 16, 32));
-                uses += 3;
+                buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getRareMinPrice(), Bityard.CONFIG.getRareMaxPrice()));
+                uses += Bityard.CONFIG.getRareUsesBonus();
             }
             else if (item.isIn(UNCOMMON)) {
-                buyStack.setCount(BityardUtils.inRange(r, 4, 16));
+                buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getUncommonMinPrice(), Bityard.CONFIG.getUncommonMaxPrice()));
                 lootStack.setCount(BityardUtils.inRange(r, 1, Math.min(item.getMaxCount(), 2)));
-                uses += 6;
+                uses += Bityard.CONFIG.getUncommonUsesBonus();
             }
             else {
-                buyStack.setCount(BityardUtils.inRange(r, 1, 4));
+                buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getCommonMinPrice(), Bityard.CONFIG.getCommonMaxPrice()));
                 lootStack.setCount(BityardUtils.inRange(r, 1, Math.min(item.getMaxCount(), 4)));
-                uses += 12;
+                uses += Bityard.CONFIG.getCommonUsesBonus();
             }
 
             // Setup offer
