@@ -79,8 +79,8 @@ public class Config {
         spawnGatewayExitY = json.get("spawn_gateway_exit_y").getAsInt();
         spawnGatewayExitZ = json.get("spawn_gateway_exit_z").getAsInt();
         returnGatewayX = json.get("return_gateway_x").getAsInt();
-        returnGatewayY = json.get("return_gateway_x").getAsInt();
-        returnGatewayZ = json.get("return_gateway_x").getAsInt();
+        returnGatewayY = json.get("return_gateway_y").getAsInt();
+        returnGatewayZ = json.get("return_gateway_z").getAsInt();
 
         commonMinPrice = json.get("common_price_min").getAsInt();
         commonMaxPrice = json.get("common_price_max").getAsInt();
