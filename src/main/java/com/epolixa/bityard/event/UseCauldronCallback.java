@@ -23,123 +23,84 @@ public class UseCauldronCallback {
         try {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
-            if (state.getBlock() == Blocks.CAULDRON && !player.isSneaking()) {
+            if (state.getBlock() == Blocks.WATER_CAULDRON && !player.isSneaking()) {
                 int level = state.get(Properties.LEVEL_3);
                 if (level > 0) {
                     boolean washed = false;
                     ItemStack itemStack = player.getStackInHand(hand);
                     Item item = itemStack.getItem();
-                    if (item.isIn(TagRegistry.item(new Identifier(Bityard.MOD_ID, "washable")))) {
-                        switch (item.getTranslationKey()) {
-                            case "block.minecraft.white_concrete_powder":
-                                item = Items.WHITE_CONCRETE;
-                                break;
-                            case "block.minecraft.orange_concrete_powder":
-                                item = Items.ORANGE_CONCRETE;
-                                break;
-                            case "block.minecraft.magenta_concrete_powder":
-                                item = Items.MAGENTA_CONCRETE;
-                                break;
-                            case "block.minecraft.light_blue_concrete_powder":
-                                item = Items.LIGHT_BLUE_CONCRETE;
-                                break;
-                            case "block.minecraft.yellow_concrete_powder":
-                                item = Items.YELLOW_CONCRETE;
-                                break;
-                            case "block.minecraft.lime_concrete_powder":
-                                item = Items.LIME_CONCRETE;
-                                break;
-                            case "block.minecraft.pink_concrete_powder":
-                                item = Items.PINK_CONCRETE;
-                                break;
-                            case "block.minecraft.gray_concrete_powder":
-                                item = Items.GRAY_CONCRETE;
-                                break;
-                            case "block.minecraft.light_gray_concrete_powder":
-                                item = Items.LIGHT_GRAY_CONCRETE;
-                                break;
-                            case "block.minecraft.cyan_concrete_powder":
-                                item = Items.CYAN_CONCRETE;
-                                break;
-                            case "block.minecraft.purple_concrete_powder":
-                                item = Items.PURPLE_CONCRETE;
-                                break;
-                            case "block.minecraft.blue_concrete_powder":
-                                item = Items.BLUE_CONCRETE;
-                                break;
-                            case "block.minecraft.brown_concrete_powder":
-                                item = Items.BROWN_CONCRETE;
-                                break;
-                            case "block.minecraft.green_concrete_powder":
-                                item = Items.GREEN_CONCRETE;
-                                break;
-                            case "block.minecraft.red_concrete_powder":
-                                item = Items.RED_CONCRETE;
-                                break;
-                            case "block.minecraft.black_concrete_powder":
-                                item = Items.BLACK_CONCRETE;
-                                break;
-                            case "block.minecraft.white_terracotta":
-                            case "block.minecraft.orange_terracotta":
-                            case "block.minecraft.magenta_terracotta":
-                            case "block.minecraft.light_blue_terracotta":
-                            case "block.minecraft.yellow_terracotta":
-                            case "block.minecraft.lime_terracotta":
-                            case "block.minecraft.pink_terracotta":
-                            case "block.minecraft.gray_terracotta":
-                            case "block.minecraft.light_gray_terracotta":
-                            case "block.minecraft.cyan_terracotta":
-                            case "block.minecraft.purple_terracotta":
-                            case "block.minecraft.blue_terracotta":
-                            case "block.minecraft.brown_terracotta":
-                            case "block.minecraft.green_terracotta":
-                            case "block.minecraft.red_terracotta":
-                            case "block.minecraft.black_terracotta":
-                                item = Items.TERRACOTTA;
-                                break;
-                            case "block.minecraft.white_stained_glass":
-                            case "block.minecraft.orange_stained_glass":
-                            case "block.minecraft.magenta_stained_glass":
-                            case "block.minecraft.light_blue_stained_glass":
-                            case "block.minecraft.yellow_stained_glass":
-                            case "block.minecraft.lime_stained_glass":
-                            case "block.minecraft.pink_stained_glass":
-                            case "block.minecraft.gray_stained_glass":
-                            case "block.minecraft.light_gray_stained_glass":
-                            case "block.minecraft.cyan_stained_glass":
-                            case "block.minecraft.purple_stained_glass":
-                            case "block.minecraft.blue_stained_glass":
-                            case "block.minecraft.brown_stained_glass":
-                            case "block.minecraft.green_stained_glass":
-                            case "block.minecraft.red_stained_glass":
-                            case "block.minecraft.black_stained_glass":
-                                item = Items.GLASS;
-                                break;
-                            case "block.minecraft.white_stained_glass_pane":
-                            case "block.minecraft.orange_stained_glass_pane":
-                            case "block.minecraft.magenta_stained_glass_pane":
-                            case "block.minecraft.light_blue_stained_glass_pane":
-                            case "block.minecraft.yellow_stained_glass_pane":
-                            case "block.minecraft.lime_stained_glass_pane":
-                            case "block.minecraft.pink_stained_glass_pane":
-                            case "block.minecraft.gray_stained_glass_pane":
-                            case "block.minecraft.light_gray_stained_glass_pane":
-                            case "block.minecraft.cyan_stained_glass_pane":
-                            case "block.minecraft.purple_stained_glass_pane":
-                            case "block.minecraft.blue_stained_glass_pane":
-                            case "block.minecraft.brown_stained_glass_pane":
-                            case "block.minecraft.green_stained_glass_pane":
-                            case "block.minecraft.red_stained_glass_pane":
-                            case "block.minecraft.black_stained_glass_pane":
-                                item = Items.GLASS_PANE;
-                                break;
-                            default:
-                                break;
+                    if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "washable")).contains(item)) {
+                        if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "washable_terracotta")).contains(item)) {
+                            item = Items.TERRACOTTA;
+                        } else if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "washable_glass")).contains(item)) {
+                            item = Items.GLASS;
+                        } else if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "washable_glass_panes")).contains(item)) {
+                            item = Items.GLASS_PANE;
+                        } else if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "washable_candles")).contains(item)) {
+                            item = Items.CANDLE;
+                        } else {
+                            switch (item.getTranslationKey()) {
+                                case "block.minecraft.white_concrete_powder":
+                                    item = Items.WHITE_CONCRETE;
+                                    break;
+                                case "block.minecraft.orange_concrete_powder":
+                                    item = Items.ORANGE_CONCRETE;
+                                    break;
+                                case "block.minecraft.magenta_concrete_powder":
+                                    item = Items.MAGENTA_CONCRETE;
+                                    break;
+                                case "block.minecraft.light_blue_concrete_powder":
+                                    item = Items.LIGHT_BLUE_CONCRETE;
+                                    break;
+                                case "block.minecraft.yellow_concrete_powder":
+                                    item = Items.YELLOW_CONCRETE;
+                                    break;
+                                case "block.minecraft.lime_concrete_powder":
+                                    item = Items.LIME_CONCRETE;
+                                    break;
+                                case "block.minecraft.pink_concrete_powder":
+                                    item = Items.PINK_CONCRETE;
+                                    break;
+                                case "block.minecraft.gray_concrete_powder":
+                                    item = Items.GRAY_CONCRETE;
+                                    break;
+                                case "block.minecraft.light_gray_concrete_powder":
+                                    item = Items.LIGHT_GRAY_CONCRETE;
+                                    break;
+                                case "block.minecraft.cyan_concrete_powder":
+                                    item = Items.CYAN_CONCRETE;
+                                    break;
+                                case "block.minecraft.purple_concrete_powder":
+                                    item = Items.PURPLE_CONCRETE;
+                                    break;
+                                case "block.minecraft.blue_concrete_powder":
+                                    item = Items.BLUE_CONCRETE;
+                                    break;
+                                case "block.minecraft.brown_concrete_powder":
+                                    item = Items.BROWN_CONCRETE;
+                                    break;
+                                case "block.minecraft.green_concrete_powder":
+                                    item = Items.GREEN_CONCRETE;
+                                    break;
+                                case "block.minecraft.red_concrete_powder":
+                                    item = Items.RED_CONCRETE;
+                                    break;
+                                case "block.minecraft.black_concrete_powder":
+                                    item = Items.BLACK_CONCRETE;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
+
                         washed = true;
                     }
                     if (washed) {
-                        world.setBlockState(pos, Blocks.CAULDRON.getDefaultState().with(Properties.LEVEL_3, level - 1));
+                        if (level > 1) {
+                            world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState().with(Properties.LEVEL_3, level - 1));
+                        } else {
+                            world.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
+                        }
                         world.playSound(null, pos, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, SoundCategory.BLOCKS, 1f, 1f);
                         player.setStackInHand(hand, new ItemStack(item, itemStack.getCount()));
 

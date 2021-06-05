@@ -8,8 +8,11 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(SignBlockEntity.class)
 public interface SignBlockEntityAccessor {
 
-    @Accessor("text")
-    public Text[] getText();
+    @Accessor("texts")
+    public Text[] getTexts();
+
+    @Accessor("glowingText")
+    public boolean isGlowingText();
 
 }
 

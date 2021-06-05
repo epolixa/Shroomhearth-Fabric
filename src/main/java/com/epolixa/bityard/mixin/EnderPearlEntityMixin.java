@@ -1,8 +1,6 @@
 package com.epolixa.bityard.mixin;
 
 import com.epolixa.bityard.Bityard;
-import com.epolixa.bityard.BityardUtils;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DragonEggBlock;
 import net.minecraft.block.EndGatewayBlock;
@@ -11,16 +9,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
-import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,9 +29,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     @Inject(method = "onCollision", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            if (!this.world.isClient &&
-                !this.removed &&
-                ((ServerWorld) this.world).getRegistryManager().getDimensionTypes().getId(this.world.getDimension()).equals(DimensionType.OVERWORLD_ID)) { // yikes
+            if (!this.world.isClient && !this.isRemoved() && this.world.getDimension().isNatural()) {
 
                 BlockPos hitPos = new BlockPos(hitResult.getPos());
                 BlockPos dragonEggPos = null;
@@ -97,7 +87,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     // grant advancement to player
                     s.getCommandManager().execute(s.getCommandSource(), "advancement grant " + p.getEntityName() + " only community:community_coordinator");
 
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 }
             }
         } catch (Exception e) {

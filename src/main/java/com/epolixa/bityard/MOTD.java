@@ -35,7 +35,8 @@ public class MOTD {
             if (!signs.isEmpty()) {
                 Random random = world.getRandom();
                 SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
-                Text[] signText = ((SignBlockEntityAccessor) sign).getText();
+                SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
+                Text[] signText = signAccessor.getTexts();
                 StringBuilder sb = new StringBuilder();
                 for (Text rowText : signText) { // parse sign rows
                     String row = rowText.getString();
@@ -48,7 +49,7 @@ public class MOTD {
                 }
                 String motdMessage = sb.toString();
                 String motdColor = BityardUtils.getDyeHex(sign.getTextColor());
-                String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\"}]";
+                String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}]";
                 Bityard.LOG.info("MOTD set to: " + motdJSON);
                 server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
             }

@@ -36,7 +36,6 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
     public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, World world) {
         super(entityType, world);
-        this.teleporting = true;
     }
 
     @Inject(method = "fillRecipes()V", at = @At("TAIL"))
@@ -94,13 +93,13 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             lootStack.setCount(1);
 
             // Adjust item count, sell price, offer amount depending on if item is cheap, fair, or expensive
-            if (item.isIn(OMINOUS)) { buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getOminousMinPrice(), Bityard.CONFIG.getOminousMaxPrice())); }
-            else if (item.isIn(EPIC)) { buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getEpicMinPrice(), Bityard.CONFIG.getEpicMaxPrice())); }
-            else if (item.isIn(RARE)) {
+            if (OMINOUS.contains(item)) { buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getOminousMinPrice(), Bityard.CONFIG.getOminousMaxPrice())); }
+            else if (EPIC.contains(item)) { buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getEpicMinPrice(), Bityard.CONFIG.getEpicMaxPrice())); }
+            else if (RARE.contains(item)) {
                 buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getRareMinPrice(), Bityard.CONFIG.getRareMaxPrice()));
                 uses += Bityard.CONFIG.getRareUsesBonus();
             }
-            else if (item.isIn(UNCOMMON)) {
+            else if (UNCOMMON.contains(item)) {
                 buyStack.setCount(BityardUtils.inRange(r, Bityard.CONFIG.getUncommonMinPrice(), Bityard.CONFIG.getUncommonMaxPrice()));
                 lootStack.setCount(BityardUtils.inRange(r, 1, Math.min(item.getMaxCount(), 2)));
                 uses += Bityard.CONFIG.getUncommonUsesBonus();

@@ -1,7 +1,6 @@
 package com.epolixa.bityard.mixin;
 
 import com.epolixa.bityard.Bityard;
-import com.epolixa.bityard.BityardUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
