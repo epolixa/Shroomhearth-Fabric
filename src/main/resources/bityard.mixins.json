@@ -9,7 +9,6 @@
   "server": [
     "EntityElytraMixin",
     "PlayerEntityElytraMixin",
-    "BeaconBlockEntityAccessor",
     "SignBlockEntityAccessor",
     "BeaconBlockEntityMixin",
     "WanderingTraderEntityMixin",
