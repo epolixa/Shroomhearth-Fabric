@@ -25,6 +25,8 @@ public class UseGlowstoneDustCallback {
                 BlockPos pos = hitResult.getBlockPos();
                 BlockState state = world.getBlockState(pos);
 
+                state.getBlock().
+
                 if (!state.isAir()) {
                     Direction side = hitResult.getSide();
                     BlockPos sidePos = new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
@@ -33,10 +35,10 @@ public class UseGlowstoneDustCallback {
                     if (sideState.getBlock() == Blocks.LIGHT) {
                         int level = sideState.get(Properties.LEVEL_15);
                         if (level < 15) {
-                            placeLightBlockWithDust(world, player, sidePos, level + 1, handItemStack);
+                            placeLightBlockWithDust(world, player, sidePos, level + 1, hand, handItemStack);
                         }
                     } else if (sideState.isAir()) {
-                        placeLightBlockWithDust(world, player, sidePos, 1, handItemStack);
+                        placeLightBlockWithDust(world, player, sidePos, 1, hand, handItemStack);
                     }
                 }
             }
@@ -49,10 +51,11 @@ public class UseGlowstoneDustCallback {
     }
 
 
-    private static void placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, ItemStack handItemStack) {
+    private static void placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, Hand hand, ItemStack handItemStack) {
         try {
             world.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(Properties.LEVEL_15, level));
             world.playSound(null, pos, SoundEvents.BLOCK_POWDER_SNOW_PLACE, SoundCategory.BLOCKS, 1f, 2f);
+            player.swingHand(hand, true);
             if (!player.isCreative()) {
                 handItemStack.setCount(handItemStack.getCount() - 1);
             }
