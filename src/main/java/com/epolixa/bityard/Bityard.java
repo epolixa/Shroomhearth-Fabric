@@ -1,6 +1,7 @@
 package com.epolixa.bityard;
 
 import com.epolixa.bityard.event.UseCauldronCallback;
+import com.epolixa.bityard.event.UseGlowstoneDustCallback;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -31,6 +32,7 @@ public class Bityard implements DedicatedServerModInitializer {
         });
 
         UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
+        UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
 
         Bityard.LOG.info("Initialized");
     }
