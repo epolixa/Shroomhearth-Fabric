@@ -1,6 +1,12 @@
 package com.epolixa.bityard;
 
+import net.minecraft.advancement.Advancement;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.core.jmx.Server;
+
 import java.util.Random;
 
 public class BityardUtils {
@@ -74,6 +80,20 @@ public class BityardUtils {
     // return a random int between two ints
     public static int inRange(Random r, int min, int max) {
         return r.nextInt((max - min) + 1) + min;
+    }
+
+    // grant an advancement
+    public static void grantAdvancement(PlayerEntity player, String namespace, String id, String criterion) {
+        try {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+            Advancement advancement = player.getServer().getAdvancementLoader().get(new Identifier(namespace, id));
+            if (!serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
+                serverPlayer.getAdvancementTracker().grantCriterion(advancement, criterion);
+            }
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
     }
 
 }

@@ -1,11 +1,14 @@
 package com.epolixa.bityard.event;
 
 import com.epolixa.bityard.Bityard;
+import com.epolixa.bityard.BityardUtils;
+import net.minecraft.advancement.Advancement;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
@@ -25,7 +28,7 @@ public class UseGlowstoneDustCallback {
                 BlockPos pos = hitResult.getBlockPos();
                 BlockState state = world.getBlockState(pos);
 
-                ActionResult actionResult = state.onUse(world, player, hand, hitResult);
+                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
 
                 if (actionResult.isAccepted()) {
                     return ActionResult.FAIL;
@@ -68,8 +71,7 @@ public class UseGlowstoneDustCallback {
                 handItemStack.decrement(1);
             }
 
-            // grant advancement to player
-            world.getServer().getCommandManager().execute(world.getServer().getCommandSource(), "advancement grant " + player.getEntityName() + " only bityard:there_be_light");
+            BityardUtils.grantAdvancement(player, "bityard", "there_be_light", "impossible");
 
             return ActionResult.SUCCESS;
         } catch (Exception e) {

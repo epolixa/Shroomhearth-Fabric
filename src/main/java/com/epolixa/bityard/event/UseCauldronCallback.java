@@ -1,6 +1,7 @@
 package com.epolixa.bityard.event;
 
 import com.epolixa.bityard.Bityard;
+import com.epolixa.bityard.BityardUtils;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -104,8 +105,7 @@ public class UseCauldronCallback {
                         world.playSound(null, pos, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, SoundCategory.BLOCKS, 1f, 1f);
                         player.setStackInHand(hand, new ItemStack(item, itemStack.getCount()));
 
-                        // grant advancement to player
-                        world.getServer().getCommandManager().execute(world.getServer().getCommandSource(), "advancement grant " + player.getEntityName() + " only bityard:wash_block");
+                        BityardUtils.grantAdvancement(player, "bityard", "wash_block", "impossible");
 
                         return ActionResult.SUCCESS;
                     }
