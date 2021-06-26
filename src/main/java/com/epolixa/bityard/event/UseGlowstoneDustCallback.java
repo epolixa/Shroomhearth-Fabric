@@ -25,9 +25,11 @@ public class UseGlowstoneDustCallback {
                 BlockPos pos = hitResult.getBlockPos();
                 BlockState state = world.getBlockState(pos);
 
-                state.getBlock().
+                ActionResult actionResult = state.onUse(world, player, hand, hitResult);
 
-                if (!state.isAir()) {
+                if (actionResult.isAccepted()) {
+                    return ActionResult.FAIL;
+                } else if (!state.isAir()) {
                     Direction side = hitResult.getSide();
                     BlockPos sidePos = new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
                     BlockState sideState = world.getBlockState(sidePos);
@@ -35,10 +37,12 @@ public class UseGlowstoneDustCallback {
                     if (sideState.getBlock() == Blocks.LIGHT) {
                         int level = sideState.get(Properties.LEVEL_15);
                         if (level < 15) {
-                            placeLightBlockWithDust(world, player, sidePos, level + 1, hand, handItemStack);
+                            placeLightBlockWithDust(world, player, sidePos, level + 1, handItemStack);
+                            return ActionResult.SUCCESS;
                         }
-                    } else if (sideState.isAir()) {
-                        placeLightBlockWithDust(world, player, sidePos, 1, hand, handItemStack);
+                    } else if (sideState.isAir() || sideState.getBlock() == Blocks.WATER) {
+                        placeLightBlockWithDust(world, player, sidePos, 1, handItemStack);
+                        return ActionResult.SUCCESS;
                     }
                 }
             }
@@ -51,13 +55,19 @@ public class UseGlowstoneDustCallback {
     }
 
 
-    private static void placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, Hand hand, ItemStack handItemStack) {
+    private static void placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, ItemStack handItemStack) {
         try {
-            world.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(Properties.LEVEL_15, level));
+            BlockState blockState = world.getBlockState(pos);
+            boolean waterlogged = false;
+            if (blockState.getBlock() == Blocks.WATER) {
+                waterlogged = true;
+            } else if (blockState.getBlock() == Blocks.LIGHT) {
+                waterlogged = blockState.get(Properties.WATERLOGGED);
+            }
+            world.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(Properties.LEVEL_15, level).with(Properties.WATERLOGGED, waterlogged));
             world.playSound(null, pos, SoundEvents.BLOCK_POWDER_SNOW_PLACE, SoundCategory.BLOCKS, 1f, 2f);
-            player.swingHand(hand, true);
             if (!player.isCreative()) {
-                handItemStack.setCount(handItemStack.getCount() - 1);
+                handItemStack.decrement(1);
             }
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
