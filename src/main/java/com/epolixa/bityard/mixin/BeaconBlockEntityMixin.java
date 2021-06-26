@@ -9,11 +9,17 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.Packet;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Text;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.*;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,8 +27,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
 
 @Mixin(BeaconBlockEntity.class)
 public abstract class BeaconBlockEntityMixin extends BlockEntity {
@@ -48,13 +57,23 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                     // check if player already has same status effect as primary
                     // only show message to newly affected players
                     if (!player.hasStatusEffect(primaryEffect)) {
-                        // check for a sign block directly on top of beacon block
-                        BlockEntity aboveBeacon = world.getBlockEntity(pos.add(0,1,0));
-                        if (aboveBeacon != null && aboveBeacon instanceof SignBlockEntity) {
-
-                            SignBlockEntity sign = (SignBlockEntity)aboveBeacon;
+                        // check for a signs adjacent to beacon block
+                        List<SignBlockEntity> signs = new ArrayList<>();
+                        List<Vec3i> signOffsets= new ArrayList<>();
+                        signOffsets.add(new Vec3i(0,1,0));
+                        signOffsets.add(new Vec3i(1,0,0));
+                        signOffsets.add(new Vec3i(-1,0,0));
+                        signOffsets.add(new Vec3i(0,0,1));
+                        signOffsets.add(new Vec3i(0,0,-1));
+                        for (Vec3i offset : signOffsets) {
+                            BlockEntity beaconSign = world.getBlockEntity(pos.add(offset));
+                            if (beaconSign instanceof SignBlockEntity) {signs.add((SignBlockEntity) beaconSign);}
+                        }
+                        if (!signs.isEmpty()) {
+                            Random random = world.getRandom();
+                            SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                             SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
-                            Text[] signText = signAccessor.getTexts(); // getTextOnRow is CLIENT-only
+                            Text[] signText = signAccessor.getTexts();
                             DyeColor color = sign.getTextColor();
                             StringBuilder sb = new StringBuilder();
                             for (int i = 0; i < signText.length; i++) // parse sign rows
@@ -74,7 +93,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                                 sendSubtitleToPlayer("{\"text\":\"" + sb.toString() + "\",\"color\":\"" + BityardUtils.getDyeHex(color) + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}", player);
 
                                 // grant advancement to player
-                                world.getServer().getCommandManager().execute(world.getServer().getCommandSource(), "advancement grant " + player.getEntityName() + " only bityard:liminal_message");
+                                BityardUtils.grantAdvancement(player, "bityard", "liminal_message", "impossible");
                             }
                         }
                     }
@@ -88,12 +107,13 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
     private static void sendSubtitleToPlayer(String subtitle, PlayerEntity player) {
         try {
-            String entityName = player.getEntityName();
-            String subtitleCommand = "/title " + entityName + " subtitle " + subtitle;
-            String titleCommand = "/title " + entityName + " title {\"text\":\"\"}";
-            MinecraftServer server = player.getServer();
-            server.getCommandManager().execute(server.getCommandSource(), subtitleCommand);
-            server.getCommandManager().execute(server.getCommandSource(), titleCommand);
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+            Function<Text, Packet<?>> constructor = SubtitleS2CPacket::new;
+            ServerCommandSource source = player.getServer().getCommandSource();
+            Text subtitleText = Text.Serializer.fromJson(subtitle);
+            serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, subtitleText, serverPlayer, 0)));
+            constructor = TitleS2CPacket::new;
+            serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, new LiteralText(""), serverPlayer, 0)));
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
             e.printStackTrace();
