@@ -2,13 +2,11 @@ package com.epolixa.bityard.event;
 
 import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
-import net.minecraft.advancement.Advancement;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
