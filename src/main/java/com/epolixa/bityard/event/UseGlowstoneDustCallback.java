@@ -37,12 +37,10 @@ public class UseGlowstoneDustCallback {
                     if (sideState.getBlock() == Blocks.LIGHT) {
                         int level = sideState.get(Properties.LEVEL_15);
                         if (level < 15) {
-                            placeLightBlockWithDust(world, player, sidePos, level + 1, handItemStack);
-                            return ActionResult.SUCCESS;
+                            return placeLightBlockWithDust(world, player, sidePos, level + 1, handItemStack);
                         }
-                    } else if (sideState.isAir() || sideState.getBlock() == Blocks.WATER) {
-                        placeLightBlockWithDust(world, player, sidePos, 1, handItemStack);
-                        return ActionResult.SUCCESS;
+                    } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
+                        return placeLightBlockWithDust(world, player, sidePos, 1, handItemStack);
                     }
                 }
             }
@@ -55,7 +53,7 @@ public class UseGlowstoneDustCallback {
     }
 
 
-    private static void placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, ItemStack handItemStack) {
+    private static ActionResult placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, ItemStack handItemStack) {
         try {
             BlockState blockState = world.getBlockState(pos);
             boolean waterlogged = false;
@@ -69,9 +67,15 @@ public class UseGlowstoneDustCallback {
             if (!player.isCreative()) {
                 handItemStack.decrement(1);
             }
+
+            // grant advancement to player
+            world.getServer().getCommandManager().execute(world.getServer().getCommandSource(), "advancement grant " + player.getEntityName() + " only bityard:there_be_light");
+
+            return ActionResult.SUCCESS;
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
+        return ActionResult.PASS;
     }
 }
