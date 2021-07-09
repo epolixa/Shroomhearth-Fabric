@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 
 public class UseGlowstoneDustCallback {
 
+    private static final int[] lightLevels = {6, 9, 12, 15};
+
     public static ActionResult onUseGlowstoneDustCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
             ItemStack handItemStack = player.getStackInHand(hand);
@@ -37,11 +39,15 @@ public class UseGlowstoneDustCallback {
 
                     if (sideState.getBlock() == Blocks.LIGHT) {
                         int level = sideState.get(Properties.LEVEL_15);
-                        if (level < 15) {
-                            return placeLightBlockWithDust(world, player, sidePos, level + 1, handItemStack);
+                        if (level < lightLevels[lightLevels.length - 1]) {
+                            for (int ll : lightLevels) {
+                                if (level < ll) {
+                                    return placeLightBlockWithDust(world, player, sidePos, ll, handItemStack);
+                                }
+                            }
                         }
                     } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
-                        return placeLightBlockWithDust(world, player, sidePos, 1, handItemStack);
+                        return placeLightBlockWithDust(world, player, sidePos, lightLevels[0], handItemStack);
                     }
                 }
             }
