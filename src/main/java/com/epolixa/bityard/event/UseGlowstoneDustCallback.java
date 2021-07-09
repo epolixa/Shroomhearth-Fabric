@@ -2,20 +2,28 @@ package com.epolixa.bityard.event;
 
 import com.epolixa.bityard.Bityard;
 import com.epolixa.bityard.BityardUtils;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.ArrayUtils;
+
+import static net.minecraft.block.Block.dropStack;
 
 public class UseGlowstoneDustCallback {
 
@@ -50,6 +58,23 @@ public class UseGlowstoneDustCallback {
                         return placeLightBlockWithDust(world, player, sidePos, lightLevels[0], handItemStack);
                     }
                 }
+            } else if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "dust_scraping_tools")).contains(handItemStack.getItem())) {
+                BlockPos pos = hitResult.getBlockPos();
+                BlockState state = world.getBlockState(pos);
+
+                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
+
+                if (actionResult.isAccepted()) {
+                    return ActionResult.FAIL;
+                } else if (!state.isAir()) {
+                    Direction side = hitResult.getSide();
+                    BlockPos sidePos = new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
+                    BlockState sideState = world.getBlockState(sidePos);
+
+                    if (sideState.getBlock() == Blocks.LIGHT) {
+                        return scrapeLightBlockWithTool(world, player, sidePos, hand, handItemStack);
+                    }
+                }
             }
 
         } catch (Exception e) {
@@ -71,12 +96,52 @@ public class UseGlowstoneDustCallback {
             }
             world.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(Properties.LEVEL_15, level).with(Properties.WATERLOGGED, waterlogged));
             world.playSound(null, pos, SoundEvents.BLOCK_POWDER_SNOW_PLACE, SoundCategory.BLOCKS, 1f, 2f);
+            ((ServerWorld)world).spawnParticles(
+                    new DustParticleEffect(new Vec3f(1.0f, 0.9f, 0.1f), 1.0f),
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
+                    4, 0.25f, 0.25f, 0.25f, 0.1f);
             if (!player.isCreative()) {
                 handItemStack.decrement(1);
             }
 
             BityardUtils.grantAdvancement(player, "bityard", "there_be_light", "impossible");
 
+            return ActionResult.SUCCESS;
+        } catch (Exception e) {
+            Bityard.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+        return ActionResult.PASS;
+    }
+
+    private static ActionResult scrapeLightBlockWithTool(World world, PlayerEntity player, BlockPos pos, Hand hand, ItemStack handItemStack) {
+        try {
+            BlockState blockState = world.getBlockState(pos);
+            int level = blockState.get(Properties.LEVEL_15);
+            boolean waterlogged = blockState.get(Properties.WATERLOGGED);
+            world.setBlockState(pos, waterlogged ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState());
+            world.playSound(null, pos, SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1f, 2f);
+            ((ServerWorld)world).spawnParticles(
+                    new DustParticleEffect(new Vec3f(1.0f, 0.9f, 0.1f), 1.0f),
+                    pos.getX() + 0.5,
+                    pos.getY() + 0.5,
+                    pos.getZ() + 0.5,
+                    4, 0.25f, 0.25f, 0.25f, 0.1f);
+            if (!player.isCreative()) {
+                int dust = 1;
+                for (int ll : lightLevels) {
+                    if (level <= ll) {
+                        dust += ArrayUtils.indexOf(lightLevels, ll);
+                        break;
+                    }
+                }
+                dropStack(world, pos, new ItemStack(Items.GLOWSTONE_DUST, dust));
+                handItemStack.damage(1, player, (p) -> {
+                    p.sendToolBreakStatus(hand);
+                });
+            }
             return ActionResult.SUCCESS;
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
