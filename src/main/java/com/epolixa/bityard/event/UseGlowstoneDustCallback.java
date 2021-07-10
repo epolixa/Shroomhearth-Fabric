@@ -31,52 +31,35 @@ public class UseGlowstoneDustCallback {
 
     public static ActionResult onUseGlowstoneDustCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
-            ItemStack handItemStack = player.getStackInHand(hand);
-            if (handItemStack.isOf(Items.GLOWSTONE_DUST)) {
-                BlockPos pos = hitResult.getBlockPos();
-                BlockState state = world.getBlockState(pos);
-
+            BlockPos pos = hitResult.getBlockPos();
+            BlockState state = world.getBlockState(pos);
+            if (!state.isAir()) {
                 ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
-
                 if (actionResult.isAccepted()) {
                     return ActionResult.FAIL;
-                } else if (!state.isAir()) {
+                } else {
                     Direction side = hitResult.getSide();
                     BlockPos sidePos = new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
                     BlockState sideState = world.getBlockState(sidePos);
-
-                    if (sideState.getBlock() == Blocks.LIGHT) {
-                        int level = sideState.get(Properties.LEVEL_15);
-                        if (level < lightLevels[lightLevels.length - 1]) {
-                            for (int ll : lightLevels) {
-                                if (level < ll) {
-                                    return placeLightBlockWithDust(world, player, sidePos, ll, handItemStack);
+                    ItemStack handItemStack = player.getStackInHand(hand);
+                    if (handItemStack.isOf(Items.GLOWSTONE_DUST)) {
+                        if (sideState.getBlock() == Blocks.LIGHT) {
+                            int level = sideState.get(Properties.LEVEL_15);
+                            if (level < lightLevels[lightLevels.length - 1]) {
+                                for (int ll : lightLevels) {
+                                    if (level < ll) {
+                                        return placeLightBlockWithDust(world, player, sidePos, ll, handItemStack);
+                                    }
                                 }
                             }
+                        } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
+                            return placeLightBlockWithDust(world, player, sidePos, lightLevels[0], handItemStack);
                         }
-                    } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
-                        return placeLightBlockWithDust(world, player, sidePos, lightLevels[0], handItemStack);
-                    }
-                }
-            } else if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "dust_scraping_tools")).contains(handItemStack.getItem())) {
-                BlockPos pos = hitResult.getBlockPos();
-                BlockState state = world.getBlockState(pos);
-
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
-
-                if (actionResult.isAccepted()) {
-                    return ActionResult.FAIL;
-                } else if (!state.isAir()) {
-                    Direction side = hitResult.getSide();
-                    BlockPos sidePos = new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
-                    BlockState sideState = world.getBlockState(sidePos);
-
-                    if (sideState.getBlock() == Blocks.LIGHT) {
+                    } else if (TagRegistry.item(new Identifier(Bityard.MOD_ID, "dust_scraping_tools")).contains(handItemStack.getItem()) && sideState.getBlock() == Blocks.LIGHT) {
                         return scrapeLightBlockWithTool(world, player, sidePos, hand, handItemStack);
                     }
                 }
             }
-
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
             e.printStackTrace();
@@ -105,9 +88,7 @@ public class UseGlowstoneDustCallback {
             if (!player.isCreative()) {
                 handItemStack.decrement(1);
             }
-
             BityardUtils.grantAdvancement(player, "bityard", "there_be_light", "impossible");
-
             return ActionResult.SUCCESS;
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
