@@ -10,6 +10,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.Style;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -81,8 +83,10 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     spawnGatewayBlockEntity.setExitPortalPos(new BlockPos(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
 
                     // make announcement
-                    String pColor = p.getDisplayName().getStyle().getColor().getName();
-                    s.getCommandManager().execute(s.getCommandSource(), "tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColor + "\",\"text\": \"" + p.getEntityName() + "\"}]");
+                    TextColor pColor = p.getDisplayName().getStyle().getColor();
+                    String pColorName = "white";
+                    if (pColor != null) { pColorName = p.getDisplayName().getStyle().getColor().getName(); }
+                    s.getCommandManager().execute(s.getCommandSource(), "tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getEntityName() + "\"}]");
 
                     // grant advancement to player
                     s.getCommandManager().execute(s.getCommandSource(), "advancement grant " + p.getEntityName() + " only community:community_coordinator");
