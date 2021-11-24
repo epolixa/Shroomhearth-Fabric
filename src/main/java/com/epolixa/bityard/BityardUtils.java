@@ -87,9 +87,14 @@ public class BityardUtils {
         try {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             Advancement advancement = player.getServer().getAdvancementLoader().get(new Identifier(namespace, id));
-            if (!serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
-                serverPlayer.getAdvancementTracker().grantCriterion(advancement, criterion);
+            if (advancement != null) {
+                if (!serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
+                    serverPlayer.getAdvancementTracker().grantCriterion(advancement, criterion);
+                }
+            } else {
+                Bityard.LOG.warn("Advancement \"" + namespace + ":" + id + "\" not identified, may be missing datapack");
             }
+
         } catch (Exception e) {
             Bityard.LOG.error("Caught error: " + e);
             e.printStackTrace();
