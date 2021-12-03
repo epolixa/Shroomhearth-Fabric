@@ -1,8 +1,8 @@
-# Bityard Fabric
+# Shroomhearth Fabric
 
 ## About
 
-This Fabric mod includes some custom functionality for the Bityard Minecraft server.
+This Fabric mod includes some custom functionality for Shroomhearth SMP.
 
 ## License
 
