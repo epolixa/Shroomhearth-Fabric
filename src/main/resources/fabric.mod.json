@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
-  "id": "bityard_fabric",
+  "id": "shroomhearth_fabric",
   "version": "${version}",
 
-  "name": "Bityard",
-  "description": "Custom server functionality for Bityard",
+  "name": "Shroomhearth",
+  "description": "Custom server functionality for Shroomhearth",
   "authors": [
     "epolixa",
     "kroteux"
   ],
   "contact": {
     "homepage": "https://discord.gg/yVrbVzh/",
-    "sources": "https://github.com/epolixa/Bityard"
+    "sources": "https://github.com/epolixa/Shroomhearth"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/bityard_fabric/icon.png",
+  "icon": "assets/shroomhearth_fabric/icon.png",
 
   "environment": "server",
   "entrypoints": {
     "server": [
-      "com.epolixa.bityard.Bityard"
+      "com.epolixa.shroomhearth.Shroomhearth"
     ]
   },
   "mixins": [
-    "bityard.mixins.json"
+    "shroomhearth.mixins.json"
   ],
 
   "depends": {
-    "fabricloader": ">=0.12.5",
-    "fabric": ">=0.43.0",
+    "fabricloader": ">=0.12.8",
+    "fabric": ">=0.44.0",
     "minecraft": "1.18.x"
   }
 }

@@ -1,0 +1,90 @@
+{
+  "pools": [
+    {
+      "rolls": 1.0,
+      "entries": [
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/abandoned_mineshaft"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:bastion"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/buried_treasure"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/desert_pyramid"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/end_city_treasure"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/igloo_chest"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:jungle"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/nether_bridge"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/pillager_outpost"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/ruined_portal"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:shipwreck"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/simple_dungeon"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:stronghold"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:underwater_ruin"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:chests/woodland_mansion"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:village"
+        },
+
+        {
+          "type": "loot_table",
+          "name": "minecraft:gameplay/cat_morning_gift"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:gameplay/fishing"
+        },
+        {
+          "type": "loot_table",
+          "name": "shroomhearth_fabric:hero_of_the_village"
+        },
+        {
+          "type": "loot_table",
+          "name": "minecraft:gameplay/piglin_bartering"
+        }
+      ]
+    }
+  ]
+}
