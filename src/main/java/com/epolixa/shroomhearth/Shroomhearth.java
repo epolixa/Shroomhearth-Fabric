@@ -17,7 +17,6 @@ public class Shroomhearth implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
         LOG = LogManager.getLogger();
-        Shroomhearth.LOG.info("Initializing...");
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             CONFIG = new Config();
@@ -34,6 +33,6 @@ public class Shroomhearth implements DedicatedServerModInitializer {
         UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
         UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
 
-        Shroomhearth.LOG.info("Initialized");
+        Shroomhearth.LOG.info("Initialized Shroomhearth");
     }
 }
