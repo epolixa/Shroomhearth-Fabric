@@ -2,7 +2,6 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
@@ -11,8 +10,9 @@ import net.minecraft.item.*;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
@@ -27,12 +27,12 @@ import java.util.*;
 public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
     //private final Tag<Item> COMMON   = TagRegistry.item(new Identifier(Shroomhearth.MOD_ID, "common"));
-    private final Tag<Item> UNCOMMON   = TagRegistry.item(new Identifier(Shroomhearth.MOD_ID, "uncommon")); // any uncategorized considered "common"
-    private final Tag<Item> RARE   = TagRegistry.item(new Identifier(Shroomhearth.MOD_ID, "rare"));
-    private final Tag<Item> EPIC   = TagRegistry.item(new Identifier(Shroomhearth.MOD_ID, "epic"));
-    private final Tag<Item> OMINOUS   = TagRegistry.item(new Identifier(Shroomhearth.MOD_ID, "ominous"));
+    private static final TagKey<Item> UNCOMMON = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "uncommon")); // any uncategorized considered "common"
+    private static final TagKey<Item> RARE     = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "rare"));
+    private static final TagKey<Item> EPIC     = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "epic"));
+    private static final TagKey<Item> OMINOUS  = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "ominous"));
 
-    private final LootTable TRADER = this.getServer().getLootManager().getTable(new Identifier(Shroomhearth.MOD_ID, "trader"));
+    private final LootTable TRADER = Objects.requireNonNull(this.getServer()).getLootManager().getTable(new Identifier(Shroomhearth.MOD_ID, "trader"));
 
     public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, World world) {
         super(entityType, world);
@@ -45,8 +45,8 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             TradeOfferList tradeOfferList = this.getOffers();
 
             // add trades for random items
-            List<Item> pickedItems = new ArrayList<Item>(); // items already added to offers
-            tradeOfferList.forEach(tradeOffer -> {pickedItems.add(tradeOffer.getSellItem().getItem());}); // include default wandering trader stuff in rolls
+            List<Item> pickedItems = new ArrayList<>(); // items already added to offers
+            tradeOfferList.forEach(tradeOffer -> pickedItems.add(tradeOffer.getSellItem().getItem())); // include default wandering trader stuff in rolls
 
             // setup lootcontext
             LootContext.Builder builder = this.getLootContextBuilder(false, DamageSource.GENERIC);
@@ -93,13 +93,13 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             lootStack.setCount(1);
 
             // Adjust item count, sell price, offer amount depending on if item is cheap, fair, or expensive
-            if (OMINOUS.contains(item)) { buyStack.setCount(ShroomhearthUtils.inRange(r, Shroomhearth.CONFIG.getOminousMinPrice(), Shroomhearth.CONFIG.getOminousMaxPrice())); }
-            else if (EPIC.contains(item)) { buyStack.setCount(ShroomhearthUtils.inRange(r, Shroomhearth.CONFIG.getEpicMinPrice(), Shroomhearth.CONFIG.getEpicMaxPrice())); }
-            else if (RARE.contains(item)) {
+            if (lootStack.isIn(OMINOUS)) { buyStack.setCount(ShroomhearthUtils.inRange(r, Shroomhearth.CONFIG.getOminousMinPrice(), Shroomhearth.CONFIG.getOminousMaxPrice())); }
+            else if (lootStack.isIn(EPIC)) { buyStack.setCount(ShroomhearthUtils.inRange(r, Shroomhearth.CONFIG.getEpicMinPrice(), Shroomhearth.CONFIG.getEpicMaxPrice())); }
+            else if (lootStack.isIn(RARE)) {
                 buyStack.setCount(ShroomhearthUtils.inRange(r, Shroomhearth.CONFIG.getRareMinPrice(), Shroomhearth.CONFIG.getRareMaxPrice()));
                 uses += Shroomhearth.CONFIG.getRareUsesBonus();
             }
-            else if (UNCOMMON.contains(item)) {
+            else if (lootStack.isIn(UNCOMMON)) {
                 buyStack.setCount(ShroomhearthUtils.inRange(r, Shroomhearth.CONFIG.getUncommonMinPrice(), Shroomhearth.CONFIG.getUncommonMaxPrice()));
                 lootStack.setCount(ShroomhearthUtils.inRange(r, 1, Math.min(item.getMaxCount(), 2)));
                 uses += Shroomhearth.CONFIG.getUncommonUsesBonus();
@@ -122,8 +122,6 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
     private void logOffers(TradeOfferList tradeOfferList) {
         Shroomhearth.LOG.info("Wandering Trader offers:");
-        tradeOfferList.forEach(tradeOffer -> {
-            Shroomhearth.LOG.info("- " + tradeOffer.getMaxUses() + " uses of " + tradeOffer.getSellItem().getCount() + " " + tradeOffer.getSellItem().getTranslationKey() + " for " + tradeOffer.getOriginalFirstBuyItem().getCount() + " " + tradeOffer.getOriginalFirstBuyItem().getTranslationKey());
-        });
+        tradeOfferList.forEach(tradeOffer -> Shroomhearth.LOG.info("- " + tradeOffer.getMaxUses() + " uses of " + tradeOffer.getSellItem().getCount() + " " + tradeOffer.getSellItem().getTranslationKey() + " for " + tradeOffer.getOriginalFirstBuyItem().getCount() + " " + tradeOffer.getOriginalFirstBuyItem().getTranslationKey()));
     }
 }

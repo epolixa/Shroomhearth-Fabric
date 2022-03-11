@@ -2,10 +2,10 @@ package com.epolixa.shroomhearth.event;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.DustParticleEffect;
@@ -13,6 +13,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -20,6 +21,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -28,6 +30,7 @@ import static net.minecraft.block.Block.dropStack;
 public class UseGlowstoneDustCallback {
 
     private static final int[] lightLevels = {6, 9, 12, 15};
+    private static final TagKey<Item> DUST_SCRAPING_TOOLS = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "dust_scraping_tools"));
 
     public static ActionResult onUseGlowstoneDustCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
@@ -55,7 +58,7 @@ public class UseGlowstoneDustCallback {
                         } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
                             return placeLightBlockWithDust(world, player, sidePos, lightLevels[0], handItemStack);
                         }
-                    } else if (TagRegistry.item(new Identifier(Shroomhearth.MOD_ID, "dust_scraping_tools")).contains(handItemStack.getItem()) && sideState.getBlock() == Blocks.LIGHT) {
+                    } else if (handItemStack.isIn(DUST_SCRAPING_TOOLS) && sideState.getBlock() == Blocks.LIGHT) {
                         return scrapeLightBlockWithTool(world, player, sidePos, hand, handItemStack);
                     }
                 }
@@ -119,9 +122,7 @@ public class UseGlowstoneDustCallback {
                     }
                 }
                 dropStack(world, pos, new ItemStack(Items.GLOWSTONE_DUST, dust));
-                handItemStack.damage(1, player, (p) -> {
-                    p.sendToolBreakStatus(hand);
-                });
+                handItemStack.damage(1, player, p -> p.sendToolBreakStatus(hand));
             }
             return ActionResult.SUCCESS;
         } catch (Exception e) {
