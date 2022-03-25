@@ -3,10 +3,7 @@ package com.epolixa.shroomhearth.mixin;
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BeaconBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.*;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -68,6 +65,13 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                             BlockEntity beaconSign = world.getBlockEntity(pos.add(offset));
                             if (beaconSign instanceof SignBlockEntity) {signs.add((SignBlockEntity) beaconSign);}
                         }
+                        // check for banner above beacon
+                        boolean showIllagerAlt = false;
+                        BlockEntity banner = world.getBlockEntity(pos.add(new Vec3i(0,1,0)));
+                        if (banner instanceof BannerBlockEntity) {
+                            // check if banner is ominous
+                            showIllagerAlt = isOminous((BannerBlockEntity) banner);
+                        }
                         if (!signs.isEmpty()) {
                             Random random = world.getRandom();
                             SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
@@ -89,7 +93,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
                             if (sb.toString().length() > 0) {
                                 // send a title message to the player
-                                sendSubtitleToPlayer("{\"text\":\"" + sb.toString() + "\",\"color\":\"" + ShroomhearthUtils.getDyeHex(color) + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}", player);
+                                sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":\""+signAccessor.isGlowingText()+"\""+(showIllagerAlt?",\"font\":\"illageralt\"}":"}"), player);
 
                                 // grant advancement to player
                                 ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "liminal_message", "impossible");
@@ -117,6 +121,17 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
+    }
+
+    private static boolean isOminous(BannerBlockEntity banner) {
+        boolean ret = false;
+        try {
+            ret = banner.getPatterns().size() >= 8;
+        } catch (Exception e) {
+            Shroomhearth.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+        return ret;
     }
 
 }
