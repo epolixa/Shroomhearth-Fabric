@@ -1,6 +1,7 @@
 package com.epolixa.shroomhearth.event;
 
 import com.epolixa.shroomhearth.Shroomhearth;
+import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.Attachment;
 import net.minecraft.block.enums.ChestType;
@@ -40,7 +41,7 @@ public class UseBlockOrientationToolCallback {
                         if (state.isIn(NON_ORIENTABLE)) {
                             return ActionResult.PASS;
                         } else if (state.getProperties().contains(Properties.FACING)) {
-                            return cycleState(world, state, pos, Properties.FACING);
+                            return cycleState(player, world, state, pos, Properties.FACING);
                         } else if (state.getProperties().contains(Properties.HORIZONTAL_FACING)) {
                             if (state.getBlock() instanceof AbstractChestBlock && state.get(Properties.CHEST_TYPE) != ChestType.SINGLE) { // special case to fix chests
                                 Direction direction = state.get(Properties.HORIZONTAL_FACING);
@@ -50,7 +51,7 @@ public class UseBlockOrientationToolCallback {
                                 world.setBlockState(neighborPos, neighborState.with(Properties.CHEST_TYPE, ChestType.SINGLE));
                                 state = state.with(Properties.CHEST_TYPE, ChestType.SINGLE);
                             } else if (state.getBlock() instanceof TrapdoorBlock && !state.get(Properties.OPEN)) { // special case to toggle trapdoors open first
-                                return cycleState(world, state, pos, Properties.OPEN);
+                                return cycleState(player, world, state, pos, Properties.OPEN);
                             } else if (state.getBlock() instanceof BigDripleafBlock && world.getBlockState(pos.down()).getBlock() instanceof BigDripleafStemBlock) { // skip big dripleaf if it is tall
                                 return ActionResult.PASS;
                             } else if (state.getBlock() instanceof BellBlock && (state.get(Properties.ATTACHMENT) == Attachment.SINGLE_WALL || state.get(Properties.ATTACHMENT) == Attachment.DOUBLE_WALL)) { // skip bell if wall attached
@@ -58,15 +59,15 @@ public class UseBlockOrientationToolCallback {
                             } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof AbstractButtonBlock) && state.get(Properties.WALL_MOUNT_LOCATION) == WallMountLocation.WALL) { // skip wall levers and buttons
                                 return ActionResult.PASS;
                             }
-                            return cycleState(world, state, pos, Properties.HORIZONTAL_FACING);
+                            return cycleState(player, world, state, pos, Properties.HORIZONTAL_FACING);
                         } else if (state.getProperties().contains(Properties.AXIS)) {
-                            return cycleState(world, state, pos, Properties.AXIS);
+                            return cycleState(player, world, state, pos, Properties.AXIS);
                         } else if (state.getProperties().contains(Properties.HOPPER_FACING)) {
-                            return cycleState(world, state, pos, Properties.HOPPER_FACING);
+                            return cycleState(player, world, state, pos, Properties.HOPPER_FACING);
                         } else if (state.getProperties().contains(Properties.ROTATION)) {
-                            return cycleState(world, state, pos, Properties.ROTATION);
+                            return cycleState(player, world, state, pos, Properties.ROTATION);
                         } else if (state.getProperties().contains(Properties.BLOCK_HALF)) {
-                            return cycleState(world, state, pos, Properties.BLOCK_HALF);
+                            return cycleState(player, world, state, pos, Properties.BLOCK_HALF);
                         }
                     }
                 }
@@ -79,10 +80,11 @@ public class UseBlockOrientationToolCallback {
         return ActionResult.PASS;
     }
 
-    public static ActionResult cycleState(World world, BlockState state, BlockPos pos, Property property) {
+    public static ActionResult cycleState(PlayerEntity player, World world, BlockState state, BlockPos pos, Property property) {
         world.setBlockState(pos, state.cycle(property), Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
+        ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "orient_block", "impossible");
         return ActionResult.SUCCESS;
     }
 }

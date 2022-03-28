@@ -1,6 +1,7 @@
 package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
+import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DragonEggBlock;
 import net.minecraft.block.EndGatewayBlock;
@@ -89,7 +90,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     s.getCommandManager().execute(s.getCommandSource(), "tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getEntityName() + "\"}]");
 
                     // grant advancement to player
-                    s.getCommandManager().execute(s.getCommandSource(), "advancement grant " + p.getEntityName() + " only community:community_coordinator");
+                    ShroomhearthUtils.grantAdvancement(p, "community", "community_coordinator", "relocated_gateway");
 
                     this.remove(RemovalReason.DISCARDED);
                 }
