@@ -9,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.TagKey;
@@ -19,7 +18,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Position;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -32,7 +30,6 @@ public class UseBlockOrientationToolCallback {
         try {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
-            Shroomhearth.LOG.info("[onUseBlockOrientationToolCallback] hit " + state.getBlock().getTranslationKey());
             if (!state.isAir()) {
                 ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
                 if (actionResult.isAccepted()) {
@@ -40,7 +37,6 @@ public class UseBlockOrientationToolCallback {
                 } else {
                     ItemStack handItemStack = player.getStackInHand(hand);
                     if (handItemStack.isIn(BLOCK_ORIENTING_TOOLS)) {
-                        Shroomhearth.LOG.info("[onUseBlockOrientationToolCallback] using compass");
                         if (state.isIn(NON_ORIENTABLE)) {
                             return ActionResult.PASS;
                         } else if (state.getProperties().contains(Properties.FACING)) {
@@ -84,7 +80,6 @@ public class UseBlockOrientationToolCallback {
     }
 
     public static ActionResult cycleState(World world, BlockState state, BlockPos pos, Property property) {
-        Shroomhearth.LOG.info("[onUseBlockOrientationToolCallback] cycle " + property.getName());
         world.setBlockState(pos, state.cycle(property), Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
