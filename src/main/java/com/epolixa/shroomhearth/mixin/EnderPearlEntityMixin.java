@@ -32,7 +32,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     @Inject(method = "onCollision", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            if (!this.world.isClient && !this.isRemoved() && this.world.getDimension().isNatural()) {
+            if (!this.world.isClient && !this.isRemoved() && this.world.getDimension().natural()) {
 
                 BlockPos hitPos = new BlockPos(hitResult.getPos());
                 BlockPos dragonEggPos = null;

@@ -16,6 +16,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 
 @Mixin(BeaconBlockEntity.class)
@@ -116,7 +116,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             Text subtitleText = Text.Serializer.fromJson(subtitle);
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, subtitleText, serverPlayer, 0)));
             constructor = TitleS2CPacket::new;
-            serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, new LiteralText(""), serverPlayer, 0)));
+            serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, Text.of(""), serverPlayer, 0)));
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();

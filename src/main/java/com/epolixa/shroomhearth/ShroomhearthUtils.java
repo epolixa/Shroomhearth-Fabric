@@ -5,8 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class ShroomhearthUtils {
 
