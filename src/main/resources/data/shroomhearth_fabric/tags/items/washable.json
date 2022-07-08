@@ -20,6 +20,7 @@
     "#shroomhearth_fabric:washable_terracotta",
     "#shroomhearth_fabric:washable_glass",
     "#shroomhearth_fabric:washable_glass_panes",
-    "#shroomhearth_fabric:washable_candles"
+    "#shroomhearth_fabric:washable_candles",
+    "#shroomhearth_fabric:washable_dirt"
   ]
 }
