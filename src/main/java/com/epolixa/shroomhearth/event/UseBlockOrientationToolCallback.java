@@ -43,7 +43,7 @@ public class UseBlockOrientationToolCallback {
                         } else if (state.getProperties().contains(Properties.FACING)) {
                             return cycleState(player, world, state, pos, Properties.FACING);
                         } else if (state.getProperties().contains(Properties.HORIZONTAL_FACING)) {
-                            if (state.getBlock() instanceof AbstractChestBlock && state.get(Properties.CHEST_TYPE) != ChestType.SINGLE) { // special case to fix chests
+                            if (state.getBlock() instanceof AbstractChestBlock && state.getProperties().contains(Properties.CHEST_TYPE) && state.get(Properties.CHEST_TYPE) != ChestType.SINGLE) { // special case to fix double chests
                                 Direction direction = state.get(Properties.HORIZONTAL_FACING);
                                 direction = state.get(Properties.CHEST_TYPE) == ChestType.LEFT ? direction.rotateYClockwise() : direction.rotateYCounterclockwise();
                                 BlockPos neighborPos = pos.offset(direction);
