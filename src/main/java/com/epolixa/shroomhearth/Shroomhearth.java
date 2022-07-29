@@ -1,8 +1,6 @@
 package com.epolixa.shroomhearth;
 
-import com.epolixa.shroomhearth.event.UseBlockOrientationToolCallback;
-import com.epolixa.shroomhearth.event.UseCauldronCallback;
-import com.epolixa.shroomhearth.event.UseGlowstoneDustCallback;
+import com.epolixa.shroomhearth.event.*;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -34,6 +32,7 @@ public class Shroomhearth implements DedicatedServerModInitializer {
         UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
         UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
         UseBlockCallback.EVENT.register(UseBlockOrientationToolCallback::onUseBlockOrientationToolCallback);
+        UseBlockCallback.EVENT.register(UseEchoShardCallback::onUseEchoShardCallback);
 
         Shroomhearth.LOG.info("Initialized Shroomhearth");
     }

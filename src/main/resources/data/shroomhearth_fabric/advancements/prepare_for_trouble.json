@@ -1,0 +1,19 @@
+{
+  "parent": "wandering_trader:exotic_wares",
+  "display": {
+    "icon": {
+      "item": "minecraft:sculk_shrieker"
+    },
+    "title": "Prepare for Trouble",
+    "description": "Use an Echo Shard to prime a Sculk Shrieker",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
