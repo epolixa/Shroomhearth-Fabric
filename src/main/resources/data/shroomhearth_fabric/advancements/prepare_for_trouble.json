@@ -1,5 +1,5 @@
 {
-  "parent": "wandering_trader:exotic_wares",
+  "parent": "shroomhearth:wash_block",
   "display": {
     "icon": {
       "item": "minecraft:sculk_shrieker"
