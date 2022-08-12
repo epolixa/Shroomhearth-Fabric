@@ -11,7 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Style;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -87,7 +86,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     TextColor pColor = p.getDisplayName().getStyle().getColor();
                     String pColorName = "white";
                     if (pColor != null) { pColorName = p.getDisplayName().getStyle().getColor().getName(); }
-                    s.getCommandManager().execute(s.getCommandSource(), "tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getEntityName() + "\"}]");
+                    s.getCommandManager().getDispatcher().execute("tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getEntityName() + "\"}]", s.getCommandSource());
 
                     // grant advancement to player
                     ShroomhearthUtils.grantAdvancement(p, "community", "community_coordinator", "relocated_gateway");
