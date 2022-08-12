@@ -2,7 +2,6 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import com.mojang.brigadier.ParseResults;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DragonEggBlock;
 import net.minecraft.block.EndGatewayBlock;
@@ -12,8 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Style;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
