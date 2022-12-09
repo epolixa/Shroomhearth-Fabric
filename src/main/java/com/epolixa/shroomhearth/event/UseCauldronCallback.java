@@ -83,7 +83,7 @@ public class UseCauldronCallback {
                         world.playSound(null, pos, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, SoundCategory.BLOCKS, 1f, 1f);
                         player.setStackInHand(hand, new ItemStack(item, itemStack.getCount()));
 
-                        ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "wash_block", "impossible");
+                        ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "wash_block", "impossible");
 
                         return ActionResult.SUCCESS;
                     }

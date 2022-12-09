@@ -84,7 +84,7 @@ public class UseBlockOrientationToolCallback {
         world.setBlockState(pos, state.cycle(property), Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
-        ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "orient_block", "impossible");
+        ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
         return ActionResult.SUCCESS;
     }
 }

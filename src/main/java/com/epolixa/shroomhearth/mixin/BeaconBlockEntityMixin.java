@@ -96,7 +96,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                                 sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":\""+signAccessor.isGlowingText()+"\""+(showIllagerAlt?",\"font\":\"illageralt\"}":"}"), player);
 
                                 // grant advancement to player
-                                ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "liminal_message", "impossible");
+                                ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "liminal_message", "impossible");
                             }
                         }
                     }

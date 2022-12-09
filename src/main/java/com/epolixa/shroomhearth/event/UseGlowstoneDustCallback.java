@@ -91,7 +91,7 @@ public class UseGlowstoneDustCallback {
             if (!player.isCreative()) {
                 handItemStack.decrement(1);
             }
-            ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "there_be_light", "impossible");
+            ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "there_be_light", "impossible");
             return ActionResult.SUCCESS;
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
