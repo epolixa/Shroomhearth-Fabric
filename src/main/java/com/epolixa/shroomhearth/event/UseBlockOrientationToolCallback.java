@@ -5,6 +5,7 @@ import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.Attachment;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.block.enums.RailShape;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -21,6 +22,10 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UseBlockOrientationToolCallback {
 
@@ -60,6 +65,10 @@ public class UseBlockOrientationToolCallback {
                                 return ActionResult.PASS;
                             }
                             return cycleState(player, world, state, pos, Properties.HORIZONTAL_FACING);
+                        } else if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
+                            return cycleState(player, world, state, pos, Properties.RAIL_SHAPE);
+                        } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
+                            return cycleState(player, world, state, pos, Properties.STRAIGHT_RAIL_SHAPE);
                         } else if (state.getProperties().contains(Properties.AXIS)) {
                             return cycleState(player, world, state, pos, Properties.AXIS);
                         } else if (state.getProperties().contains(Properties.HOPPER_FACING)) {
@@ -81,7 +90,17 @@ public class UseBlockOrientationToolCallback {
     }
 
     public static ActionResult cycleState(PlayerEntity player, World world, BlockState state, BlockPos pos, Property property) {
-        world.setBlockState(pos, state.cycle(property), Block.NOTIFY_LISTENERS);
+        BlockState nextState = state.cycle(property);
+        if (property == Properties.RAIL_SHAPE) { // special case for rails
+            while (nextState.get(Properties.RAIL_SHAPE).isAscending()) {
+                nextState = nextState.cycle(property);
+            }
+        } else if (property == Properties.STRAIGHT_RAIL_SHAPE) {
+            while (nextState.get(Properties.STRAIGHT_RAIL_SHAPE).isAscending()) {
+                nextState = nextState.cycle(property);
+            }
+        }
+        world.setBlockState(pos, nextState, Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
