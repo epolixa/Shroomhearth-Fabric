@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -30,7 +30,7 @@ import static net.minecraft.block.Block.dropStack;
 public class UseGlowstoneDustCallback {
 
     private static final int[] lightLevels = {6, 9, 12, 15};
-    private static final TagKey<Item> DUST_SCRAPING_TOOLS = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "dust_scraping_tools"));
+    private static final TagKey<Item> DUST_SCRAPING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "dust_scraping_tools"));
 
     public static ActionResult onUseGlowstoneDustCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
@@ -83,7 +83,7 @@ public class UseGlowstoneDustCallback {
             world.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(Properties.LEVEL_15, level).with(Properties.WATERLOGGED, waterlogged));
             world.playSound(null, pos, SoundEvents.BLOCK_POWDER_SNOW_PLACE, SoundCategory.BLOCKS, 1f, 2f);
             ((ServerWorld)world).spawnParticles(
-                    new DustParticleEffect(new Vec3f(1.0f, 0.9f, 0.1f), 1.0f),
+                    new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,
@@ -108,7 +108,7 @@ public class UseGlowstoneDustCallback {
             world.setBlockState(pos, waterlogged ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState());
             world.playSound(null, pos, SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1f, 2f);
             ((ServerWorld)world).spawnParticles(
-                    new DustParticleEffect(new Vec3f(1.0f, 0.9f, 0.1f), 1.0f),
+                    new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,

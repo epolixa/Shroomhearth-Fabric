@@ -9,7 +9,7 @@ import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
@@ -24,8 +24,8 @@ import net.minecraft.world.World;
 
 public class UseBlockOrientationToolCallback {
 
-    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
-    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(Registry.BLOCK_KEY, new Identifier(Shroomhearth.MOD_ID, "non_orientable"));
+    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
+    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier(Shroomhearth.MOD_ID, "non_orientable"));
 
     public static ActionResult onUseBlockOrientationToolCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {

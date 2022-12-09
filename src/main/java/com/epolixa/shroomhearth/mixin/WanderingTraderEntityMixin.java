@@ -7,7 +7,9 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.*;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
@@ -24,8 +26,8 @@ import java.util.*;
 @Mixin(WanderingTraderEntity.class)
 public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
-    private static final TagKey<Item> BLACKLIST = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "trader_blacklist"));
-    private static final TagKey<Item> POTIONS = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "potions"));
+    private static final TagKey<Item> BLACKLIST = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "trader_blacklist"));
+    private static final TagKey<Item> POTIONS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "potions"));
 
     public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, World world) {
         super(entityType, world);
@@ -46,7 +48,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             // add random items
             int num_offers = tradeOfferList.size();
             for (int i = 0; i < num_offers; i++) {
-                Item rItem = Registry.ITEM.get(r.nextInt(Registry.ITEM.size()));
+                Item rItem = Registries.ITEM.get(r.nextInt(Registries.ITEM.size()));
                 ItemStack rItemStack = rItem.getDefaultStack();
 
                 // check if item should be added to offers
@@ -79,7 +81,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             // special case for potions
             if (itemStack.isIn(POTIONS)) {
-                PotionUtil.setPotion(itemStack, Registry.POTION.get(r.nextInt(Registry.POTION.size())));
+                PotionUtil.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
             }
 
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
