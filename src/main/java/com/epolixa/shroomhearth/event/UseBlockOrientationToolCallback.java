@@ -5,7 +5,6 @@ import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.Attachment;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.block.enums.RailShape;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -21,11 +20,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class UseBlockOrientationToolCallback {
 
@@ -91,19 +87,65 @@ public class UseBlockOrientationToolCallback {
 
     public static ActionResult cycleState(PlayerEntity player, World world, BlockState state, BlockPos pos, Property property) {
         BlockState nextState = state.cycle(property);
-        if (property == Properties.RAIL_SHAPE) { // special case for rails
-            while (nextState.get(Properties.RAIL_SHAPE).isAscending()) {
-                nextState = nextState.cycle(property);
-            }
-        } else if (property == Properties.STRAIGHT_RAIL_SHAPE) {
-            while (nextState.get(Properties.STRAIGHT_RAIL_SHAPE).isAscending()) {
-                nextState = nextState.cycle(property);
-            }
-        }
+
+        // special case for rails
+        if (property == Properties.RAIL_SHAPE || property == Properties.STRAIGHT_RAIL_SHAPE) nextState = fixRailState(world, nextState, pos, property);
+
         world.setBlockState(pos, nextState, Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
         return ActionResult.SUCCESS;
+    }
+
+    public static BlockState fixRailState(BlockView world, BlockState state, BlockPos pos, Property property) {
+        boolean canAscend = false;
+        BlockPos adjPos = null;
+        if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
+            while (state.get(Properties.RAIL_SHAPE).isAscending()) {
+                switch(state.get(Properties.RAIL_SHAPE)) {
+                    case ASCENDING_EAST:
+                        adjPos = pos.east();
+                        break;
+                    case ASCENDING_NORTH:
+                        adjPos = pos.north();
+                        break;
+                    case ASCENDING_SOUTH:
+                        adjPos = pos.south();
+                        break;
+                    case ASCENDING_WEST:
+                        adjPos = pos.west();
+                        break;
+                    default:
+                        break;
+                }
+                canAscend = Block.hasTopRim(world, adjPos);
+                if (canAscend) break;
+                else state = state.cycle(property);
+            }
+        } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
+            while (state.get(Properties.STRAIGHT_RAIL_SHAPE).isAscending()) {
+                switch(state.get(Properties.STRAIGHT_RAIL_SHAPE)) {
+                    case ASCENDING_EAST:
+                        adjPos = pos.east();
+                        break;
+                    case ASCENDING_NORTH:
+                        adjPos = pos.north();
+                        break;
+                    case ASCENDING_SOUTH:
+                        adjPos = pos.south();
+                        break;
+                    case ASCENDING_WEST:
+                        adjPos = pos.west();
+                        break;
+                    default:
+                        break;
+                }
+                canAscend = Block.hasTopRim(world, adjPos);
+                if (canAscend) break;
+                else state = state.cycle(property);
+            }
+        }
+        return state;
     }
 }
