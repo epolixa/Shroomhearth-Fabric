@@ -18,28 +18,12 @@ public class ItemFrameInteractionCallback {
     public static ActionResult onUseItemFrameCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         try {
             if (entity instanceof ItemFrameEntity) {
-                System.out.println("Interacted with item frame");
-
                 ItemFrameEntity itemFrame = (ItemFrameEntity) entity;
-
                 ItemStack handItemStack = player.getStackInHand(hand);
-                System.out.println("item frame held item stack: " + itemFrame.getHeldItemStack().toString());
-
                 if (handItemStack.isOf(Items.SHEARS) && !itemFrame.getHeldItemStack().isOf(Items.AIR) && !itemFrame.isInvisible()) {
-                    System.out.println("Interacted with item frame using Shears");
-
                     itemFrame.setInvisible(true);
-                    System.out.println("Set item frame invisible");
-
                     world.playSound(null, itemFrame.getBlockPos(), SoundEvents.BLOCK_BEEHIVE_SHEAR, SoundCategory.BLOCKS, 1f, 1.2f);
-
-                    if (!player.isCreative()) {
-                        System.out.println("Player is not Creative");
-
-                        handItemStack.damage(1, player, p -> p.sendToolBreakStatus(hand));
-                        System.out.println("Damaged shears");
-                    }
-
+                    if (!player.isCreative()) handItemStack.damage(1, player, p -> p.sendToolBreakStatus(hand));
                     return ActionResult.SUCCESS;
                 }
             }
@@ -54,14 +38,8 @@ public class ItemFrameInteractionCallback {
     public static ActionResult onAttackItemFrameCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         try {
             if (entity instanceof ItemFrameEntity) {
-                System.out.println("Attacked item frame");
-
                 ItemFrameEntity itemFrame = (ItemFrameEntity) entity;
-
-                if (itemFrame.isInvisible()) {
-                    itemFrame.setInvisible(false);
-                    System.out.println("Set item frame visible");
-                }
+                if (itemFrame.isInvisible()) itemFrame.setInvisible(false);
             }
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
