@@ -37,6 +37,7 @@ public class Shroomhearth implements DedicatedServerModInitializer {
         UseBlockCallback.EVENT.register(UseEchoShardCallback::onUseEchoShardCallback);
         UseEntityCallback.EVENT.register(ItemFrameInteractionCallback::onUseItemFrameCallback);
         AttackEntityCallback.EVENT.register(ItemFrameInteractionCallback::onAttackItemFrameCallback);
+        UseEntityCallback.EVENT.register(UseArmorStandCallback::onUseArmorStandCallback);
 
         Shroomhearth.LOG.info("Initialized Shroomhearth");
     }
