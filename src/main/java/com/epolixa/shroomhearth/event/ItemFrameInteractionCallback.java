@@ -1,6 +1,7 @@
 package com.epolixa.shroomhearth.event;
 
 import com.epolixa.shroomhearth.Shroomhearth;
+import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,7 @@ public class ItemFrameInteractionCallback {
                     itemFrame.setInvisible(true);
                     world.playSound(null, itemFrame.getBlockPos(), SoundEvents.BLOCK_BEEHIVE_SHEAR, SoundCategory.BLOCKS, 1f, 1.2f);
                     if (!player.isCreative()) handItemStack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+                    ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "frameless", "impossible");
                     return ActionResult.SUCCESS;
                 }
             }
