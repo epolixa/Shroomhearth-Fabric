@@ -87,7 +87,8 @@ public class UseGlowstoneDustCallback {
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,
-                    4, 0.25f, 0.25f, 0.25f, 0.1f);
+                    (level * 4) / 15,
+                    0.25f, 0.25f, 0.25f, 0.1f);
             if (!player.isCreative()) {
                 handItemStack.decrement(1);
             }
