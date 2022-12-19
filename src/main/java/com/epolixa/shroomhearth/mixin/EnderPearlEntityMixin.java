@@ -89,7 +89,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     s.getCommandManager().getDispatcher().execute("tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getEntityName() + "\"}]", s.getCommandSource());
 
                     // grant advancement to player
-                    ShroomhearthUtils.grantAdvancement(p, "community", "community_coordinator", "relocated_gateway");
+                    ShroomhearthUtils.grantAdvancement(p, "shroomhearth_fabric", "community_coordinator", "relocated_gateway");
 
                     this.remove(RemovalReason.DISCARDED);
                 }

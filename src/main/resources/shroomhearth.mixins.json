@@ -12,6 +12,8 @@
     "SignBlockEntityAccessor",
     "BeaconBlockEntityMixin",
     "WanderingTraderEntityMixin",
-    "EnderPearlEntityMixin"
+    "EnderPearlEntityMixin",
+    "ArmorStandEntityAccessor",
+    "ServerPlayerEntityMixin"
   ]
 }

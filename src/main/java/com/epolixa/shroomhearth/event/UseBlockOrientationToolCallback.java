@@ -9,23 +9,24 @@ import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
-import net.minecraft.tag.TagKey;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class UseBlockOrientationToolCallback {
 
-    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(Registry.ITEM_KEY, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
-    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(Registry.BLOCK_KEY, new Identifier(Shroomhearth.MOD_ID, "non_orientable"));
+    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
+    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier(Shroomhearth.MOD_ID, "non_orientable"));
 
     public static ActionResult onUseBlockOrientationToolCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
@@ -56,10 +57,14 @@ public class UseBlockOrientationToolCallback {
                                 return ActionResult.PASS;
                             } else if (state.getBlock() instanceof BellBlock && (state.get(Properties.ATTACHMENT) == Attachment.SINGLE_WALL || state.get(Properties.ATTACHMENT) == Attachment.DOUBLE_WALL)) { // skip bell if wall attached
                                 return ActionResult.PASS;
-                            } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof AbstractButtonBlock) && state.get(Properties.WALL_MOUNT_LOCATION) == WallMountLocation.WALL) { // skip wall levers and buttons
+                            } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof ButtonBlock) && state.get(Properties.WALL_MOUNT_LOCATION) == WallMountLocation.WALL) { // skip wall levers and buttons
                                 return ActionResult.PASS;
                             }
                             return cycleState(player, world, state, pos, Properties.HORIZONTAL_FACING);
+                        } else if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
+                            return cycleState(player, world, state, pos, Properties.RAIL_SHAPE);
+                        } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
+                            return cycleState(player, world, state, pos, Properties.STRAIGHT_RAIL_SHAPE);
                         } else if (state.getProperties().contains(Properties.AXIS)) {
                             return cycleState(player, world, state, pos, Properties.AXIS);
                         } else if (state.getProperties().contains(Properties.HOPPER_FACING)) {
@@ -81,10 +86,66 @@ public class UseBlockOrientationToolCallback {
     }
 
     public static ActionResult cycleState(PlayerEntity player, World world, BlockState state, BlockPos pos, Property property) {
-        world.setBlockState(pos, state.cycle(property), Block.NOTIFY_LISTENERS);
+        BlockState nextState = state.cycle(property);
+
+        // special case for rails
+        if (property == Properties.RAIL_SHAPE || property == Properties.STRAIGHT_RAIL_SHAPE) nextState = fixRailState(world, nextState, pos, property);
+
+        world.setBlockState(pos, nextState, Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
-        ShroomhearthUtils.grantAdvancement(player, "shroomhearth", "orient_block", "impossible");
+        ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
         return ActionResult.SUCCESS;
+    }
+
+    public static BlockState fixRailState(BlockView world, BlockState state, BlockPos pos, Property property) {
+        boolean canAscend = false;
+        BlockPos adjPos = null;
+        if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
+            while (state.get(Properties.RAIL_SHAPE).isAscending()) {
+                switch(state.get(Properties.RAIL_SHAPE)) {
+                    case ASCENDING_EAST:
+                        adjPos = pos.east();
+                        break;
+                    case ASCENDING_NORTH:
+                        adjPos = pos.north();
+                        break;
+                    case ASCENDING_SOUTH:
+                        adjPos = pos.south();
+                        break;
+                    case ASCENDING_WEST:
+                        adjPos = pos.west();
+                        break;
+                    default:
+                        break;
+                }
+                canAscend = Block.hasTopRim(world, adjPos);
+                if (canAscend) break;
+                else state = state.cycle(property);
+            }
+        } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
+            while (state.get(Properties.STRAIGHT_RAIL_SHAPE).isAscending()) {
+                switch(state.get(Properties.STRAIGHT_RAIL_SHAPE)) {
+                    case ASCENDING_EAST:
+                        adjPos = pos.east();
+                        break;
+                    case ASCENDING_NORTH:
+                        adjPos = pos.north();
+                        break;
+                    case ASCENDING_SOUTH:
+                        adjPos = pos.south();
+                        break;
+                    case ASCENDING_WEST:
+                        adjPos = pos.west();
+                        break;
+                    default:
+                        break;
+                }
+                canAscend = Block.hasTopRim(world, adjPos);
+                if (canAscend) break;
+                else state = state.cycle(property);
+            }
+        }
+        return state;
     }
 }
