@@ -1,5 +1,5 @@
 {
-	"parent": "shroomhearth:wash_block",
+	"parent": "shroomhearth_fabric:wash_block",
 	"display": {
 		"icon": {
 			"item": "minecraft:glowstone_dust"
