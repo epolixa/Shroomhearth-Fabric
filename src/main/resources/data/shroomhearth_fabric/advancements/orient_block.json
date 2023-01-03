@@ -5,7 +5,7 @@
 			"item": "minecraft:compass"
 		},
 		"title": "I'm Using Tilt Controls!",
-		"description": "Use a compass to orient a block",
+		"description": "Use a Compass to orient something",
 		"frame": "task",
 		"show_toast": true,
 		"announce_to_chat": true,
