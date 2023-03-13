@@ -5,13 +5,12 @@
 
   "name": "Shroomhearth",
   "description": "Custom server functionality for Shroomhearth",
-  "authors": [
-    "epolixa",
-    "kroteux"
-  ],
+  "authors": ["epolixa"],
+  "contributors": ["kroteux"],
   "contact": {
+    "email": "epolixa@gmail.com",
     "homepage": "https://epolixa.com/shroomhearth/",
-    "sources": "https://github.com/epolixa/Shroomhearth"
+    "sources": "https://github.com/epolixa/Shroomhearth-Fabric"
   },
 
   "license": "CC0-1.0",
@@ -28,8 +27,8 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.11",
-    "fabric-api": ">=0.68.1",
-    "minecraft": "1.19.3"
+    "fabricloader": ">=0.14.17",
+    "fabric-api": ">=0.75.3",
+    "minecraft": "1.19.4-rc.3"
   }
 }

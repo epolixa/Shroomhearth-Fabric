@@ -4,6 +4,7 @@ import com.epolixa.shroomhearth.mixin.SignBlockEntityAccessor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -50,8 +51,10 @@ public class MOTD {
                 String motdMessage = sb.toString();
                 String motdColor = ShroomhearthUtils.getDyeHex(sign.getTextColor());
                 String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}]";
+
+                //server.setMotd(Text.Serializer.fromJson(motdJSON));
+                server.setMotd(motdJSON);
                 Shroomhearth.LOG.info("MOTD set to: " + motdJSON);
-                server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
             }
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);

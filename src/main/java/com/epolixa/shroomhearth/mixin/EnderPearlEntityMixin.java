@@ -33,7 +33,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
         try {
             if (!this.world.isClient && !this.isRemoved() && this.world.getDimension().natural()) {
 
-                BlockPos hitPos = new BlockPos(hitResult.getPos());
+                BlockPos hitPos = BlockPos.ofFloored(hitResult.getPos());
                 BlockPos dragonEggPos = null;
                 DragonEggBlock dragonEggBlock = null;
 
@@ -80,7 +80,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                         this.world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
                     }
                     EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(spawnGatewayPos);
-                    spawnGatewayBlockEntity.setExitPortalPos(new BlockPos(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
+                    spawnGatewayBlockEntity.setExitPortalPos(BlockPos.ofFloored(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
 
                     // make announcement
                     TextColor pColor = p.getDisplayName().getStyle().getColor();
