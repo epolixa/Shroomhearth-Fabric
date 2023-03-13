@@ -52,9 +52,10 @@ public class MOTD {
                 String motdColor = ShroomhearthUtils.getDyeHex(sign.getTextColor());
                 String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}]";
 
-                //server.setMotd(Text.Serializer.fromJson(motdJSON));
                 server.setMotd(motdJSON);
                 Shroomhearth.LOG.info("MOTD set to: " + motdJSON);
+            } else {
+                Shroomhearth.LOG.info("Did not find any signs to set MOTD from, defaulting to server.properties");
             }
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
