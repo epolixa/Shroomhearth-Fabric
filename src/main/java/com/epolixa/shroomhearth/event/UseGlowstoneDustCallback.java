@@ -51,15 +51,15 @@ public class UseGlowstoneDustCallback {
                             if (level < lightLevels[lightLevels.length - 1]) {
                                 for (int ll : lightLevels) {
                                     if (level < ll) {
-                                        return placeLightBlockWithDust(world, player, sidePos, ll, handItemStack);
+                                        return placeLightBlockWithDust(world, player, hand, sidePos, ll, handItemStack);
                                     }
                                 }
                             }
                         } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
-                            return placeLightBlockWithDust(world, player, sidePos, lightLevels[0], handItemStack);
+                            return placeLightBlockWithDust(world, player, hand, sidePos, lightLevels[0], handItemStack);
                         }
                     } else if (handItemStack.isIn(DUST_SCRAPING_TOOLS) && sideState.getBlock() == Blocks.LIGHT) {
-                        return scrapeLightBlockWithTool(world, player, sidePos, hand, handItemStack);
+                        return scrapeLightBlockWithTool(world, player, hand, sidePos, handItemStack);
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class UseGlowstoneDustCallback {
     }
 
 
-    private static ActionResult placeLightBlockWithDust(World world, PlayerEntity player, BlockPos pos, int level, ItemStack handItemStack) {
+    private static ActionResult placeLightBlockWithDust(World world, PlayerEntity player, Hand hand, BlockPos pos, int level, ItemStack handItemStack) {
         try {
             BlockState blockState = world.getBlockState(pos);
             boolean waterlogged = false;
@@ -81,6 +81,7 @@ public class UseGlowstoneDustCallback {
                 waterlogged = blockState.get(Properties.WATERLOGGED);
             }
             world.setBlockState(pos, Blocks.LIGHT.getDefaultState().with(Properties.LEVEL_15, level).with(Properties.WATERLOGGED, waterlogged));
+            player.swingHand(hand, true);
             world.playSound(null, pos, SoundEvents.BLOCK_POWDER_SNOW_PLACE, SoundCategory.BLOCKS, 1f, 2f);
             ((ServerWorld)world).spawnParticles(
                     new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),
@@ -101,12 +102,13 @@ public class UseGlowstoneDustCallback {
         return ActionResult.PASS;
     }
 
-    private static ActionResult scrapeLightBlockWithTool(World world, PlayerEntity player, BlockPos pos, Hand hand, ItemStack handItemStack) {
+    private static ActionResult scrapeLightBlockWithTool(World world, PlayerEntity player, Hand hand, BlockPos pos, ItemStack handItemStack) {
         try {
             BlockState blockState = world.getBlockState(pos);
             int level = blockState.get(Properties.LEVEL_15);
             boolean waterlogged = blockState.get(Properties.WATERLOGGED);
             world.setBlockState(pos, waterlogged ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState());
+            player.swingHand(hand, true);
             world.playSound(null, pos, SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1f, 2f);
             ((ServerWorld)world).spawnParticles(
                     new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),

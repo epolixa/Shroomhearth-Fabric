@@ -42,7 +42,7 @@ public class UseBlockOrientationToolCallback {
                         if (state.isIn(NON_ORIENTABLE)) {
                             return ActionResult.PASS;
                         } else if (state.getProperties().contains(Properties.FACING)) {
-                            return cycleState(player, world, state, pos, Properties.FACING);
+                            return cycleState(player, world, hand, state, pos, Properties.FACING);
                         } else if (state.getProperties().contains(Properties.HORIZONTAL_FACING)) {
                             if (state.getBlock() instanceof AbstractChestBlock && state.getProperties().contains(Properties.CHEST_TYPE) && state.get(Properties.CHEST_TYPE) != ChestType.SINGLE) { // special case to fix double chests
                                 Direction direction = state.get(Properties.HORIZONTAL_FACING);
@@ -52,7 +52,7 @@ public class UseBlockOrientationToolCallback {
                                 world.setBlockState(neighborPos, neighborState.with(Properties.CHEST_TYPE, ChestType.SINGLE));
                                 state = state.with(Properties.CHEST_TYPE, ChestType.SINGLE);
                             } else if (state.getBlock() instanceof TrapdoorBlock && !state.get(Properties.OPEN)) { // special case to toggle trapdoors open first
-                                return cycleState(player, world, state, pos, Properties.OPEN);
+                                return cycleState(player, world, hand, state, pos, Properties.OPEN);
                             } else if (state.getBlock() instanceof BigDripleafBlock && world.getBlockState(pos.down()).getBlock() instanceof BigDripleafStemBlock) { // skip big dripleaf if it is tall
                                 return ActionResult.PASS;
                             } else if (state.getBlock() instanceof BellBlock && (state.get(Properties.ATTACHMENT) == Attachment.SINGLE_WALL || state.get(Properties.ATTACHMENT) == Attachment.DOUBLE_WALL)) { // skip bell if wall attached
@@ -60,19 +60,19 @@ public class UseBlockOrientationToolCallback {
                             } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof ButtonBlock) && state.get(Properties.WALL_MOUNT_LOCATION) == WallMountLocation.WALL) { // skip wall levers and buttons
                                 return ActionResult.PASS;
                             }
-                            return cycleState(player, world, state, pos, Properties.HORIZONTAL_FACING);
+                            return cycleState(player, world, hand, state, pos, Properties.HORIZONTAL_FACING);
                         } else if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
-                            return cycleState(player, world, state, pos, Properties.RAIL_SHAPE);
+                            return cycleState(player, world, hand, state, pos, Properties.RAIL_SHAPE);
                         } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
-                            return cycleState(player, world, state, pos, Properties.STRAIGHT_RAIL_SHAPE);
+                            return cycleState(player, world, hand, state, pos, Properties.STRAIGHT_RAIL_SHAPE);
                         } else if (state.getProperties().contains(Properties.AXIS)) {
-                            return cycleState(player, world, state, pos, Properties.AXIS);
+                            return cycleState(player, world, hand, state, pos, Properties.AXIS);
                         } else if (state.getProperties().contains(Properties.HOPPER_FACING)) {
-                            return cycleState(player, world, state, pos, Properties.HOPPER_FACING);
+                            return cycleState(player, world, hand, state, pos, Properties.HOPPER_FACING);
                         } else if (state.getProperties().contains(Properties.ROTATION)) {
-                            return cycleState(player, world, state, pos, Properties.ROTATION);
+                            return cycleState(player, world, hand, state, pos, Properties.ROTATION);
                         } else if (state.getProperties().contains(Properties.BLOCK_HALF)) {
-                            return cycleState(player, world, state, pos, Properties.BLOCK_HALF);
+                            return cycleState(player, world, hand, state, pos, Properties.BLOCK_HALF);
                         }
                     }
                 }
@@ -85,7 +85,7 @@ public class UseBlockOrientationToolCallback {
         return ActionResult.PASS;
     }
 
-    public static ActionResult cycleState(PlayerEntity player, World world, BlockState state, BlockPos pos, Property property) {
+    public static ActionResult cycleState(PlayerEntity player, World world, Hand hand, BlockState state, BlockPos pos, Property property) {
         BlockState nextState = state.cycle(property);
 
         // special case for rails
@@ -93,6 +93,7 @@ public class UseBlockOrientationToolCallback {
 
         world.setBlockState(pos, nextState, Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
+        player.swingHand(hand, true);
         world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
         return ActionResult.SUCCESS;

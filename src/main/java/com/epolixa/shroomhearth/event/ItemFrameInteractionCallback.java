@@ -23,6 +23,7 @@ public class ItemFrameInteractionCallback {
                 ItemStack handItemStack = player.getStackInHand(hand);
                 if (handItemStack.isOf(Items.SHEARS) && !itemFrame.getHeldItemStack().isOf(Items.AIR) && !itemFrame.isInvisible()) {
                     itemFrame.setInvisible(true);
+                    player.swingHand(hand, true);
                     world.playSound(null, itemFrame.getBlockPos(), SoundEvents.BLOCK_BEEHIVE_SHEAR, SoundCategory.BLOCKS, 1f, 1.2f);
                     if (!player.isCreative()) handItemStack.damage(1, player, p -> p.sendToolBreakStatus(hand));
                     ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "frameless", "impossible");
