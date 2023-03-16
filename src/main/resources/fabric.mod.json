@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "shroomhearth_fabric",
-  "version": "1.2.8",
+  "version": "1.2.9",
 
   "name": "Shroomhearth",
   "description": "Custom server functionality for Shroomhearth",
