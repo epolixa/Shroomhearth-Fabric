@@ -61,7 +61,7 @@ public class UseEchoShardCallback {
 
     public static ActionResult onUseMobEchoShardCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         try {
-            if (entity instanceof LivingEntity) {
+            if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)) {
                 LivingEntity livingEntity = (LivingEntity) entity;
                 ItemStack handItemStack = player.getStackInHand(hand);
                 if (handItemStack.isOf(Items.ECHO_SHARD) && !livingEntity.isSilent()) {
