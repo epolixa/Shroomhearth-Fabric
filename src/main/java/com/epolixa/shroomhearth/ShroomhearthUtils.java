@@ -46,7 +46,7 @@ public class ShroomhearthUtils {
         String code = Formatting.GRAY.toString(); // default server list description gray
 
         try {
-            // refer to https://minecraft.gamepedia.com/Dye#Item_data
+            // https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes
             code = switch (color) {
                 case RED -> Formatting.RED.toString(); // red
                 case GREEN -> Formatting.DARK_GREEN.toString(); // dark_green
