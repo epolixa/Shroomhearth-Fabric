@@ -4,9 +4,9 @@ import com.epolixa.shroomhearth.mixin.SignBlockEntityAccessor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 
@@ -37,23 +37,31 @@ public class MOTD {
                 Random random = world.getRandom();
                 SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                 SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
-                Text[] signText = signAccessor.getTexts();
-                StringBuilder sb = new StringBuilder();
-                for (Text rowText : signText) { // parse sign rows
+                Text[] signTexts = signAccessor.getTexts();
+                StringBuilder signMessage = new StringBuilder();
+                for (Text rowText : signTexts) { // parse sign rows
                     String row = rowText.getString();
                     if (row.length() > 0) {
-                        if (sb.toString().length() > 0) {
-                            sb.append(" ");
+                        if (signMessage.toString().length() > 0) {
+                            signMessage.append(" ");
                         }
-                        sb.append(row);
+                        signMessage.append(row);
                     }
                 }
-                String motdMessage = sb.toString();
-                String motdColor = ShroomhearthUtils.getDyeHex(sign.getTextColor());
-                String motdJSON = "[{\"text\":\"" + motdMessage + "\",\"color\":\"" + motdColor + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}]";
 
-                server.setMotd(motdJSON);
-                Shroomhearth.LOG.info("MOTD set to: " + motdJSON);
+                // May bring back this text component method later if workaround for setDescription can be figured out
+                //String motdColor = ShroomhearthUtils.getDyeHex(sign.getTextColor());
+                //String motdJSON = "[{\"text\":\"" + signMessage + "\",\"color\":\"" + motdColor + "\",\"bold\":\"" + signAccessor.isGlowingText() + "\"}]";
+                //server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
+
+                StringBuilder motd = new StringBuilder();
+                motd.append(ShroomhearthUtils.getDyeColorCode(sign.getTextColor()));
+                if (signAccessor.isGlowingText()) motd.append(Formatting.BOLD);
+                motd.append(signMessage);
+                motd.append(Formatting.RESET);
+                server.setMotd(motd.toString());
+
+                Shroomhearth.LOG.info("MOTD set to: " + motd);
             } else {
                 Shroomhearth.LOG.info("Did not find any signs to set MOTD from, defaulting to server.properties");
             }

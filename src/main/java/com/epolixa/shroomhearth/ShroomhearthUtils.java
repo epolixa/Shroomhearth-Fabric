@@ -4,6 +4,7 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 
@@ -39,6 +40,38 @@ public class ShroomhearthUtils {
         }
 
         return hex;
+    }
+
+    public static String getDyeColorCode(DyeColor color) {
+        String code = Formatting.GRAY.toString(); // default server list description gray
+
+        try {
+            // refer to https://minecraft.gamepedia.com/Dye#Item_data
+            code = switch (color) {
+                case RED -> Formatting.RED.toString(); // red
+                case GREEN -> Formatting.DARK_GREEN.toString(); // dark_green
+                case PURPLE -> Formatting.DARK_PURPLE.toString(); // dark_purple
+                case CYAN -> Formatting.DARK_AQUA.toString(); // dark_aqua
+                case LIGHT_GRAY -> Formatting.GRAY.toString(); // gray
+                case GRAY -> Formatting.DARK_GRAY.toString(); // dark_gray
+                case PINK -> Formatting.LIGHT_PURPLE.toString(); // light_purple
+                case LIME -> Formatting.GREEN.toString(); // green
+                case YELLOW -> Formatting.YELLOW.toString(); // yellow
+                case LIGHT_BLUE -> Formatting.BLUE.toString(); // blue
+                case MAGENTA -> Formatting.AQUA.toString(); // aqua
+                case ORANGE -> Formatting.GOLD.toString(); // gold
+                case BLACK -> Formatting.BLACK.toString(); // black
+                case BROWN -> Formatting.DARK_RED.toString(); // dark_red
+                case BLUE -> Formatting.DARK_BLUE.toString(); // dark_blue
+                case WHITE -> Formatting.WHITE.toString(); // white
+                default -> Formatting.GRAY.toString();
+            };
+        } catch (Exception e) {
+            Shroomhearth.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+
+        return code;
     }
 
     // return a random int between two ints
