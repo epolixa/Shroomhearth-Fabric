@@ -31,7 +31,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     @Inject(method = "onCollision", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            if (!this.world.isClient && !this.isRemoved() && this.world.getDimension().natural()) {
+            if (!this.getWorld().isClient && !this.isRemoved() && this.getWorld().getDimension().natural()) {
 
                 BlockPos hitPos = BlockPos.ofFloored(hitResult.getPos());
                 BlockPos dragonEggPos = null;
@@ -42,8 +42,8 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     for (int y = hitPos.getY() - 1; y <= hitPos.getY() + 1; y++) {
                         for (int z = hitPos.getZ() - 1; z <= hitPos.getZ() + 1; z++) {
                             BlockPos blockPos = new BlockPos(x,y,z);
-                            if (this.world.getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
-                                dragonEggBlock = (DragonEggBlock) world.getBlockState(blockPos).getBlock();
+                            if (this.getWorld().getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
+                                dragonEggBlock = (DragonEggBlock) this.getWorld().getBlockState(blockPos).getBlock();
                                 dragonEggPos = blockPos;
                             }
                         }
@@ -54,7 +54,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     MinecraftServer s = this.getServer();
                     PlayerEntity p = (PlayerEntity) this.getOwner();
 
-                    this.world.setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
+                    this.getWorld().setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
                     // play particle
                     /*ParticleS2CPacket particlePacket = new ParticleS2CPacket(
                                                         ParticleTypes.EXPLOSION, true,
@@ -63,12 +63,12 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer((PlayerEntity) this.getOwner(), particlePacket);
                     this.world.playSound(this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.BLOCKS, 0.4f, 2f, true);*/
 
-                    EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(dragonEggPos);
+                    EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.getWorld().getBlockEntity(dragonEggPos);
                     endGatewayBlockEntity.setExitPortalPos(new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayExitX(), Shroomhearth.CONFIG.getSpawnGatewayExitY(), Shroomhearth.CONFIG.getSpawnGatewayExitZ()), true);
 
                     BlockPos oldEndGatewayPos = new BlockPos(Shroomhearth.CONFIG.getReturnGatewayX(), Shroomhearth.CONFIG.getReturnGatewayY(), Shroomhearth.CONFIG.getReturnGatewayZ());
-                    if (!dragonEggPos.equals(oldEndGatewayPos) && this.world.getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
-                        this.world.setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
+                    if (!dragonEggPos.equals(oldEndGatewayPos) && this.getWorld().getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
+                        this.getWorld().setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
                     }
 
                     Shroomhearth.CONFIG.setReturnGatewayX(dragonEggPos.getX());
@@ -76,10 +76,10 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     Shroomhearth.CONFIG.setReturnGatewayZ(dragonEggPos.getZ());
 
                     BlockPos spawnGatewayPos = new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayX(), Shroomhearth.CONFIG.getSpawnGatewayY(), Shroomhearth.CONFIG.getSpawnGatewayZ());
-                    if (!(this.world.getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
-                        this.world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
+                    if (!(this.getWorld().getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
+                        this.getWorld().setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
                     }
-                    EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.world.getBlockEntity(spawnGatewayPos);
+                    EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.getWorld().getBlockEntity(spawnGatewayPos);
                     spawnGatewayBlockEntity.setExitPortalPos(BlockPos.ofFloored(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
 
                     // make announcement
