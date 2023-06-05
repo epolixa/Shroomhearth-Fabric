@@ -18,6 +18,7 @@ import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -38,39 +39,35 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
     @Inject(method = "fillRecipes()V", at = @At("TAIL"))
     public void fillRecipes(CallbackInfo info) {
         try {
-            // capture existing offers
+            Random r = this.random;
+
+            // capture andd empty existing offers
             TradeOfferList tradeOfferList = this.getOffers();
+            tradeOfferList.clear();
 
             // add trades for random items
             List<Item> pickedItems = new ArrayList<>(); // items already added to offers
-            tradeOfferList.forEach(tradeOffer -> pickedItems.add(tradeOffer.getSellItem().getItem())); // include default wandering trader stuff in rolls
-
-            Random r = this.random;
-
-            // add random items
-            int num_offers = tradeOfferList.size();
-            for (int i = 0; i < num_offers; i++) {
+            int offerCount = ShroomhearthUtils.inRange(r, 1, 8); // number of offers
+            for (int i = 0; i < offerCount; i++) {
                 Item rItem = Registries.ITEM.get(r.nextInt(Registries.ITEM.size()));
                 ItemStack rItemStack = rItem.getDefaultStack();
 
                 // check if item should be added to offers
-                if (rItemStack.isIn(BLACKLIST) || pickedItems.contains(rItem)) {
+                if (rItemStack.isIn(BLACKLIST) || rItemStack.isIn(SPECIALS) || pickedItems.contains(rItem)) {
                     i--; // skip and try again
                 } else {
                     pickedItems.add(rItem); // add item to picked list so we don't pick it again
-                    tradeOfferList.add(buildTradeOffer(r, rItemStack)); // build an offer for the item
+                    tradeOfferList.add(buildTradeOffer(r, rItemStack, offerCount)); // build an offer for the item
                 }
-            }
-
-            // chance to add a special offer
-            if (r.nextBoolean()) {
-                tradeOfferList.add(buildSpecialTradeOffer(r));
             }
 
             // mix up tradeOffers order
             Collections.shuffle(tradeOfferList);
 
-            logOffers(tradeOfferList);
+            // chance to add a special offer
+            if (r.nextBoolean()) {
+                tradeOfferList.add(buildSpecialTradeOffer(r));
+            }
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
@@ -79,7 +76,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
 
     // Prepares a TradeOffer for an Item
-    private TradeOffer buildTradeOffer(Random r, ItemStack itemStack) {
+    private TradeOffer buildTradeOffer(Random r, ItemStack itemStack, int offerCount) {
         TradeOffer tradeOffer = null;
 
         try {
@@ -94,7 +91,8 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
             emeraldStack.setCount(r.nextInt(3) + 1);
 
-            int uses = ShroomhearthUtils.inRange(r, 4, 12);
+            // set uses based on variety
+            int uses = ShroomhearthUtils.inRange(r, (32/offerCount), (128/offerCount));
 
             // small chance to be a buy offer instead of sell offer
             if (r.nextInt(3) == 0) { // buy
@@ -120,15 +118,9 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             Item item = Registries.ITEM.getEntryList(SPECIALS).flatMap(list -> list.getRandom(r)).get().value();
             ItemStack itemStack = item.getDefaultStack();
 
-            // special case for potions
-            /*if (itemStack.isIn(POTIONS)) {
-                PotionUtil.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
-            }*/
-
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
             emeraldStack.setCount(ShroomhearthUtils.inRange(r, 24, 40));
 
-            // small chance to be a buy offer instead of sell offer
             tradeOffer = new TradeOffer(emeraldStack, itemStack, 1, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
 
         } catch (Exception e) {
