@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "shroomhearth_fabric",
-  "version": "1.2.9",
+  "version": "1.2.10",
 
   "name": "Shroomhearth",
   "description": "Custom server functionality for Shroomhearth",
@@ -29,6 +29,6 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": ">=0.83.0",
-    "minecraft": "1.20-rc.1"
+    "minecraft": "1.20"
   }
 }
