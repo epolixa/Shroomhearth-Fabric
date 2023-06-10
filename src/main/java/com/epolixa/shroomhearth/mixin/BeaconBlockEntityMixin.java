@@ -76,12 +76,13 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                             Random random = world.getRandom();
                             SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                             SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
-                            Text[] signText = signAccessor.getTexts();
-                            DyeColor color = sign.getTextColor();
+                            SignText frontText = signAccessor.getFrontText(); //Text[] signText = signAccessor.getTexts();
+                            Text[] frontMessages = frontText.getMessages(false);
+                            DyeColor color = sign.getText(true).getColor(); // potentially enhance to consider front/back as random options
                             StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < signText.length; i++) // parse sign rows
+                            for (int i = 0; i < frontMessages.length; i++) // parse sign rows
                             {
-                                Text rowText = signText[i];
+                                Text rowText = frontMessages[i];
                                 String row = rowText.getString();
                                 if (row.length() > 0) {
                                     if (sb.toString().length() > 0) {
@@ -93,7 +94,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
                             if (sb.toString().length() > 0) {
                                 // send a title message to the player
-                                sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":\""+signAccessor.isGlowingText()+"\""+(showIllagerAlt?",\"font\":\"illageralt\"}":"}"), player);
+                                sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":\""+frontText.isGlowing()+"\""+(showIllagerAlt?",\"font\":\"illageralt\"}":"}"), player);
 
                                 // grant advancement to player
                                 ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "liminal_message", "impossible");

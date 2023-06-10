@@ -3,6 +3,7 @@ package com.epolixa.shroomhearth;
 import com.epolixa.shroomhearth.mixin.SignBlockEntityAccessor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SignText;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -37,7 +38,8 @@ public class MOTD {
                 Random random = world.getRandom();
                 SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                 SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
-                Text[] signTexts = signAccessor.getTexts();
+                SignText frontText = signAccessor.getFrontText();
+                Text[] signTexts = frontText.getMessages(false);
                 StringBuilder signMessage = new StringBuilder();
                 for (Text rowText : signTexts) { // parse sign rows
                     String row = rowText.getString();
@@ -55,8 +57,8 @@ public class MOTD {
                 //server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
 
                 StringBuilder motd = new StringBuilder();
-                motd.append(ShroomhearthUtils.getDyeColorCode(sign.getTextColor()));
-                if (signAccessor.isGlowingText()) motd.append(Formatting.BOLD);
+                motd.append(ShroomhearthUtils.getDyeColorCode(sign.getText(true).getColor()));
+                if (frontText.isGlowing()) motd.append(Formatting.BOLD);
                 motd.append(signMessage);
                 motd.append(Formatting.RESET);
                 server.setMotd(motd.toString());
