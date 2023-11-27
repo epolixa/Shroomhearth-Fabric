@@ -4,8 +4,8 @@ import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.Attachment;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class UseBlockOrientationToolCallback {
                                 return ActionResult.PASS;
                             } else if (state.getBlock() instanceof BellBlock && (state.get(Properties.ATTACHMENT) == Attachment.SINGLE_WALL || state.get(Properties.ATTACHMENT) == Attachment.DOUBLE_WALL)) { // skip bell if wall attached
                                 return ActionResult.PASS;
-                            } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof ButtonBlock) && state.get(Properties.WALL_MOUNT_LOCATION) == WallMountLocation.WALL) { // skip wall levers and buttons
+                            } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof ButtonBlock) && state.get(Properties.BLOCK_FACE) == BlockFace.WALL) { // skip wall levers and buttons
                                 return ActionResult.PASS;
                             }
                             return cycleState(player, world, hand, state, pos, Properties.HORIZONTAL_FACING);

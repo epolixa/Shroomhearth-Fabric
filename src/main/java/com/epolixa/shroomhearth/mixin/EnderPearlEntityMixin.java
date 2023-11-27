@@ -92,6 +92,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     ShroomhearthUtils.grantAdvancement(p, "shroomhearth_fabric", "community_coordinator", "relocated_gateway");
 
                     this.remove(RemovalReason.DISCARDED);
+
                 }
             }
         } catch (Exception e) {

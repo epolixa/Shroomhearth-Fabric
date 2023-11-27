@@ -1,6 +1,7 @@
 package com.epolixa.shroomhearth;
 
 import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
@@ -83,7 +84,7 @@ public class ShroomhearthUtils {
     public static void grantAdvancement(PlayerEntity player, String namespace, String id, String criterion) {
         try {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-            Advancement advancement = player.getServer().getAdvancementLoader().get(new Identifier(namespace, id));
+            AdvancementEntry advancement = player.getServer().getAdvancementLoader().get(new Identifier(namespace, id));
             if (advancement != null) {
                 if (!serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
                     serverPlayer.getAdvancementTracker().grantCriterion(advancement, criterion);
