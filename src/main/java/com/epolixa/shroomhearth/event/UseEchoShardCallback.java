@@ -75,7 +75,7 @@ public class UseEchoShardCallback {
                             pos.getX(),
                             pos.getY() + livingEntity.getHeight()/2,
                             pos.getZ(),
-                            8, box.getXLength()/2, box.getYLength()/2, box.getZLength()/2, 0.01f);
+                            8, box.getLengthX()/2, box.getLengthY()/2, box.getLengthZ()/2, 0.01f);
                     if (!player.isCreative()) {
                         handItemStack.decrement(1);
                     }
