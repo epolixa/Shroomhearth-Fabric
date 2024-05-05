@@ -7,13 +7,16 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.*;
+import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
+import net.minecraft.village.TradedItem;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,7 +53,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
                 ItemStack rItemStack = rItem.getDefaultStack();
 
                 // check if item should be added to offers
-                if (rItemStack.isIn(BLACKLIST) || rItemStack.isIn(SPECIALS) || pickedItems.contains(rItem)) {
+                if (rItemStack.isIn(BLACKLIST) || rItemStack.isIn(SPECIALS) || pickedItems.contains(rItem) || !rItem.isEnabled(this.getWorld().getEnabledFeatures())) {
                     i--; // skip and try again
                 } else {
                     pickedItems.add(rItem); // add item to picked list so we don't pick it again
@@ -82,7 +85,9 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             // special case for potions
             if (itemStack.isIn(POTIONS)) {
-                PotionContentsComponent.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
+                //PotionContentsComponent.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
+                Potion randomPotion = Registries.POTION.get(r.nextInt(Registries.POTION.size()));
+                PotionContentsComponent.createStack(item, Registries.POTION.getEntry(randomPotion));
             }
 
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
@@ -93,9 +98,11 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             // small chance to be a buy offer instead of sell offer
             if (r.nextInt(3) == 0) { // buy
-                tradeOffer = new TradeOffer(itemStack, emeraldStack, uses, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
+                TradedItem tradedItem = new TradedItem(itemStack.getItem(), itemStack.getCount());
+                tradeOffer = new TradeOffer(tradedItem, emeraldStack, uses, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
             } else { // sell
-                tradeOffer = new TradeOffer(emeraldStack, itemStack, uses, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
+                TradedItem tradedItem = new TradedItem(emeraldStack.getItem(), emeraldStack.getCount());
+                tradeOffer = new TradeOffer(tradedItem, itemStack, uses, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
             }
 
         } catch (Exception e) {
@@ -118,7 +125,8 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
             emeraldStack.setCount(ShroomhearthUtils.inRange(r, 24, 40));
 
-            tradeOffer = new TradeOffer(emeraldStack, itemStack, 1, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
+            TradedItem tradedItem = new TradedItem(emeraldStack.getItem(), emeraldStack.getCount());
+            tradeOffer = new TradeOffer(tradedItem, itemStack, 1, ShroomhearthUtils.inRange(r, 3, 6), 0.2f);
 
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);

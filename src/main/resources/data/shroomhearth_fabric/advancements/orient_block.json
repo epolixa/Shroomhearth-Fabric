@@ -2,7 +2,7 @@
 	"parent": "shroomhearth_fabric:wash_block",
 	"display": {
 		"icon": {
-			"item": "minecraft:compass"
+			"id": "minecraft:compass"
 		},
 		"title": "I'm Using Tilt Controls!",
 		"description": "Use a Compass to orient something",

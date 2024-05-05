@@ -2,7 +2,7 @@
 	"parent": "wandering_trader:exotic_wares",
 	"display": {
 		"icon": {
-			"item": "minecraft:cauldron"
+			"id": "minecraft:cauldron"
 		},
 		"title": "Wash Around the Block",
 		"description": "Use a cauldron to wash a stack of items",

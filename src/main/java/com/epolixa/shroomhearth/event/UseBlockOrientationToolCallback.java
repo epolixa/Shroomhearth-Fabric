@@ -33,7 +33,7 @@ public class UseBlockOrientationToolCallback {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
             if (!state.isAir()) {
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
+                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hitResult);
                 if (actionResult.isAccepted()) {
                     return ActionResult.FAIL;
                 } else {
@@ -94,7 +94,7 @@ public class UseBlockOrientationToolCallback {
         world.setBlockState(pos, nextState, Block.NOTIFY_LISTENERS);
         world.updateNeighborsAlways(pos, state.getBlock());
         player.swingHand(hand, true);
-        world.playSound(null, pos, state.getBlock().getSoundGroup(state).getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
+        world.playSound(null, pos, state.getSoundGroup().getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
         return ActionResult.SUCCESS;
     }

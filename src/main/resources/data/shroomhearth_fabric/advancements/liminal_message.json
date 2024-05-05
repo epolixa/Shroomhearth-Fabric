@@ -2,7 +2,7 @@
 	"parent": "wandering_trader:exotic_wares",
 	"display": {
 		"icon": {
-			"item": "minecraft:beacon"
+			"id": "minecraft:beacon"
 		},
 		"title": "Liminal Message",
 		"description": "Receive a subtitle when an effect applies from a beacon with a sign",

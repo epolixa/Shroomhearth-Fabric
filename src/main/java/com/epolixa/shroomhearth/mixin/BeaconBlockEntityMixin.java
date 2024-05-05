@@ -9,6 +9,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
@@ -37,8 +39,8 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
     }
 
     // Inject to applyPlayerChanges to look for signs and send title to newly affected players
-    @Inject(method = "applyPlayerEffects(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/entity/effect/StatusEffect;Lnet/minecraft/entity/effect/StatusEffect;)V", at = @At("HEAD"))
-    private static void applyPlayerEffects(World world, BlockPos pos, int beaconLevel, @Nullable StatusEffect primaryEffect, @Nullable StatusEffect secondaryEffect, CallbackInfo info) {
+    @Inject(method = "applyPlayerEffects(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/registry/entry/RegistryEntry;)V", at = @At("HEAD"))
+    private static void applyPlayerEffects(World world, BlockPos pos, int beaconLevel, @Nullable RegistryEntry<StatusEffect> primaryEffect, @Nullable RegistryEntry<StatusEffect> secondaryEffect, CallbackInfo info) {
         try {
             if (!world.isClient && primaryEffect != null) { // check for same conditions as applying primary effect to a player
                 double d = (double)(beaconLevel * 10 + 10);
@@ -94,7 +96,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
                             if (sb.toString().length() > 0) {
                                 // send a title message to the player
-                                sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":\""+frontText.isGlowing()+"\""+(showIllagerAlt?",\"font\":\"illageralt\"}":"}"), player);
+                                sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":"+frontText.isGlowing()+(showIllagerAlt?",\"font\":\"illageralt\"}]":"}"), player);
 
                                 // grant advancement to player
                                 ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "liminal_message", "impossible");
@@ -114,7 +116,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             Function<Text, Packet<?>> constructor = SubtitleS2CPacket::new;
             ServerCommandSource source = player.getServer().getCommandSource();
-            Text subtitleText = Text.Serialization.fromJson(subtitle);
+            Text subtitleText = Text.Serialization.fromJson(subtitle, BuiltinRegistries.createWrapperLookup());
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, subtitleText, serverPlayer, 0)));
             constructor = TitleS2CPacket::new;
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, Text.of(""), serverPlayer, 0)));
@@ -127,7 +129,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
     private static boolean isOminous(BannerBlockEntity banner) {
         boolean ret = false;
         try {
-            ret = banner.getPatterns().size() >= 8;
+            ret = banner.getPatterns().layers().size() >= 8;
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
