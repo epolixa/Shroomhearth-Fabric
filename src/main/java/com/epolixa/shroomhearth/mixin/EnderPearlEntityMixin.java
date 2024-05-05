@@ -31,7 +31,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     @Inject(method = "onCollision", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            if (!this.getWorld().isClient && !this.isRemoved() && this.getWorld().getDimension().natural()) {
+            if (!this.method_48926().isClient && !this.isRemoved() && this.method_48926().getDimension().natural()) {
 
                 BlockPos hitPos = BlockPos.ofFloored(hitResult.getPos());
                 BlockPos dragonEggPos = null;
@@ -42,8 +42,8 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     for (int y = hitPos.getY() - 1; y <= hitPos.getY() + 1; y++) {
                         for (int z = hitPos.getZ() - 1; z <= hitPos.getZ() + 1; z++) {
                             BlockPos blockPos = new BlockPos(x,y,z);
-                            if (this.getWorld().getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
-                                dragonEggBlock = (DragonEggBlock) this.getWorld().getBlockState(blockPos).getBlock();
+                            if (this.method_48926().getBlockState(blockPos).getBlock() instanceof DragonEggBlock) {
+                                dragonEggBlock = (DragonEggBlock) this.method_48926().getBlockState(blockPos).getBlock();
                                 dragonEggPos = blockPos;
                             }
                         }
@@ -54,7 +54,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     MinecraftServer s = this.getServer();
                     PlayerEntity p = (PlayerEntity) this.getOwner();
 
-                    this.getWorld().setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
+                    this.method_48926().setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
                     // play particle
                     /*ParticleS2CPacket particlePacket = new ParticleS2CPacket(
                                                         ParticleTypes.EXPLOSION, true,
@@ -63,12 +63,12 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer((PlayerEntity) this.getOwner(), particlePacket);
                     this.world.playSound(this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.BLOCKS, 0.4f, 2f, true);*/
 
-                    EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.getWorld().getBlockEntity(dragonEggPos);
+                    EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) this.method_48926().getBlockEntity(dragonEggPos);
                     endGatewayBlockEntity.setExitPortalPos(new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayExitX(), Shroomhearth.CONFIG.getSpawnGatewayExitY(), Shroomhearth.CONFIG.getSpawnGatewayExitZ()), true);
 
                     BlockPos oldEndGatewayPos = new BlockPos(Shroomhearth.CONFIG.getReturnGatewayX(), Shroomhearth.CONFIG.getReturnGatewayY(), Shroomhearth.CONFIG.getReturnGatewayZ());
-                    if (!dragonEggPos.equals(oldEndGatewayPos) && this.getWorld().getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
-                        this.getWorld().setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
+                    if (!dragonEggPos.equals(oldEndGatewayPos) && this.method_48926().getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
+                        this.method_48926().setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
                     }
 
                     Shroomhearth.CONFIG.setReturnGatewayX(dragonEggPos.getX());
@@ -76,17 +76,17 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     Shroomhearth.CONFIG.setReturnGatewayZ(dragonEggPos.getZ());
 
                     BlockPos spawnGatewayPos = new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayX(), Shroomhearth.CONFIG.getSpawnGatewayY(), Shroomhearth.CONFIG.getSpawnGatewayZ());
-                    if (!(this.getWorld().getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
-                        this.getWorld().setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
+                    if (!(this.method_48926().getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
+                        this.method_48926().setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
                     }
-                    EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.getWorld().getBlockEntity(spawnGatewayPos);
+                    EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) this.method_48926().getBlockEntity(spawnGatewayPos);
                     spawnGatewayBlockEntity.setExitPortalPos(BlockPos.ofFloored(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
 
                     // make announcement
                     TextColor pColor = p.getDisplayName().getStyle().getColor();
                     String pColorName = "white";
                     if (pColor != null) { pColorName = p.getDisplayName().getStyle().getColor().getName(); }
-                    s.getCommandManager().getDispatcher().execute("tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getEntityName() + "\"}]", s.getCommandSource());
+                    s.getCommandManager().getDispatcher().execute("tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getNameForScoreboard() + "\"}]", s.getCommandSource());
 
                     // grant advancement to player
                     ShroomhearthUtils.grantAdvancement(p, "shroomhearth_fabric", "community_coordinator", "relocated_gateway");

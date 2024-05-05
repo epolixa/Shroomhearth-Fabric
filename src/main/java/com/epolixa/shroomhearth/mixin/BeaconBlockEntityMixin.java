@@ -114,7 +114,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             Function<Text, Packet<?>> constructor = SubtitleS2CPacket::new;
             ServerCommandSource source = player.getServer().getCommandSource();
-            Text subtitleText = Text.Serializer.fromJson(subtitle);
+            Text subtitleText = Text.Serialization.fromJson(subtitle);
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, subtitleText, serverPlayer, 0)));
             constructor = TitleS2CPacket::new;
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, Text.of(""), serverPlayer, 0)));

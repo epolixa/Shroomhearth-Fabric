@@ -2,11 +2,11 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.*;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -82,7 +82,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
             // special case for potions
             if (itemStack.isIn(POTIONS)) {
-                PotionUtil.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
+                PotionContentsComponent.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
             }
 
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
