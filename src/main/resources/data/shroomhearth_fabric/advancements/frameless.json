@@ -2,7 +2,7 @@
   "parent": "shroomhearth_fabric:wash_block",
   "display": {
     "icon": {
-      "item": "minecraft:item_frame"
+      "id": "minecraft:item_frame"
     },
     "title": "Frameless",
     "description": "Use Shears on an Item Frame to make it invisible",

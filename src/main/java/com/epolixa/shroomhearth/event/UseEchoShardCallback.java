@@ -30,7 +30,7 @@ public class UseEchoShardCallback {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
             if (!state.isAir()) {
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
+                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hitResult);
                 if (actionResult.isAccepted()) {
                     return ActionResult.FAIL;
                 } else {

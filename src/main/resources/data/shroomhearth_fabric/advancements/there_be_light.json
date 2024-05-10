@@ -2,7 +2,7 @@
 	"parent": "shroomhearth_fabric:wash_block",
 	"display": {
 		"icon": {
-			"item": "minecraft:glowstone_dust"
+			"id": "minecraft:glowstone_dust"
 		},
 		"title": "Let There Be Light!",
 		"description": "Use glowstone dust to place light",

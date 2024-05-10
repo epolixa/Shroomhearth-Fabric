@@ -37,7 +37,7 @@ public class UseGlowstoneDustCallback {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
             if (!state.isAir()) {
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hand, hitResult);
+                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hitResult);
                 if (actionResult.isAccepted()) {
                     return ActionResult.FAIL;
                 } else {
@@ -125,7 +125,7 @@ public class UseGlowstoneDustCallback {
                     }
                 }
                 dropStack(world, pos, new ItemStack(Items.GLOWSTONE_DUST, dust));
-                handItemStack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+                handItemStack.damage(1, player, ShroomhearthUtils.getEquipmentSlotFromHand(hand));
             }
             return ActionResult.SUCCESS;
         } catch (Exception e) {

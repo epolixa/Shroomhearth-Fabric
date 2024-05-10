@@ -2,7 +2,7 @@
   "parent": "shroomhearth_fabric:wash_block",
   "display": {
     "icon": {
-      "item": "minecraft:sculk_shrieker"
+      "id": "minecraft:sculk_shrieker"
     },
     "title": "Prepare for Trouble",
     "description": "Use an Echo Shard to prime a Sculk Shrieker",

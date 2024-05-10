@@ -2,10 +2,12 @@ package com.epolixa.shroomhearth;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 
@@ -97,6 +99,20 @@ public class ShroomhearthUtils {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
+    }
+
+    public static EquipmentSlot getEquipmentSlotFromHand(Hand hand) {
+        EquipmentSlot slot = EquipmentSlot.MAINHAND;
+        try {
+            slot = switch (hand) {
+                case MAIN_HAND -> EquipmentSlot.MAINHAND;
+                case OFF_HAND -> EquipmentSlot.OFFHAND;
+            };
+        } catch (Exception e) {
+            Shroomhearth.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+        return slot;
     }
 
 }
