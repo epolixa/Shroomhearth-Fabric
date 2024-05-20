@@ -32,15 +32,16 @@ public class Shroomhearth implements DedicatedServerModInitializer {
         });
 
         UseBlockCallback.EVENT.register(UseCauldronCallback::onUseCauldronCallback);
-        UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
-        UseBlockCallback.EVENT.register(UseBlockOrientationToolCallback::onUseBlockOrientationToolCallback);
-        UseBlockCallback.EVENT.register(UseEchoShardCallback::onUseSculkShriekerEchoShardCallback);
         UseEntityCallback.EVENT.register(UseEchoShardCallback::onUseMobEchoShardCallback);
         UseEntityCallback.EVENT.register(ItemFrameInteractionCallback::onUseItemFrameCallback);
         AttackEntityCallback.EVENT.register(ItemFrameInteractionCallback::onAttackItemFrameCallback);
         UseEntityCallback.EVENT.register(UseArmorStandCallback::onUseArmorStandCallback);
         AttackEntityCallback.EVENT.register(AttackEntityOrientationToolCallback::onAttackEntityOrientationToolCallback);
 
+        // disabled temporarily due to issue interfering with other block interactions like dying signs or setting a book on a lecturn
+        //UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
+        //UseBlockCallback.EVENT.register(UseBlockOrientationToolCallback::onUseBlockOrientationToolCallback);
+        //UseBlockCallback.EVENT.register(UseEchoShardCallback::onUseSculkShriekerEchoShardCallback);
 
         Shroomhearth.LOG.info("Initialized Shroomhearth");
     }
