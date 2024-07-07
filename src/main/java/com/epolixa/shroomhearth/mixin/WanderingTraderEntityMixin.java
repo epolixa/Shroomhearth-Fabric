@@ -41,7 +41,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         try {
             Random r = this.random;
 
-            // capture andd empty existing offers
+            // capture and empty existing offers
             TradeOfferList tradeOfferList = this.getOffers();
             tradeOfferList.clear();
 
