@@ -36,31 +36,47 @@ public class UseGlowstoneDustCallback {
         try {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
-            if (!state.isAir()) {
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hitResult);
-                if (actionResult.isAccepted()) {
-                    return ActionResult.FAIL;
-                } else {
-                    Direction side = hitResult.getSide();
-                    BlockPos sidePos = new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
-                    BlockState sideState = world.getBlockState(sidePos);
-                    ItemStack handItemStack = player.getStackInHand(hand);
-                    if (handItemStack.isOf(Items.GLOWSTONE_DUST)) {
-                        if (sideState.getBlock() == Blocks.LIGHT) {
-                            int level = sideState.get(Properties.LEVEL_15);
-                            if (level < lightLevels[lightLevels.length - 1]) {
-                                for (int ll : lightLevels) {
-                                    if (level < ll) {
-                                        return placeLightBlockWithDust(world, player, hand, sidePos, ll, handItemStack);
-                                    }
-                                }
+            ItemStack handItemStack = player.getStackInHand(hand);
+            if (!state.isAir() && handItemStack.isOf(Items.GLOWSTONE_DUST) && !player.isSneaking()) {
+                // Get block state adjacent to hit result
+                BlockState sideState = getSideState(world, pos, hitResult.getSide());
+
+                // If light block is already there, increase its level
+                if (sideState != null && sideState.getBlock().equals(Blocks.LIGHT)) {
+                    int level = sideState.get(Properties.LEVEL_15);
+                    // If level is less than max light level
+                    if (level < lightLevels[lightLevels.length - 1]) {
+                        // Find the next highest light level
+                        for (int ll : lightLevels) {
+                            if (level < ll) {
+                                return placeLightBlockWithDust(world, player, hand, getSidePos(pos, hitResult.getSide()), ll, handItemStack);
                             }
-                        } else if (sideState.getBlock() == Blocks.WATER || sideState.isAir()) {
-                            return placeLightBlockWithDust(world, player, hand, sidePos, lightLevels[0], handItemStack);
                         }
-                    } else if (handItemStack.isIn(DUST_SCRAPING_TOOLS) && sideState.getBlock() == Blocks.LIGHT) {
-                        return scrapeLightBlockWithTool(world, player, hand, sidePos, handItemStack);
                     }
+
+                // If light block is not there, but water or air are, place a new light block
+                } else if (sideState.getBlock().equals(Blocks.WATER) || sideState.isAir()) {
+                    return placeLightBlockWithDust(world, player, hand, getSidePos(pos, hitResult.getSide()), lightLevels[0], handItemStack);
+                }
+            }
+        } catch (Exception e) {
+            Shroomhearth.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+        return ActionResult.PASS;
+    }
+
+
+    public static ActionResult onUseScrapingToolOnGlowstoneDustCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+        try {
+            BlockPos pos = hitResult.getBlockPos();
+            BlockState state = world.getBlockState(pos);
+            ItemStack handItemStack = player.getStackInHand(hand);
+            if (!state.isAir() && handItemStack.isIn(DUST_SCRAPING_TOOLS) && !player.isSneaking()) {
+                Direction side = hitResult.getSide();
+                BlockState sideState = getSideState(world, pos, side);
+                if (sideState != null && sideState.getBlock().equals(Blocks.LIGHT)) {
+                    return scrapeLightBlockWithTool(world, player, hand, getSidePos(pos, side), handItemStack);
                 }
             }
         } catch (Exception e) {
@@ -102,6 +118,7 @@ public class UseGlowstoneDustCallback {
         return ActionResult.PASS;
     }
 
+
     private static ActionResult scrapeLightBlockWithTool(World world, PlayerEntity player, Hand hand, BlockPos pos, ItemStack handItemStack) {
         try {
             BlockState blockState = world.getBlockState(pos);
@@ -133,5 +150,30 @@ public class UseGlowstoneDustCallback {
             e.printStackTrace();
         }
         return ActionResult.PASS;
+    }
+
+
+    private static BlockState getSideState(World world, BlockPos pos, Direction side) {
+        try {
+            BlockPos sidePos = getSidePos(pos, side);
+            if (sidePos != null) {
+                return world.getBlockState(getSidePos(pos, side));
+            }
+        } catch (Exception e) {
+            Shroomhearth.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private static BlockPos getSidePos(BlockPos pos, Direction side) {
+        try {
+            return new BlockPos(pos.add(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ()));
+        } catch (Exception e) {
+            Shroomhearth.LOG.error("Caught error: " + e);
+            e.printStackTrace();
+        }
+        return null;
     }
 }

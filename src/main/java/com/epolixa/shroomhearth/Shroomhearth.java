@@ -38,9 +38,10 @@ public class Shroomhearth implements DedicatedServerModInitializer {
         UseEntityCallback.EVENT.register(UseArmorStandCallback::onUseArmorStandCallback);
         AttackEntityCallback.EVENT.register(AttackEntityOrientationToolCallback::onAttackEntityOrientationToolCallback);
         UseBlockCallback.EVENT.register(UseEchoShardCallback::onUseSculkShriekerEchoShardCallback);
+        UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
+        UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseScrapingToolOnGlowstoneDustCallback);
 
         // disabled temporarily due to issue interfering with other block interactions like dying signs or setting a book on a lecturn
-        //UseBlockCallback.EVENT.register(UseGlowstoneDustCallback::onUseGlowstoneDustCallback);
         //UseBlockCallback.EVENT.register(UseBlockOrientationToolCallback::onUseBlockOrientationToolCallback);
 
         Shroomhearth.LOG.info("Initialized Shroomhearth");
