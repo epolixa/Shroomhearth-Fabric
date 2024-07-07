@@ -56,6 +56,8 @@ public class UseBlockOrientationToolCallback {
                         return ActionResult.PASS;
                     }
                     return cycleState(player, world, hand, state, pos, Properties.HORIZONTAL_FACING);
+                } else if (state.getProperties().contains(Properties.ORIENTATION)) {
+                    return cycleState(player, world, hand, state, pos, Properties.ORIENTATION);
                 } else if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
                     return cycleState(player, world, hand, state, pos, Properties.RAIL_SHAPE);
                 } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
