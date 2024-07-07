@@ -25,8 +25,8 @@ import net.minecraft.world.World;
 
 public class UseBlockOrientationToolCallback {
 
-    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
-    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier(Shroomhearth.MOD_ID, "non_orientable"));
+    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "block_orienting_tools"));
+    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(RegistryKeys.BLOCK, Identifier.of(Shroomhearth.MOD_ID, "non_orientable"));
 
     public static ActionResult onUseBlockOrientationToolCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {

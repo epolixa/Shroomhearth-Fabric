@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 
 public class AttackEntityOrientationToolCallback {
 
-    private static final TagKey<Item> ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
+    private static final TagKey<Item> ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "block_orienting_tools"));
 
     public static ActionResult onAttackEntityOrientationToolCallback(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         try {

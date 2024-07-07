@@ -28,9 +28,9 @@ import java.util.*;
 @Mixin(WanderingTraderEntity.class)
 public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
-    private static final TagKey<Item> BLACKLIST = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "trader_blacklist"));
-    private static final TagKey<Item> POTIONS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "potions"));
-    private static final TagKey<Item> SPECIALS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "trader_specials"));
+    private static final TagKey<Item> BLACKLIST = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "trader_blacklist"));
+    private static final TagKey<Item> POTIONS = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "potions"));
+    private static final TagKey<Item> SPECIALS = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "trader_specials"));
 
     public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, World world) {
         super(entityType, world);

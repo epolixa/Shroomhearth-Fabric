@@ -22,12 +22,12 @@ import net.minecraft.world.World;
 
 public class UseCauldronCallback {
 
-    private static final TagKey<Item> WASHABLE             = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable"));
-    private static final TagKey<Item> WASHABLE_TERRACOTTA  = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_terracotta"));
-    private static final TagKey<Item> WASHABLE_GLASS       = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_glass"));
-    private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_glass_panes"));
-    private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_candles"));
-    private static final TagKey<Item> WASHABLE_DIRT        = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_dirt"));
+    private static final TagKey<Item> WASHABLE             = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable"));
+    private static final TagKey<Item> WASHABLE_TERRACOTTA  = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_terracotta"));
+    private static final TagKey<Item> WASHABLE_GLASS       = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass"));
+    private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass_panes"));
+    private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_candles"));
+    private static final TagKey<Item> WASHABLE_DIRT        = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_dirt"));
 
     public static ActionResult onUseCauldronCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {

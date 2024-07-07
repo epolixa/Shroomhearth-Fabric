@@ -30,7 +30,7 @@ import static net.minecraft.block.Block.dropStack;
 public class UseGlowstoneDustCallback {
 
     private static final int[] lightLevels = {6, 9, 12, 15};
-    private static final TagKey<Item> DUST_SCRAPING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "dust_scraping_tools"));
+    private static final TagKey<Item> DUST_SCRAPING_TOOLS = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "dust_scraping_tools"));
 
     public static ActionResult onUseGlowstoneDustCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
