@@ -27,7 +27,7 @@ public class UseArmorStandCallback {
                     player.swingHand(hand, true);
                     world.playSound(null, armorStand.getBlockPos(), SoundEvents.ENTITY_ARMOR_STAND_HIT, SoundCategory.NEUTRAL, 1f, 1.2f);
                     if (!player.isCreative()) {
-                        armorStand.damage(world.getDamageSources().playerAttack(player), 0.1f);
+                        armorStand.clientDamage(world.getDamageSources().playerAttack(player), 0.1f);
                         handItemStack.decrement(1);
                     }
                     return ActionResult.SUCCESS;
