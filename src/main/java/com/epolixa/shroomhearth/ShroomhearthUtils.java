@@ -86,7 +86,7 @@ public class ShroomhearthUtils {
     public static void grantAdvancement(PlayerEntity player, String namespace, String id, String criterion) {
         try {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-            AdvancementEntry advancement = player.getServer().getAdvancementLoader().get(new Identifier(namespace, id));
+            AdvancementEntry advancement = player.getServer().getAdvancementLoader().get(Identifier.of(namespace, id));
             if (advancement != null) {
                 if (!serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
                     serverPlayer.getAdvancementTracker().grantCriterion(advancement, criterion);

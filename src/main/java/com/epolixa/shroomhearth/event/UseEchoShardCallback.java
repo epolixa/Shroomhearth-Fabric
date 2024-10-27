@@ -29,26 +29,17 @@ public class UseEchoShardCallback {
         try {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
-            if (!state.isAir()) {
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hitResult);
-                if (actionResult.isAccepted()) {
-                    return ActionResult.FAIL;
-                } else {
-                    ItemStack handItemStack = player.getStackInHand(hand);
-                    if (handItemStack.isOf(Items.ECHO_SHARD)) {
-                        if (state.getProperties().contains(Properties.CAN_SUMMON) && state.getBlock().equals(Blocks.SCULK_SHRIEKER)) {
-                            if (!state.get(Properties.CAN_SUMMON)) {
-                                world.setBlockState(pos, state.with(Properties.CAN_SUMMON, true));
-                                player.swingHand(hand, true);
-                                world.playSound(null, pos, SoundEvents.BLOCK_SCULK_SHRIEKER_BREAK, SoundCategory.BLOCKS, 1f, 0.8f);
-                                if (!player.isCreative()) {
-                                    handItemStack.decrement(1);
-                                }
-                                ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "prepare_for_trouble", "impossible");
-                                return ActionResult.SUCCESS;
-                            }
-                        }
+            ItemStack handItemStack = player.getStackInHand(hand);
+            if (state.getBlock().equals(Blocks.SCULK_SHRIEKER) && handItemStack.isOf(Items.ECHO_SHARD) && !player.isSneaking()) {
+                if (!state.get(Properties.CAN_SUMMON)) {
+                    world.setBlockState(pos, state.with(Properties.CAN_SUMMON, true));
+                    player.swingHand(hand, true);
+                    world.playSound(null, pos, SoundEvents.BLOCK_SCULK_SHRIEKER_BREAK, SoundCategory.BLOCKS, 1f, 0.8f);
+                    if (!player.isCreative()) {
+                        handItemStack.decrement(1);
                     }
+                    ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "prepare_for_trouble", "impossible");
+                    return ActionResult.SUCCESS;
                 }
             }
         } catch (Exception e) {

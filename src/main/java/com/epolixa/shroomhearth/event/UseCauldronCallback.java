@@ -8,8 +8,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
@@ -22,12 +24,12 @@ import net.minecraft.world.World;
 
 public class UseCauldronCallback {
 
-    private static final TagKey<Item> WASHABLE             = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable"));
-    private static final TagKey<Item> WASHABLE_TERRACOTTA  = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_terracotta"));
-    private static final TagKey<Item> WASHABLE_GLASS       = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_glass"));
-    private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_glass_panes"));
-    private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_candles"));
-    private static final TagKey<Item> WASHABLE_DIRT        = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "washable_dirt"));
+    private static final TagKey<Item> WASHABLE             = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable"));
+    private static final TagKey<Item> WASHABLE_TERRACOTTA  = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_terracotta"));
+    private static final TagKey<Item> WASHABLE_GLASS       = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass"));
+    private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass_panes"));
+    private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_candles"));
+    private static final TagKey<Item> WASHABLE_DIRT        = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_dirt"));
 
     public static ActionResult onUseCauldronCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
@@ -74,13 +76,23 @@ public class UseCauldronCallback {
 
                         washed = true;
                     }
+
                     if (washed) {
                         if (level > 1) {
                             world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState().with(Properties.LEVEL_3, level - 1));
                         } else {
                             world.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
                         }
+
                         world.playSound(null, pos, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, SoundCategory.BLOCKS, 1f, 1f);
+                        ((ServerWorld)world).spawnParticles(ParticleTypes.SPLASH,
+                            pos.getX() + 0.5,
+                            pos.getY() + 1.25,
+                            pos.getZ() + 0.5,
+                            8,
+                            0.25f, 0.25, 0.25f, 0.05f
+                        );
+
                         player.setStackInHand(hand, new ItemStack(item, itemStack.getCount()));
 
                         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "wash_block", "impossible");

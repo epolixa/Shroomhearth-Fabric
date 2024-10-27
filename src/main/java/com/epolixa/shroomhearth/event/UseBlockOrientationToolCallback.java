@@ -25,59 +25,53 @@ import net.minecraft.world.World;
 
 public class UseBlockOrientationToolCallback {
 
-    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, new Identifier(Shroomhearth.MOD_ID, "block_orienting_tools"));
-    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier(Shroomhearth.MOD_ID, "non_orientable"));
+    private static final TagKey<Item> BLOCK_ORIENTING_TOOLS = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "block_orienting_tools"));
+    private static final TagKey<Block> NON_ORIENTABLE = TagKey.of(RegistryKeys.BLOCK, Identifier.of(Shroomhearth.MOD_ID, "non_orientable"));
 
     public static ActionResult onUseBlockOrientationToolCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
-            if (!state.isAir()) {
-                ActionResult actionResult = player.isSneaking() ? ActionResult.PASS : state.onUse(world, player, hitResult);
-                if (actionResult.isAccepted()) {
-                    return ActionResult.FAIL;
-                } else {
-                    ItemStack handItemStack = player.getStackInHand(hand);
-                    if (handItemStack.isIn(BLOCK_ORIENTING_TOOLS)) {
-                        if (state.isIn(NON_ORIENTABLE)) {
-                            return ActionResult.PASS;
-                        } else if (state.getProperties().contains(Properties.FACING)) {
-                            return cycleState(player, world, hand, state, pos, Properties.FACING);
-                        } else if (state.getProperties().contains(Properties.HORIZONTAL_FACING)) {
-                            if (state.getBlock() instanceof AbstractChestBlock && state.getProperties().contains(Properties.CHEST_TYPE) && state.get(Properties.CHEST_TYPE) != ChestType.SINGLE) { // special case to fix double chests
-                                Direction direction = state.get(Properties.HORIZONTAL_FACING);
-                                direction = state.get(Properties.CHEST_TYPE) == ChestType.LEFT ? direction.rotateYClockwise() : direction.rotateYCounterclockwise();
-                                BlockPos neighborPos = pos.offset(direction);
-                                BlockState neighborState = world.getBlockState(neighborPos);
-                                world.setBlockState(neighborPos, neighborState.with(Properties.CHEST_TYPE, ChestType.SINGLE));
-                                state = state.with(Properties.CHEST_TYPE, ChestType.SINGLE);
-                            } else if (state.getBlock() instanceof TrapdoorBlock && !state.get(Properties.OPEN)) { // special case to toggle trapdoors open first
-                                return cycleState(player, world, hand, state, pos, Properties.OPEN);
-                            } else if (state.getBlock() instanceof BigDripleafBlock && world.getBlockState(pos.down()).getBlock() instanceof BigDripleafStemBlock) { // skip big dripleaf if it is tall
-                                return ActionResult.PASS;
-                            } else if (state.getBlock() instanceof BellBlock && (state.get(Properties.ATTACHMENT) == Attachment.SINGLE_WALL || state.get(Properties.ATTACHMENT) == Attachment.DOUBLE_WALL)) { // skip bell if wall attached
-                                return ActionResult.PASS;
-                            } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof ButtonBlock) && state.get(Properties.BLOCK_FACE) == BlockFace.WALL) { // skip wall levers and buttons
-                                return ActionResult.PASS;
-                            }
-                            return cycleState(player, world, hand, state, pos, Properties.HORIZONTAL_FACING);
-                        } else if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
-                            return cycleState(player, world, hand, state, pos, Properties.RAIL_SHAPE);
-                        } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
-                            return cycleState(player, world, hand, state, pos, Properties.STRAIGHT_RAIL_SHAPE);
-                        } else if (state.getProperties().contains(Properties.AXIS)) {
-                            return cycleState(player, world, hand, state, pos, Properties.AXIS);
-                        } else if (state.getProperties().contains(Properties.HOPPER_FACING)) {
-                            return cycleState(player, world, hand, state, pos, Properties.HOPPER_FACING);
-                        } else if (state.getProperties().contains(Properties.ROTATION)) {
-                            return cycleState(player, world, hand, state, pos, Properties.ROTATION);
-                        } else if (state.getProperties().contains(Properties.BLOCK_HALF)) {
-                            return cycleState(player, world, hand, state, pos, Properties.BLOCK_HALF);
-                        }
+            ItemStack handItemStack = player.getStackInHand(hand);
+            if (!state.isAir() && handItemStack.isIn(BLOCK_ORIENTING_TOOLS) && !player.isSneaking()) {
+                if (state.isIn(NON_ORIENTABLE)) {
+                    return ActionResult.PASS;
+                } else if (state.getProperties().contains(Properties.FACING)) {
+                    return cycleState(player, world, hand, state, pos, Properties.FACING);
+                } else if (state.getProperties().contains(Properties.HORIZONTAL_FACING)) {
+                    if (state.getBlock() instanceof AbstractChestBlock && state.getProperties().contains(Properties.CHEST_TYPE) && state.get(Properties.CHEST_TYPE) != ChestType.SINGLE) { // special case to fix double chests
+                        Direction direction = state.get(Properties.HORIZONTAL_FACING);
+                        direction = state.get(Properties.CHEST_TYPE) == ChestType.LEFT ? direction.rotateYClockwise() : direction.rotateYCounterclockwise();
+                        BlockPos neighborPos = pos.offset(direction);
+                        BlockState neighborState = world.getBlockState(neighborPos);
+                        world.setBlockState(neighborPos, neighborState.with(Properties.CHEST_TYPE, ChestType.SINGLE));
+                        state = state.with(Properties.CHEST_TYPE, ChestType.SINGLE);
+                    } else if (state.getBlock() instanceof TrapdoorBlock && !state.get(Properties.OPEN)) { // special case to toggle trapdoors open first
+                        return cycleState(player, world, hand, state, pos, Properties.OPEN);
+                    } else if (state.getBlock() instanceof BigDripleafBlock && world.getBlockState(pos.down()).getBlock() instanceof BigDripleafStemBlock) { // skip big dripleaf if it is tall
+                        return ActionResult.PASS;
+                    } else if (state.getBlock() instanceof BellBlock && (state.get(Properties.ATTACHMENT) == Attachment.SINGLE_WALL || state.get(Properties.ATTACHMENT) == Attachment.DOUBLE_WALL)) { // skip bell if wall attached
+                        return ActionResult.PASS;
+                    } else if ((state.getBlock() instanceof LeverBlock || state.getBlock() instanceof ButtonBlock) && state.get(Properties.BLOCK_FACE) == BlockFace.WALL) { // skip wall levers and buttons
+                        return ActionResult.PASS;
                     }
+                    return cycleState(player, world, hand, state, pos, Properties.HORIZONTAL_FACING);
+                } else if (state.getProperties().contains(Properties.ORIENTATION)) {
+                    return cycleState(player, world, hand, state, pos, Properties.ORIENTATION);
+                } else if (state.getProperties().contains(Properties.RAIL_SHAPE)) {
+                    return cycleState(player, world, hand, state, pos, Properties.RAIL_SHAPE);
+                } else if (state.getProperties().contains(Properties.STRAIGHT_RAIL_SHAPE)) {
+                    return cycleState(player, world, hand, state, pos, Properties.STRAIGHT_RAIL_SHAPE);
+                } else if (state.getProperties().contains(Properties.AXIS)) {
+                    return cycleState(player, world, hand, state, pos, Properties.AXIS);
+                } else if (state.getProperties().contains(Properties.HOPPER_FACING)) {
+                    return cycleState(player, world, hand, state, pos, Properties.HOPPER_FACING);
+                } else if (state.getProperties().contains(Properties.ROTATION)) {
+                    return cycleState(player, world, hand, state, pos, Properties.ROTATION);
+                } else if (state.getProperties().contains(Properties.BLOCK_HALF)) {
+                    return cycleState(player, world, hand, state, pos, Properties.BLOCK_HALF);
                 }
             }
-
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
