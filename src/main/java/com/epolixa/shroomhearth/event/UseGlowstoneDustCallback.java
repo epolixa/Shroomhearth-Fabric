@@ -100,7 +100,7 @@ public class UseGlowstoneDustCallback {
             player.swingHand(hand, true);
             world.playSound(null, pos, SoundEvents.BLOCK_POWDER_SNOW_PLACE, SoundCategory.BLOCKS, 1f, 2f);
             ((ServerWorld)world).spawnParticles(
-                    new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),
+                    new DustParticleEffect(16759902, 1.0f),
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,
@@ -128,7 +128,7 @@ public class UseGlowstoneDustCallback {
             player.swingHand(hand, true);
             world.playSound(null, pos, SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1f, 2f);
             ((ServerWorld)world).spawnParticles(
-                    new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),
+                    new DustParticleEffect(16759902, 1.0f),
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,

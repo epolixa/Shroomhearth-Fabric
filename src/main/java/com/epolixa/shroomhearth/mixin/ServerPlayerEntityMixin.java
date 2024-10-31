@@ -41,7 +41,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                     BlockState randomState = world.getBlockState(randomPos);
                     if (randomState.getBlock() == Blocks.LIGHT) {
                         ((ServerWorld)world).spawnParticles(this.networkHandler.getPlayer(),
-                                new DustParticleEffect(new Vector3f(1.0f, 0.9f, 0.1f), 1.0f),
+                                new DustParticleEffect(16759902, 1.0f),
                                 true,
                                 randomPos.getX() + 0.5,
                                 randomPos.getY() + 0.5,

@@ -10,6 +10,7 @@ import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
@@ -119,7 +120,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
         try {
             // Pull a random item from trader_specials tag
-            Item item = Registries.ITEM.getEntryList(SPECIALS).flatMap(list -> list.getRandom(r)).get().value();
+            Item item = Registries.ITEM.getRandomEntry(SPECIALS, r).get().value();
             ItemStack itemStack = item.getDefaultStack();
 
             ItemStack emeraldStack = new ItemStack(Items.EMERALD.asItem());
@@ -138,6 +139,6 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
     private void logOffers(TradeOfferList tradeOfferList) {
         Shroomhearth.LOG.info("Wandering Trader offers:");
-        tradeOfferList.forEach(tradeOffer -> Shroomhearth.LOG.info("- " + tradeOffer.getMaxUses() + " uses of " + tradeOffer.getSellItem().getCount() + " " + tradeOffer.getSellItem().getTranslationKey() + " for " + tradeOffer.getOriginalFirstBuyItem().getCount() + " " + tradeOffer.getOriginalFirstBuyItem().getTranslationKey()));
+        tradeOfferList.forEach(tradeOffer -> Shroomhearth.LOG.info("- " + tradeOffer.getMaxUses() + " uses of " + tradeOffer.getSellItem().getCount() + " " + tradeOffer.getSellItem().getItem().getTranslationKey() + " for " + tradeOffer.getOriginalFirstBuyItem().getCount() + " " + tradeOffer.getOriginalFirstBuyItem().getItem().getTranslationKey()));
     }
 }
