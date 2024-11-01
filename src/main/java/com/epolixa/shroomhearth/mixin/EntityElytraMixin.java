@@ -17,8 +17,8 @@ public abstract class EntityElytraMixin {
         try {
             if ((Object)this instanceof PlayerEntity) { // check if this is a player
                 PlayerEntity player = (PlayerEntity)(Object)this; // cast to a player
-                if (player.isFallFlying() && sneaking) { // if sneaking is engaged while the player is gliding
-                    player.stopFallFlying(); // stop gliding
+                if (player.isGliding() && sneaking) { // if sneaking is engaged while the player is gliding
+                    player.stopGliding(); // stop gliding
                 }
             }
         } catch (Exception e) {

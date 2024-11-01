@@ -22,8 +22,8 @@ public abstract class PlayerEntityElytraMixin extends LivingEntity {
     }
 
     // Inject to startFallFlying to add a dragon flap sound effect
-    @Inject(method = "startFallFlying", at = @At("TAIL"))
-    public void startFallFlying(CallbackInfo info) {
+    @Inject(method = "startGliding", at = @At("TAIL"))
+    public void startGliding(CallbackInfo info) {
         try {
             // Play a dragon flap sound at the player's location
             this.getWorld().playSound((PlayerEntity)null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2f);
@@ -34,8 +34,8 @@ public abstract class PlayerEntityElytraMixin extends LivingEntity {
     }
 
     // Inject to stopFallFlying to add a dragon flap sound effect
-    @Inject(method = "stopFallFlying", at = @At("TAIL"))
-    public void stopFallFlying(CallbackInfo info) {
+    @Inject(method = "stopGliding", at = @At("TAIL"))
+    public void stopGliding(CallbackInfo info) {
         try {
             // Play a dragon flap sound at the player's location
             this.getWorld().playSound((PlayerEntity)null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 1.5f);

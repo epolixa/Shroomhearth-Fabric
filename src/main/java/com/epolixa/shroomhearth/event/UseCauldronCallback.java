@@ -30,6 +30,7 @@ public class UseCauldronCallback {
     private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass_panes"));
     private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_candles"));
     private static final TagKey<Item> WASHABLE_DIRT        = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_dirt"));
+    private static final TagKey<Item> WASHABLE_BUNDLES     = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_bundles"));
 
     public static ActionResult onUseCauldronCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         try {
@@ -52,7 +53,9 @@ public class UseCauldronCallback {
                             item = Items.CANDLE;
                         } else if (itemStack.isIn(WASHABLE_DIRT)) {
                             item = Items.MUD;
-                        }else {
+                        } else if (itemStack.isIn(WASHABLE_BUNDLES)) {
+                            item = Items.BUNDLE;
+                        } else {
                             switch (item.getTranslationKey()) {
                                 case "block.minecraft.white_concrete_powder" -> item = Items.WHITE_CONCRETE;
                                 case "block.minecraft.orange_concrete_powder" -> item = Items.ORANGE_CONCRETE;
