@@ -43,6 +43,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                         ((ServerWorld)world).spawnParticles(this.networkHandler.getPlayer(),
                                 new DustParticleEffect(16759902, 1.0f),
                                 true,
+                                false,
                                 randomPos.getX() + 0.5,
                                 randomPos.getY() + 0.5,
                                 randomPos.getZ() + 0.5,
