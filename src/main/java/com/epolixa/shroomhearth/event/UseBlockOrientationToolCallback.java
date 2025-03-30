@@ -86,7 +86,7 @@ public class UseBlockOrientationToolCallback {
         if (property == Properties.RAIL_SHAPE || property == Properties.STRAIGHT_RAIL_SHAPE) nextState = fixRailState(world, nextState, pos, property);
 
         world.setBlockState(pos, nextState, Block.NOTIFY_LISTENERS);
-        world.updateNeighborsAlways(pos, state.getBlock());
+        world.updateNeighborsAlways(pos, state.getBlock(), null);
         player.swingHand(hand, true);
         world.playSound(null, pos, state.getSoundGroup().getHitSound(), SoundCategory.BLOCKS, 0.8f, 1.1f);
         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");

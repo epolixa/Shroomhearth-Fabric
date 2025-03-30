@@ -34,7 +34,7 @@ public abstract class PlayerEntityElytraMixin extends LivingEntity {
     }
 
     // Inject to stopFallFlying to add a dragon flap sound effect
-    @Inject(method = "stopGliding", at = @At("TAIL"))
+    /*@Inject(method = "stopGliding", at = @At("TAIL"))
     public void stopGliding(CallbackInfo info) {
         try {
             // Play a dragon flap sound at the player's location
@@ -43,6 +43,6 @@ public abstract class PlayerEntityElytraMixin extends LivingEntity {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
