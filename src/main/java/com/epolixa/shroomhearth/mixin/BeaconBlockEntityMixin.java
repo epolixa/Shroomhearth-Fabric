@@ -2,6 +2,9 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.*;
 import net.minecraft.entity.effect.StatusEffect;
@@ -116,7 +119,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             Function<Text, Packet<?>> constructor = SubtitleS2CPacket::new;
             ServerCommandSource source = player.getServer().getCommandSource();
-            Text subtitleText = Text.Serialization.fromJson(subtitle, BuiltinRegistries.createWrapperLookup());
+            Text subtitleText = TextCodecs.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(subtitle)).getOrThrow();
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, subtitleText, serverPlayer, 0)));
             constructor = TitleS2CPacket::new;
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, Text.of(""), serverPlayer, 0)));
