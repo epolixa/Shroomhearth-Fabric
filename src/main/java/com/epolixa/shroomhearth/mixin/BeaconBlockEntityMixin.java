@@ -45,7 +45,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
     @Inject(method = "applyPlayerEffects(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/registry/entry/RegistryEntry;)V", at = @At("HEAD"))
     private static void applyPlayerEffects(World world, BlockPos pos, int beaconLevel, @Nullable RegistryEntry<StatusEffect> primaryEffect, @Nullable RegistryEntry<StatusEffect> secondaryEffect, CallbackInfo info) {
         try {
-            if (!world.isClient && primaryEffect != null) { // check for same conditions as applying primary effect to a player
+            if (!world.isClient() && primaryEffect != null) { // check for same conditions as applying primary effect to a player
                 double d = (double)(beaconLevel * 10 + 10);
 
                 Box box = (new Box(pos)).expand(d).stretch(0.0D, (double)world.getHeight(), 0.0D);
@@ -118,7 +118,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
         try {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
             Function<Text, Packet<?>> constructor = SubtitleS2CPacket::new;
-            ServerCommandSource source = player.getServer().getCommandSource();
+            ServerCommandSource source = serverPlayer.getCommandSource();
             Text subtitleText = TextCodecs.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(subtitle)).getOrThrow();
             serverPlayer.networkHandler.sendPacket((Packet)constructor.apply(Texts.parse(source, subtitleText, serverPlayer, 0)));
             constructor = TitleS2CPacket::new;

@@ -37,7 +37,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                     int j = this.getBlockPos().getY() + this.random.nextInt(radius) - this.random.nextInt(radius);
                     int k = this.getBlockPos().getZ() + this.random.nextInt(radius) - this.random.nextInt(radius);
                     Mutable randomPos = new Mutable(i, j, k);
-                    World world = this.getWorld();
+                    World world = this.getEntityWorld();
                     BlockState randomState = world.getBlockState(randomPos);
                     if (randomState.getBlock() == Blocks.LIGHT) {
                         ((ServerWorld)world).spawnParticles(this.networkHandler.getPlayer(),
