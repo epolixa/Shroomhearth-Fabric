@@ -54,7 +54,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
                 ItemStack rItemStack = rItem.getDefaultStack();
 
                 // check if item should be added to offers
-                if (rItemStack.isIn(BLACKLIST) || rItemStack.isIn(SPECIALS) || pickedItems.contains(rItem) || !rItem.isEnabled(this.getWorld().getEnabledFeatures())) {
+                if (rItemStack.isIn(BLACKLIST) || rItemStack.isIn(SPECIALS) || pickedItems.contains(rItem) || !rItem.isEnabled(this.getEntityWorld().getEnabledFeatures())) {
                     i--; // skip and try again
                 } else {
                     pickedItems.add(rItem); // add item to picked list so we don't pick it again

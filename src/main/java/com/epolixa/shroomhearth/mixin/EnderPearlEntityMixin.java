@@ -31,9 +31,9 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
     @Inject(method = "onCollision", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            World world = this.getWorld();
+            World world = this.getEntityWorld();
 
-            if (!world.isClient && !this.isRemoved() && world.getDimension().natural()) {
+            if (!world.isClient() && !this.isRemoved() && world.getDimension().natural()) {
 
                 BlockPos hitPos = BlockPos.ofFloored(hitResult.getPos());
                 BlockPos dragonEggPos = null;
@@ -53,7 +53,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                 }
 
                 if (dragonEggBlock != null) {
-                    MinecraftServer s = this.getServer();
+                    MinecraftServer s = this.getEntityWorld().getServer();
                     PlayerEntity p = (PlayerEntity) this.getOwner();
 
                     world.setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());

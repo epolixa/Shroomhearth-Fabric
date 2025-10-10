@@ -56,7 +56,7 @@ public class UseEchoShardCallback {
                 LivingEntity livingEntity = (LivingEntity) entity;
                 ItemStack handItemStack = player.getStackInHand(hand);
                 if (handItemStack.isOf(Items.ECHO_SHARD) && !livingEntity.isSilent()) {
-                    Vec3d pos = livingEntity.getPos();
+                    Vec3d pos = livingEntity.getEntityPos();
                     Box box = livingEntity.getBoundingBox(livingEntity.getPose());
                     livingEntity.setSilent(true);
                     player.swingHand(hand, true);
