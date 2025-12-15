@@ -33,7 +33,7 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
         try {
             World world = this.getEntityWorld();
 
-            if (!world.isClient() && !this.isRemoved() && world.getDimension().natural()) {
+            if (!world.isClient() && !this.isRemoved() && world.getRegistryKey() == World.OVERWORLD) {
 
                 BlockPos hitPos = BlockPos.ofFloored(hitResult.getPos());
                 BlockPos dragonEggPos = null;

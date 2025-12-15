@@ -37,7 +37,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         super(entityType, world);
     }
 
-    @Inject(method = "fillRecipes()V", at = @At("TAIL"))
+    @Inject(method = "fillRecipes(Lnet/minecraft/server/world/ServerWorld;)V", at = @At("TAIL"))
     public void fillRecipes(CallbackInfo info) {
         try {
             Random r = this.random;
