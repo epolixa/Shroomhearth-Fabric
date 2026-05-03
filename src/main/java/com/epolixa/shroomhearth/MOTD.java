@@ -1,16 +1,15 @@
 package com.epolixa.shroomhearth;
 
 import com.epolixa.shroomhearth.mixin.SignBlockEntityAccessor;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SignText;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignText;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class MOTD {
     public static void setMOTD(MinecraftServer server) {
         try {
             // Look for signs within message board area
-            ServerWorld world = server.getOverworld();
+            ServerLevel world = server.overworld();
             List<SignBlockEntity> signs = new ArrayList<>();
             for (int x = Shroomhearth.CONFIG.getMotdMinX(); x <= Shroomhearth.CONFIG.getMotdMaxX(); x++) {
                 for (int y = Shroomhearth.CONFIG.getMotdMinY(); y <= Shroomhearth.CONFIG.getMotdMaxY(); y++) {
@@ -35,13 +34,13 @@ public class MOTD {
 
             // Set server motd from a random sign in the area
             if (!signs.isEmpty()) {
-                Random random = world.getRandom();
+                RandomSource random = world.getRandom();
                 SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                 SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
                 SignText frontText = signAccessor.getFrontText();
-                Text[] signTexts = frontText.getMessages(false);
+                Component[] signTexts = frontText.getMessages(false);
                 StringBuilder signMessage = new StringBuilder();
-                for (Text rowText : signTexts) { // parse sign rows
+                for (Component rowText : signTexts) { // parse sign rows
                     String row = rowText.getString();
                     if (row.length() > 0) {
                         if (signMessage.toString().length() > 0) {
@@ -58,9 +57,9 @@ public class MOTD {
 
                 StringBuilder motd = new StringBuilder();
                 motd.append(ShroomhearthUtils.getDyeColorCode(sign.getText(true).getColor()));
-                if (frontText.isGlowing()) motd.append(Formatting.BOLD);
+                if (frontText.hasGlowingText()) motd.append(ChatFormatting.BOLD);
                 motd.append(signMessage);
-                motd.append(Formatting.RESET);
+                motd.append(ChatFormatting.RESET);
                 server.setMotd(motd.toString());
 
                 Shroomhearth.LOG.info("MOTD set to: " + motd);

@@ -2,40 +2,40 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DragonEggBlock;
-import net.minecraft.block.EndGatewayBlock;
-import net.minecraft.block.entity.EndGatewayBlockEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DragonEggBlock;
+import net.minecraft.world.level.block.EndGatewayBlock;
+import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
+import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EnderPearlEntity.class)
-public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
+@Mixin(ThrownEnderpearl.class)
+public abstract class EnderPearlEntityMixin extends ThrowableItemProjectile {
 
-    public EnderPearlEntityMixin(EntityType<? extends EnderPearlEntity> entityType, World world) {
+    public EnderPearlEntityMixin(EntityType<? extends ThrownEnderpearl> entityType, Level world) {
         super(entityType, world);
     }
 
     // Inject to setSneaking to call stopFallFlying
-    @Inject(method = "onCollision", at = @At("HEAD"))
+    @Inject(method = "onHit", at = @At("HEAD"))
     public void onCollision(HitResult hitResult, CallbackInfo info) {
         try {
-            World world = this.getEntityWorld();
+            Level world = this.level();
 
-            if (!world.isClient() && !this.isRemoved() && world.getRegistryKey() == World.OVERWORLD) {
+            if (!world.isClientSide() && !this.isRemoved() && world.dimension() == Level.OVERWORLD) {
 
-                BlockPos hitPos = BlockPos.ofFloored(hitResult.getPos());
+                BlockPos hitPos = BlockPos.containing(hitResult.getLocation());
                 BlockPos dragonEggPos = null;
                 DragonEggBlock dragonEggBlock = null;
 
@@ -53,10 +53,10 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                 }
 
                 if (dragonEggBlock != null) {
-                    MinecraftServer s = this.getEntityWorld().getServer();
-                    PlayerEntity p = (PlayerEntity) this.getOwner();
+                    MinecraftServer s = this.level().getServer();
+                    Player p = (Player) this.getOwner();
 
-                    world.setBlockState(dragonEggPos, Blocks.END_GATEWAY.getDefaultState());
+                    world.setBlockAndUpdate(dragonEggPos, Blocks.END_GATEWAY.defaultBlockState());
                     // play particle
                     /*ParticleS2CPacket particlePacket = new ParticleS2CPacket(
                                                         ParticleTypes.EXPLOSION, true,
@@ -65,12 +65,12 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer((PlayerEntity) this.getOwner(), particlePacket);
                     this.world.playSound(this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, SoundCategory.BLOCKS, 0.4f, 2f, true);*/
 
-                    EndGatewayBlockEntity endGatewayBlockEntity = (EndGatewayBlockEntity) world.getBlockEntity(dragonEggPos);
-                    endGatewayBlockEntity.setExitPortalPos(new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayExitX(), Shroomhearth.CONFIG.getSpawnGatewayExitY(), Shroomhearth.CONFIG.getSpawnGatewayExitZ()), true);
+                    TheEndGatewayBlockEntity endGatewayBlockEntity = (TheEndGatewayBlockEntity) world.getBlockEntity(dragonEggPos);
+                    endGatewayBlockEntity.setExitPosition(new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayExitX(), Shroomhearth.CONFIG.getSpawnGatewayExitY(), Shroomhearth.CONFIG.getSpawnGatewayExitZ()), true);
 
                     BlockPos oldEndGatewayPos = new BlockPos(Shroomhearth.CONFIG.getReturnGatewayX(), Shroomhearth.CONFIG.getReturnGatewayY(), Shroomhearth.CONFIG.getReturnGatewayZ());
                     if (!dragonEggPos.equals(oldEndGatewayPos) && world.getBlockState(oldEndGatewayPos).getBlock() instanceof EndGatewayBlock) {
-                        world.setBlockState(oldEndGatewayPos, Blocks.AIR.getDefaultState());
+                        world.setBlockAndUpdate(oldEndGatewayPos, Blocks.AIR.defaultBlockState());
                     }
 
                     Shroomhearth.CONFIG.setReturnGatewayX(dragonEggPos.getX());
@@ -79,16 +79,16 @@ public abstract class EnderPearlEntityMixin extends ThrownItemEntity {
 
                     BlockPos spawnGatewayPos = new BlockPos(Shroomhearth.CONFIG.getSpawnGatewayX(), Shroomhearth.CONFIG.getSpawnGatewayY(), Shroomhearth.CONFIG.getSpawnGatewayZ());
                     if (!(world.getBlockState(spawnGatewayPos).getBlock() instanceof EndGatewayBlock)) {
-                        world.setBlockState(spawnGatewayPos, Blocks.END_GATEWAY.getDefaultState());
+                        world.setBlockAndUpdate(spawnGatewayPos, Blocks.END_GATEWAY.defaultBlockState());
                     }
-                    EndGatewayBlockEntity spawnGatewayBlockEntity = (EndGatewayBlockEntity) world.getBlockEntity(spawnGatewayPos);
-                    spawnGatewayBlockEntity.setExitPortalPos(BlockPos.ofFloored(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
+                    TheEndGatewayBlockEntity spawnGatewayBlockEntity = (TheEndGatewayBlockEntity) world.getBlockEntity(spawnGatewayPos);
+                    spawnGatewayBlockEntity.setExitPosition(BlockPos.containing(Math.round(p.getX()), Math.round(p.getY()), Math.round(p.getZ())), true);
 
                     // make announcement
                     TextColor pColor = p.getDisplayName().getStyle().getColor();
                     String pColorName = "white";
-                    if (pColor != null) { pColorName = p.getDisplayName().getStyle().getColor().getName(); }
-                    s.getCommandManager().getDispatcher().execute("tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getNameForScoreboard() + "\"}]", s.getCommandSource());
+                    if (pColor != null) { pColorName = p.getDisplayName().getStyle().getColor().serialize(); }
+                    s.getCommands().getDispatcher().execute("tellraw @a [{\"text\":\"The \"}, {\"color\":\"light_purple\",\"text\":\"Community Gateway\"}, {\"text\":\" was relocated to " + dragonEggPos.getX() + ", " + dragonEggPos.getY() + ", " + dragonEggPos.getZ() + " by \"}, {\"color\":\"" + pColorName + "\",\"text\": \"" + p.getScoreboardName() + "\"}]", s.createCommandSourceStack());
 
                     // grant advancement to player
                     ShroomhearthUtils.grantAdvancement(p, "shroomhearth_fabric", "community_coordinator", "relocated_gateway");

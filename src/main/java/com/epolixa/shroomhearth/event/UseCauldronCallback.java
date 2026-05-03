@@ -2,61 +2,61 @@ package com.epolixa.shroomhearth.event;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class UseCauldronCallback {
 
-    private static final TagKey<Item> WASHABLE             = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable"));
-    private static final TagKey<Item> WASHABLE_TERRACOTTA  = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_terracotta"));
-    private static final TagKey<Item> WASHABLE_GLASS       = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass"));
-    private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_glass_panes"));
-    private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_candles"));
-    private static final TagKey<Item> WASHABLE_DIRT        = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_dirt"));
-    private static final TagKey<Item> WASHABLE_BUNDLES     = TagKey.of(RegistryKeys.ITEM, Identifier.of(Shroomhearth.MOD_ID, "washable_bundles"));
+    private static final TagKey<Item> WASHABLE             = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable"));
+    private static final TagKey<Item> WASHABLE_TERRACOTTA  = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable_terracotta"));
+    private static final TagKey<Item> WASHABLE_GLASS       = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable_glass"));
+    private static final TagKey<Item> WASHABLE_GLASS_PANES = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable_glass_panes"));
+    private static final TagKey<Item> WASHABLE_CANDLES     = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable_candles"));
+    private static final TagKey<Item> WASHABLE_DIRT        = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable_dirt"));
+    private static final TagKey<Item> WASHABLE_BUNDLES     = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "washable_bundles"));
 
-    public static ActionResult onUseCauldronCallback(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+    public static InteractionResult onUseCauldronCallback(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
         try {
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = world.getBlockState(pos);
-            if (state.getBlock() == Blocks.WATER_CAULDRON && !player.isSneaking()) {
-                int level = state.get(Properties.LEVEL_3);
+            if (state.getBlock() == Blocks.WATER_CAULDRON && !player.isShiftKeyDown()) {
+                int level = state.getValue(BlockStateProperties.LEVEL_CAULDRON);
                 if (level > 0) {
                     boolean washed = false;
-                    ItemStack itemStack = player.getStackInHand(hand);
+                    ItemStack itemStack = player.getItemInHand(hand);
                     Item item = itemStack.getItem();
-                    if (itemStack.isIn(WASHABLE)) {
-                        if (itemStack.isIn(WASHABLE_TERRACOTTA)) {
+                    if (itemStack.is(WASHABLE)) {
+                        if (itemStack.is(WASHABLE_TERRACOTTA)) {
                             item = Items.TERRACOTTA;
-                        } else if (itemStack.isIn(WASHABLE_GLASS)) {
+                        } else if (itemStack.is(WASHABLE_GLASS)) {
                             item = Items.GLASS;
-                        } else if (itemStack.isIn(WASHABLE_GLASS_PANES)) {
+                        } else if (itemStack.is(WASHABLE_GLASS_PANES)) {
                             item = Items.GLASS_PANE;
-                        } else if (itemStack.isIn(WASHABLE_CANDLES)) {
+                        } else if (itemStack.is(WASHABLE_CANDLES)) {
                             item = Items.CANDLE;
-                        } else if (itemStack.isIn(WASHABLE_DIRT)) {
+                        } else if (itemStack.is(WASHABLE_DIRT)) {
                             item = Items.MUD;
-                        } else if (itemStack.isIn(WASHABLE_BUNDLES)) {
+                        } else if (itemStack.is(WASHABLE_BUNDLES)) {
                             item = Items.BUNDLE;
                         } else {
-                            switch (item.getTranslationKey()) {
+                            switch (item.getDescriptionId()) {
                                 case "block.minecraft.white_concrete_powder" -> item = Items.WHITE_CONCRETE;
                                 case "block.minecraft.orange_concrete_powder" -> item = Items.ORANGE_CONCRETE;
                                 case "block.minecraft.magenta_concrete_powder" -> item = Items.MAGENTA_CONCRETE;
@@ -82,13 +82,13 @@ public class UseCauldronCallback {
 
                     if (washed) {
                         if (level > 1) {
-                            world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState().with(Properties.LEVEL_3, level - 1));
+                            world.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, level - 1));
                         } else {
-                            world.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
+                            world.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
                         }
 
-                        world.playSound(null, pos, SoundEvents.ENTITY_VILLAGER_WORK_LEATHERWORKER, SoundCategory.BLOCKS, 1f, 1f);
-                        ((ServerWorld)world).spawnParticles(ParticleTypes.SPLASH,
+                        world.playSound(null, pos, SoundEvents.VILLAGER_WORK_LEATHERWORKER, SoundSource.BLOCKS, 1f, 1f);
+                        ((ServerLevel)world).sendParticles(ParticleTypes.SPLASH,
                             pos.getX() + 0.5,
                             pos.getY() + 1.25,
                             pos.getZ() + 0.5,
@@ -96,11 +96,11 @@ public class UseCauldronCallback {
                             0.25f, 0.25, 0.25f, 0.05f
                         );
 
-                        player.setStackInHand(hand, new ItemStack(item, itemStack.getCount()));
+                        player.setItemInHand(hand, new ItemStack(item, itemStack.getCount()));
 
                         ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "wash_block", "impossible");
 
-                        return ActionResult.SUCCESS;
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
@@ -108,6 +108,6 @@ public class UseCauldronCallback {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }
