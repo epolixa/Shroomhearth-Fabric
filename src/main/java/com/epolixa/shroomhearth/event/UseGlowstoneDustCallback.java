@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
@@ -141,7 +142,7 @@ public class UseGlowstoneDustCallback {
                         break;
                     }
                 }
-                popResource(world, pos, new ItemStack(Items.GLOWSTONE_DUST, dust));
+                Block.popResource(world, pos, new ItemStack(Items.GLOWSTONE_DUST, dust));
                 handItemStack.hurtAndBreak(1, player, ShroomhearthUtils.getEquipmentSlotFromHand(hand));
             }
             return InteractionResult.SUCCESS;

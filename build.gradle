@@ -18,7 +18,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"shroomhearth" {
+		"shroomhearth_fabric" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

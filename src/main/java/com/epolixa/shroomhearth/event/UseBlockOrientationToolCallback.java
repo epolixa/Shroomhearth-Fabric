@@ -2,7 +2,6 @@ package com.epolixa.shroomhearth.event;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import net.minecraft.block.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -88,7 +87,7 @@ public class UseBlockOrientationToolCallback {
         return InteractionResult.PASS;
     }
 
-    public static InteractionResult cycleState(Player player, Level world, InteractionHand hand, BlockState state, BlockPos pos, Property property) {
+    public static InteractionResult cycleState(Player player, Level world, InteractionHand hand, BlockState state, BlockPos pos, Property<?> property) {
         BlockState nextState = state.cycle(property);
 
         // special case for rails
@@ -102,7 +101,7 @@ public class UseBlockOrientationToolCallback {
         return InteractionResult.SUCCESS;
     }
 
-    public static BlockState fixRailState(BlockGetter world, BlockState state, BlockPos pos, Property property) {
+    public static BlockState fixRailState(BlockGetter world, BlockState state, BlockPos pos, Property<?> property) {
         boolean canAscend = false;
         BlockPos adjPos = null;
         if (state.getProperties().contains(BlockStateProperties.RAIL_SHAPE)) {

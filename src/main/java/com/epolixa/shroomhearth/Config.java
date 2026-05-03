@@ -47,13 +47,13 @@ public class Config {
     public Config() {
         JsonObject json;
         try {
-            json = new JsonParser().parse(new String(Files.readAllBytes(path))).getAsJsonObject();
+            json = JsonParser.parseString(new String(Files.readAllBytes(path))).getAsJsonObject();
             loadFromJson(json);
         } catch (IOException e) {
             // Create default
             try {
                 Files.copy(Objects.requireNonNull(Config.class.getResourceAsStream("/data/shroomhearth_fabric/files/default_config.json")), path);
-                json = new JsonParser().parse(new String(Files.readAllBytes(path))).getAsJsonObject();
+                json = JsonParser.parseString(new String(Files.readAllBytes(path))).getAsJsonObject();
                 loadFromJson(json);
                 Shroomhearth.LOG.fatal("Unable to load config file for Shroomhearth");
                 Shroomhearth.LOG.fatal("Please fill out the config file for Shroomhearth, found in config/shroomhearth.json");

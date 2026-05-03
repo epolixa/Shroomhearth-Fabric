@@ -2,22 +2,18 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.block.entity.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.text.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
@@ -107,7 +103,8 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
                             if (sb.toString().length() > 0) {
                                 // send a title message to the player
-                                sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":"+frontText.hasGlowingText()+(showIllagerAlt?",\"font\":\"illageralt\"}]":"}"), player);
+                                //sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":"+frontText.hasGlowingText()+(showIllagerAlt?",\"font\":\"illageralt\"}]":"}"), player);
+                                sendSubtitleToPlayer2(sb.toString(), player, TextColor.fromRgb(color.getTextColor()), frontText.hasGlowingText(), showIllagerAlt);
 
                                 // grant advancement to player
                                 ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "liminal_message", "impossible");
@@ -122,7 +119,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
         }
     }
 
-    private static void sendSubtitleToPlayer(String subtitle, Player player) {
+    /*private static void sendSubtitleToPlayer(String subtitle, Player player) {
         try {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Function<Component, Packet<?>> constructor = ClientboundSetSubtitleTextPacket::new;
@@ -135,6 +132,24 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();
         }
+    }*/
+
+
+    private static void sendSubtitleToPlayer2(String text, Player player, TextColor color, boolean glowing, boolean illagerAlt) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+
+        Style style = Style.EMPTY
+            .withColor(color)
+            .withBold(glowing);
+
+        if (illagerAlt) {
+            style = style.withFont(new FontDescription.Resource(Identifier.parse("minecraft:illageralt")));
+        }
+
+        Component subtitle = Component.literal(text).setStyle(style);
+
+        serverPlayer.connection.send(new ClientboundSetSubtitleTextPacket(subtitle));
+        serverPlayer.connection.send(new ClientboundSetTitleTextPacket(Component.empty()));
     }
 
     private static boolean isOminous(BannerBlockEntity banner) {
