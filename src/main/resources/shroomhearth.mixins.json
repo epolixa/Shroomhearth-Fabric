@@ -2,13 +2,11 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.epolixa.shroomhearth.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "injectors": {
     "defaultRequire": 1
   },
   "server": [
-    "EntityElytraMixin",
-    "PlayerEntityElytraMixin",
     "SignBlockEntityAccessor",
     "BeaconBlockEntityMixin",
     "WanderingTraderEntityMixin",
