@@ -1,18 +1,18 @@
 {
-	"parent": "wandering_trader:exotic_wares",
+	"parent": "shroomhearth:wandering_trader/exotic_wares",
 	"display": {
 		"icon": {
 			"id": "minecraft:cauldron"
 		},
-		"title": "Wash Around the Block",
-		"description": "Use a cauldron to wash a stack of items",
+		"title": "All Washed Up",
+		"description": "Use a Cauldron to wash an item",
 		"frame": "task",
 		"show_toast": true,
 		"announce_to_chat": true,
 		"hidden": false
 	},
 	"criteria": {
-		"impossible": {
+		"all_washed_up": {
 			"trigger": "minecraft:impossible"
 		}
 	}

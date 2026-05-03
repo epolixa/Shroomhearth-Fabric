@@ -1,18 +1,18 @@
 {
-	"parent": "wandering_trader:exotic_wares",
+	"parent": "shroomhearth:wandering_trader/exotic_wares",
 	"display": {
 		"icon": {
 			"id": "minecraft:beacon"
 		},
 		"title": "Liminal Message",
-		"description": "Receive a subtitle when an effect applies from a beacon with a sign",
+		"description": "Receive a subtitle when an effect applies from a Beacon with an attached Sign",
 		"frame": "task",
 		"show_toast": true,
 		"announce_to_chat": true,
 		"hidden": false
 	},
 	"criteria": {
-		"impossible": {
+		"liminal_message": {
 			"trigger": "minecraft:impossible"
 		}
 	}
