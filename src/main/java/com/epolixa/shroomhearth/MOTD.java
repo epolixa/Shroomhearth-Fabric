@@ -34,7 +34,7 @@ public class MOTD {
 
             // Set server motd from a random sign in the area
             if (!signs.isEmpty()) {
-                RandomSource random = world.getRandom();
+                RandomSource random = RandomSource.create();
                 SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                 SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
                 SignText frontText = signAccessor.getFrontText();
@@ -42,8 +42,8 @@ public class MOTD {
                 StringBuilder signMessage = new StringBuilder();
                 for (Component rowText : signTexts) { // parse sign rows
                     String row = rowText.getString();
-                    if (row.length() > 0) {
-                        if (signMessage.toString().length() > 0) {
+                    if (!row.isEmpty()) {
+                        if (!signMessage.toString().isEmpty()) {
                             signMessage.append(" ");
                         }
                         signMessage.append(row);
