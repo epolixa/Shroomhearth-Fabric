@@ -96,9 +96,19 @@ public class UseCauldronCallback {
                             0.25f, 0.25, 0.25f, 0.05f
                         );
 
-                        player.setItemInHand(hand, new ItemStack(item, itemStack.getCount()));
+                        // Disabled functionality to wash entire stack at once
+                        //player.setItemInHand(hand, new ItemStack(item, itemStack.getCount()));
 
-                        ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "wash_block", "impossible");
+                        // Instead, wash items one at a time
+                        itemStack.shrink(1);
+                        ItemStack washedStack = new ItemStack(item, 1);
+                        if (itemStack.isEmpty()) {
+                            player.setItemInHand(hand, washedStack);
+                        } else if (!player.getInventory().add(washedStack)) {
+                            player.drop(washedStack, false);
+                        }
+
+                        ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "all_washed_up", "all_washed_up");
 
                         return InteractionResult.SUCCESS;
                     }
