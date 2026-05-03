@@ -38,7 +38,7 @@ public class UseEchoShardCallback {
                     if (!player.isCreative()) {
                         handItemStack.shrink(1);
                     }
-                    ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "prepare_for_trouble", "impossible");
+                    ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "prepare_for_trouble", "prepare_for_trouble");
                     return InteractionResult.SUCCESS;
                 }
             }

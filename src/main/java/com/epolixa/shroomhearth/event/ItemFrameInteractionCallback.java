@@ -26,7 +26,7 @@ public class ItemFrameInteractionCallback {
                     player.swing(hand, true);
                     world.playSound(null, itemFrame.blockPosition(), SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1f, 1.2f);
                     if (!player.isCreative()) handItemStack.hurtAndBreak(1, player, ShroomhearthUtils.getEquipmentSlotFromHand(hand));
-                    ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "frameless", "impossible");
+                    ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "frameless", "frameless");
                     return InteractionResult.SUCCESS;
                 }
             }

@@ -39,7 +39,7 @@ public class AttackEntityOrientationToolCallback {
                             boat.setYRot(90);
                             break;
                     }
-                    ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
+                    ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "tilt_controls", "tilt_controls");
                 }
             }
 

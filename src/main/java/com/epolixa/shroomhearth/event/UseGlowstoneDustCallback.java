@@ -23,10 +23,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
-import org.joml.Vector3f;
 import org.apache.commons.lang3.ArrayUtils;
-
-import static net.minecraft.world.level.block.Block.popResourceFromFace;
 
 public class UseGlowstoneDustCallback {
 
@@ -110,7 +107,7 @@ public class UseGlowstoneDustCallback {
             if (!player.isCreative()) {
                 handItemStack.shrink(1);
             }
-            ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "there_be_light", "impossible");
+            ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "let_there_be_light", "let_there_be_light");
             return InteractionResult.SUCCESS;
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);

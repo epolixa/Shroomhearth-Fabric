@@ -2,14 +2,10 @@ package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
 import com.epolixa.shroomhearth.ShroomhearthUtils;
-import com.google.gson.JsonParser;
-import com.mojang.serialization.JsonOps;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.resources.Identifier;
@@ -36,7 +32,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 @Mixin(BeaconBlockEntity.class)
 public abstract class BeaconBlockEntityMixin extends BlockEntity {
@@ -107,7 +102,7 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                                 sendSubtitleToPlayer2(sb.toString(), player, TextColor.fromRgb(color.getTextColor()), frontText.hasGlowingText(), showIllagerAlt);
 
                                 // grant advancement to player
-                                ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "liminal_message", "impossible");
+                                ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "liminal_message", "liminal_message");
                             }
                         }
                     }

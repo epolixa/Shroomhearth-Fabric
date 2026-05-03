@@ -97,7 +97,7 @@ public class UseBlockOrientationToolCallback {
         world.updateNeighborsAt(pos, state.getBlock(), null);
         player.swing(hand, true);
         world.playSound(null, pos, state.getSoundType().getHitSound(), SoundSource.BLOCKS, 0.8f, 1.1f);
-        ShroomhearthUtils.grantAdvancement(player, "shroomhearth_fabric", "orient_block", "impossible");
+        ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "tilt_controls", "tilt_controls");
         return InteractionResult.SUCCESS;
     }
 
