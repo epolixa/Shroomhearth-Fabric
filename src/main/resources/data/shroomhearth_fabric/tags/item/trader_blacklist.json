@@ -233,6 +233,7 @@
     "minecraft:squid_spawn_egg",
     "minecraft:stray_spawn_egg",
     "minecraft:strider_spawn_egg",
+    "minecraft:sulfur_cube_spawn_egg",
     "minecraft:tadpole_spawn_egg",
     "minecraft:trader_llama_spawn_egg",
     "minecraft:tropical_fish_spawn_egg",
@@ -258,6 +259,9 @@
     "minecraft:music_disc_creator",
     "minecraft:music_disc_creator_music_box",
     "minecraft:music_disc_precipice",
+    "minecraft:music_disc_bounce",
+    "minecraft:music_disc_tears",
+    "minecraft:music_disc_lava_chicken",
     "minecraft:test_block",
     "minecraft:test_instance_block"
   ]

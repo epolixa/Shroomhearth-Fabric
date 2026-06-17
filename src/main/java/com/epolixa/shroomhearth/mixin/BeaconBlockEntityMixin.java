@@ -15,12 +15,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +32,7 @@ import java.util.List;
 public abstract class BeaconBlockEntityMixin extends BlockEntity {
 
     public BeaconBlockEntityMixin(BlockPos pos, BlockState state) {
-        super(BlockEntityType.BEACON, pos, state);
+        super(BlockEntityTypes.BEACON, pos, state);
     }
 
     // Inject to applyPlayerChanges to look for signs and send title to newly affected players
