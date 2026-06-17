@@ -1,5 +1,5 @@
 {
-  "parent": "community:community_cooperator",
+  "parent": "shroomhearth:swift_paths/well_traveled",
   "display": {
 		"icon": {
 			"id": "minecraft:dragon_egg"
@@ -12,7 +12,7 @@
 		"hidden": false
 	},
 	"criteria": {
-		"relocated_gateway": {
+		"community_coordinator": {
 			"trigger": "minecraft:impossible"
 		}
 	}

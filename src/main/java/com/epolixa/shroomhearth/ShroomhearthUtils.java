@@ -1,15 +1,14 @@
 package com.epolixa.shroomhearth;
 
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 
 public class ShroomhearthUtils {
 
@@ -46,28 +45,28 @@ public class ShroomhearthUtils {
     }
 
     public static String getDyeColorCode(DyeColor color) {
-        String code = Formatting.GRAY.toString(); // default server list description gray
+        String code = ChatFormatting.GRAY.toString(); // default server list description gray
 
         try {
             // https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes
             code = switch (color) {
-                case RED -> Formatting.RED.toString(); // red
-                case GREEN -> Formatting.DARK_GREEN.toString(); // dark_green
-                case PURPLE -> Formatting.DARK_PURPLE.toString(); // dark_purple
-                case CYAN -> Formatting.DARK_AQUA.toString(); // dark_aqua
-                case LIGHT_GRAY -> Formatting.GRAY.toString(); // gray
-                case GRAY -> Formatting.DARK_GRAY.toString(); // dark_gray
-                case PINK -> Formatting.LIGHT_PURPLE.toString(); // light_purple
-                case LIME -> Formatting.GREEN.toString(); // green
-                case YELLOW -> Formatting.YELLOW.toString(); // yellow
-                case LIGHT_BLUE -> Formatting.BLUE.toString(); // blue
-                case MAGENTA -> Formatting.AQUA.toString(); // aqua
-                case ORANGE -> Formatting.GOLD.toString(); // gold
-                case BLACK -> Formatting.BLACK.toString(); // black
-                case BROWN -> Formatting.DARK_RED.toString(); // dark_red
-                case BLUE -> Formatting.DARK_BLUE.toString(); // dark_blue
-                case WHITE -> Formatting.WHITE.toString(); // white
-                default -> Formatting.GRAY.toString();
+                case RED -> ChatFormatting.RED.toString(); // red
+                case GREEN -> ChatFormatting.DARK_GREEN.toString(); // dark_green
+                case PURPLE -> ChatFormatting.DARK_PURPLE.toString(); // dark_purple
+                case CYAN -> ChatFormatting.DARK_AQUA.toString(); // dark_aqua
+                case LIGHT_GRAY -> ChatFormatting.GRAY.toString(); // gray
+                case GRAY -> ChatFormatting.DARK_GRAY.toString(); // dark_gray
+                case PINK -> ChatFormatting.LIGHT_PURPLE.toString(); // light_purple
+                case LIME -> ChatFormatting.GREEN.toString(); // green
+                case YELLOW -> ChatFormatting.YELLOW.toString(); // yellow
+                case LIGHT_BLUE -> ChatFormatting.BLUE.toString(); // blue
+                case MAGENTA -> ChatFormatting.AQUA.toString(); // aqua
+                case ORANGE -> ChatFormatting.GOLD.toString(); // gold
+                case BLACK -> ChatFormatting.BLACK.toString(); // black
+                case BROWN -> ChatFormatting.DARK_RED.toString(); // dark_red
+                case BLUE -> ChatFormatting.DARK_BLUE.toString(); // dark_blue
+                case WHITE -> ChatFormatting.WHITE.toString(); // white
+                default -> ChatFormatting.GRAY.toString();
             };
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
@@ -78,18 +77,18 @@ public class ShroomhearthUtils {
     }
 
     // return a random int between two ints
-    public static int inRange(Random r, int min, int max) {
+    public static int inRange(RandomSource r, int min, int max) {
         return r.nextInt((max - min) + 1) + min;
     }
 
     // grant an advancement
-    public static void grantAdvancement(PlayerEntity player, String namespace, String id, String criterion) {
+    public static void grantAdvancement(Player player, String namespace, String id, String criterion) {
         try {
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-            AdvancementEntry advancement = player.getEntityWorld().getServer().getAdvancementLoader().get(Identifier.of(namespace, id));
+            ServerPlayer serverPlayer = (ServerPlayer) player;
+            AdvancementHolder advancement = player.level().getServer().getAdvancements().get(Identifier.fromNamespaceAndPath(namespace, id));
             if (advancement != null) {
-                if (!serverPlayer.getAdvancementTracker().getProgress(advancement).isDone()) {
-                    serverPlayer.getAdvancementTracker().grantCriterion(advancement, criterion);
+                if (!serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
+                    serverPlayer.getAdvancements().award(advancement, criterion);
                 }
             } else {
                 Shroomhearth.LOG.warn("Advancement \"" + namespace + ":" + id + "\" not identified, may be missing datapack");
@@ -101,7 +100,7 @@ public class ShroomhearthUtils {
         }
     }
 
-    public static EquipmentSlot getEquipmentSlotFromHand(Hand hand) {
+    public static EquipmentSlot getEquipmentSlotFromHand(InteractionHand hand) {
         EquipmentSlot slot = EquipmentSlot.MAINHAND;
         try {
             slot = switch (hand) {

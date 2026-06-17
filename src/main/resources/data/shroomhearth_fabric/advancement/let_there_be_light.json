@@ -1,18 +1,18 @@
 {
-	"parent": "shroomhearth_fabric:wash_block",
+	"parent": "shroomhearth_fabric:all_washed_up",
 	"display": {
 		"icon": {
 			"id": "minecraft:glowstone_dust"
 		},
 		"title": "Let There Be Light!",
-		"description": "Use glowstone dust to place light",
+		"description": "Use Glowstone Dust to place Light",
 		"frame": "task",
 		"show_toast": true,
 		"announce_to_chat": true,
 		"hidden": false
 	},
 	"criteria": {
-		"impossible": {
+		"let_there_be_light": {
 			"trigger": "minecraft:impossible"
 		}
 	}

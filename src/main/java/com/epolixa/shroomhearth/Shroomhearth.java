@@ -23,9 +23,7 @@ public class Shroomhearth implements DedicatedServerModInitializer {
             CONFIG = new Config();
         });
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            MOTD.setMOTD(server);
-        });
+        ServerLifecycleEvents.SERVER_STARTED.register(MOTD::setMOTD);
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             CONFIG.shutdown();
