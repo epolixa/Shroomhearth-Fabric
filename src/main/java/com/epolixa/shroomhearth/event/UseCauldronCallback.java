@@ -57,22 +57,22 @@ public class UseCauldronCallback {
                             item = Items.BUNDLE;
                         } else {
                             switch (item.getDescriptionId()) {
-                                case "block.minecraft.white_concrete_powder" -> item = Items.WHITE_CONCRETE;
-                                case "block.minecraft.orange_concrete_powder" -> item = Items.ORANGE_CONCRETE;
-                                case "block.minecraft.magenta_concrete_powder" -> item = Items.MAGENTA_CONCRETE;
-                                case "block.minecraft.light_blue_concrete_powder" -> item = Items.LIGHT_BLUE_CONCRETE;
-                                case "block.minecraft.yellow_concrete_powder" -> item = Items.YELLOW_CONCRETE;
-                                case "block.minecraft.lime_concrete_powder" -> item = Items.LIME_CONCRETE;
-                                case "block.minecraft.pink_concrete_powder" -> item = Items.PINK_CONCRETE;
-                                case "block.minecraft.gray_concrete_powder" -> item = Items.GRAY_CONCRETE;
-                                case "block.minecraft.light_gray_concrete_powder" -> item = Items.LIGHT_GRAY_CONCRETE;
-                                case "block.minecraft.cyan_concrete_powder" -> item = Items.CYAN_CONCRETE;
-                                case "block.minecraft.purple_concrete_powder" -> item = Items.PURPLE_CONCRETE;
-                                case "block.minecraft.blue_concrete_powder" -> item = Items.BLUE_CONCRETE;
-                                case "block.minecraft.brown_concrete_powder" -> item = Items.BROWN_CONCRETE;
-                                case "block.minecraft.green_concrete_powder" -> item = Items.GREEN_CONCRETE;
-                                case "block.minecraft.red_concrete_powder" -> item = Items.RED_CONCRETE;
-                                case "block.minecraft.black_concrete_powder" -> item = Items.BLACK_CONCRETE;
+                                case "block.minecraft.white_concrete_powder" -> item = Items.CONCRETE.white();
+                                case "block.minecraft.orange_concrete_powder" -> item = Items.CONCRETE.orange();
+                                case "block.minecraft.magenta_concrete_powder" -> item = Items.CONCRETE.magenta();
+                                case "block.minecraft.light_blue_concrete_powder" -> item = Items.CONCRETE.lightBlue();
+                                case "block.minecraft.yellow_concrete_powder" -> item = Items.CONCRETE.yellow();
+                                case "block.minecraft.lime_concrete_powder" -> item = Items.CONCRETE.lime();
+                                case "block.minecraft.pink_concrete_powder" -> item = Items.CONCRETE.pink();
+                                case "block.minecraft.gray_concrete_powder" -> item = Items.CONCRETE.gray();
+                                case "block.minecraft.light_gray_concrete_powder" -> item = Items.CONCRETE.lightGray();
+                                case "block.minecraft.cyan_concrete_powder" -> item = Items.CONCRETE.cyan();
+                                case "block.minecraft.purple_concrete_powder" -> item = Items.CONCRETE.purple();
+                                case "block.minecraft.blue_concrete_powder" -> item = Items.CONCRETE.blue();
+                                case "block.minecraft.brown_concrete_powder" -> item = Items.CONCRETE.brown();
+                                case "block.minecraft.green_concrete_powder" -> item = Items.CONCRETE.green();
+                                case "block.minecraft.red_concrete_powder" -> item = Items.CONCRETE.red();
+                                case "block.minecraft.black_concrete_powder" -> item = Items.CONCRETE.black();
                                 default -> {}
                             }
                         }
