@@ -1,12 +1,14 @@
 package com.epolixa.shroomhearth.mixin;
 
 import com.epolixa.shroomhearth.Shroomhearth;
-import com.epolixa.shroomhearth.ShroomhearthUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.tags.InstrumentTags;
+import net.minecraft.tags.PotionTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
@@ -14,6 +16,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.InstrumentComponent;
+import net.minecraft.world.item.component.OminousBottleAmplifier;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -31,10 +38,11 @@ import java.util.List;
 public abstract class WanderingTraderEntityMixin extends AbstractVillager {
 
     private static final TagKey<Item> BLACKLIST = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "wandering_trader_blacklist"));
+    private static final TagKey<Item> SELL_ONLY = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "wandering_trader_sell_only"));
     private static final TagKey<Item> UNCOMMON = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "wandering_trader_uncommon"));
     private static final TagKey<Item> RARE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "wandering_trader_rare"));
     private static final TagKey<Item> EPIC = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "wandering_trader_epic"));
-    private static final TagKey<Item> POTIONS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "potions"));
+    private static final TagKey<Item> POTION_ITEMS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Shroomhearth.MOD_ID, "potions"));
 
 
     public WanderingTraderEntityMixin(EntityType<? extends WanderingTrader> entityType, Level world) {
@@ -67,7 +75,7 @@ public abstract class WanderingTraderEntityMixin extends AbstractVillager {
                     selectedItems.add(rItem);
 
                     // Build an offer for the item
-                    tradeOfferList.add(buildTradeOffer(this.random, rItem, rItemStack));
+                    tradeOfferList.add(buildTradeOffer(rItem, rItemStack));
                 }
             }
 
@@ -84,7 +92,7 @@ public abstract class WanderingTraderEntityMixin extends AbstractVillager {
 
 
     /** Prepares a TradeOffer for a given Item */
-    private MerchantOffer buildTradeOffer(RandomSource r, Item item, ItemStack itemStack) {
+    private MerchantOffer buildTradeOffer(Item item, ItemStack itemStack) {
         MerchantOffer tradeOffer = null;
 
         try {
@@ -99,8 +107,8 @@ public abstract class WanderingTraderEntityMixin extends AbstractVillager {
 
             /* Set offer parameters based on rarity
             Common Offers:
-            - 1 to 4 items (Selling) or 4 to 8 items (Buying)
-            - 4 to 8 emeralds (Selling) or 1 to 4 emeralds (Buying)
+            - 1 to 4 items (Selling) or 1 to 8 items (Buying)
+            - 1 to 8 emeralds (Selling) or 1 to 4 emeralds (Buying)
             - 4 to 8 uses x player count
             - 25% chance to be Buying
 
@@ -121,45 +129,71 @@ public abstract class WanderingTraderEntityMixin extends AbstractVillager {
             */
             switch (rarity) {
                 case UNCOMMON:
-                    emeraldCount = ShroomhearthUtils.inRange(r, 16, 32);
+                    emeraldCount = this.random.nextIntBetweenInclusive(16, 32);
                     maxUses = playerCountMultiplier;
-                    xp = ShroomhearthUtils.inRange(r, 6, 12);
+                    xp = this.random.nextIntBetweenInclusive(6, 12);
                     break;
                 case RARE:
-                    emeraldCount = ShroomhearthUtils.inRange(r, 32, 64);
-                    xp = ShroomhearthUtils.inRange(r, 12, 24);
+                    emeraldCount = this.random.nextIntBetweenInclusive(32, 64);
+                    xp = this.random.nextIntBetweenInclusive(12, 24);
                     break;
                 case EPIC:
-                    emeraldCount = ShroomhearthUtils.inRange(r, 8, 64);
-                    xp = ShroomhearthUtils.inRange(r, 24, 48);
+                    emeraldCount = this.random.nextIntBetweenInclusive(8, 16);
+                    xp = this.random.nextIntBetweenInclusive(24, 48);
                     break;
                 default: // COMMON
-                    isBuying = random.nextInt(3) == 0; // 25% chance for the offer to be Buying instead of Selling
-                    itemCount = ShroomhearthUtils.inRange(r, 1, isBuying ? 8 : 4);
-                    emeraldCount = ShroomhearthUtils.inRange(r, 1, isBuying ? 4 : 8);
-                    maxUses = ShroomhearthUtils.inRange(r, 4, 8) * playerCountMultiplier;
-                    xp = ShroomhearthUtils.inRange(r, 3, 6);
+                    isBuying = !itemStack.is(SELL_ONLY) && this.random.nextInt(4) == 0; // 25% chance for the offer to be Buying instead of Selling
+                    itemCount = this.random.nextIntBetweenInclusive(1, isBuying ? 8 : 4);
+                    emeraldCount = this.random.nextIntBetweenInclusive(1, isBuying ? 4 : 8);
+                    maxUses = this.random.nextIntBetweenInclusive(4, 8) * playerCountMultiplier;
+                    xp = this.random.nextIntBetweenInclusive(3, 6);
                     break;
+            }
+
+            // Potions - random tradeable potion
+            if (itemStack.is(POTION_ITEMS)) {
+                Potion randomPotion = BuiltInRegistries.POTION.getRandom(this.random).filter(holder -> holder.is(PotionTags.TRADEABLE)).map(holder -> holder.value()).orElse(null);
+                if (randomPotion != null) {
+                    itemStack = PotionContents.createItemStack(item, BuiltInRegistries.POTION.wrapAsHolder(randomPotion));
+                }
+            }
+
+            // Enchanted Book - random enchant
+            if (itemStack.is(Items.ENCHANTED_BOOK)) {
+                itemStack = EnchantmentHelper.enchantItem(
+                        this.random,
+                        Items.BOOK.getDefaultInstance(),
+                        this.random.nextIntBetweenInclusive(1, 30),
+                        this.level()
+                            .registryAccess()
+                            .lookupOrThrow(Registries.ENCHANTMENT)
+                            .getOrThrow(EnchantmentTags.ON_RANDOM_LOOT)
+                            .stream()
+                );
+            }
+
+            // Goat Horn - random instrument
+            if (itemStack.is(Items.GOAT_HORN)) {
+                var instrumentLookup = this.level().registryAccess().lookupOrThrow(Registries.INSTRUMENT);
+                var randomHorn = instrumentLookup
+                    .get(InstrumentTags.GOAT_HORNS)
+                    .flatMap(named -> named.getRandomElement(this.random));
+
+                if (randomHorn.isPresent()) {
+                    itemStack.set(DataComponents.INSTRUMENT, new InstrumentComponent(randomHorn.get()));
+                }
+            }
+
+            // Ominous Bottle - random level
+            if (itemStack.is(Items.OMINOUS_BOTTLE)) {
+                // Stored as amplifier 0-4, which corresponds to Bad Omen levels I-V.
+                int badOmenAmplifier = this.random.nextIntBetweenInclusive(0, 4);
+                itemStack.set(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, new OminousBottleAmplifier(badOmenAmplifier));
             }
 
             // Normalize item counts against max stack sizes
             itemStack.setCount(Math.min(itemStack.getMaxStackSize(), itemCount));
             emeraldStack.setCount(Math.min(emeraldStack.getMaxStackSize(), emeraldCount));
-
-            // Potions - random potion from registry
-            /*if (itemStack.is(POTIONS)) {
-                //PotionContentsComponent.setPotion(itemStack, Registries.POTION.get(r.nextInt(Registries.POTION.size())));
-                Potion randomPotion = BuiltInRegistries.POTION.byId(r.nextInt(BuiltInRegistries.POTION.size()));
-                PotionContents.createItemStack(item, BuiltInRegistries.POTION.wrapAsHolder(randomPotion));
-            }*/
-
-            // Enchanted Book - random enchant
-
-            // Goat Horn - random instrument
-
-            // Ominous Bottle - random level
-
-            // Suspicious Stew - random effect
 
             // Initialize trade offer
             if (isBuying) {
@@ -201,8 +235,8 @@ public abstract class WanderingTraderEntityMixin extends AbstractVillager {
 
 
     private void logOffers(MerchantOffers tradeOfferList) {
-        Shroomhearth.LOG.info("Wandering Trader offers:");
-        tradeOfferList.forEach(tradeOffer -> Shroomhearth.LOG.info("- " + tradeOffer.getMaxUses() + " uses of " + tradeOffer.getBaseCostA().getCount() + " " + tradeOffer.getBaseCostA().getItem().getDescriptionId() + " for " + tradeOffer.getResult().getCount() + " " + tradeOffer.getResult().getItem().getDescriptionId()));
+        Shroomhearth.LOG.debug("Wandering Trader offers:");
+        tradeOfferList.forEach(tradeOffer -> Shroomhearth.LOG.debug("- " + tradeOffer.getMaxUses() + " uses of " + tradeOffer.getBaseCostA().getCount() + " " + tradeOffer.getBaseCostA().getItem().getDescriptionId() + " for " + tradeOffer.getResult().getCount() + " " + tradeOffer.getResult().getItem().getDescriptionId()));
     }
 
 }
