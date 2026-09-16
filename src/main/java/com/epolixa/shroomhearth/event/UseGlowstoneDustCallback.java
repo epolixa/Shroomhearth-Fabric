@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Block;
@@ -95,7 +96,7 @@ public class UseGlowstoneDustCallback {
                 waterlogged = blockState.getValue(BlockStateProperties.WATERLOGGED);
             }
             world.setBlockAndUpdate(pos, Blocks.LIGHT.defaultBlockState().setValue(BlockStateProperties.LEVEL, level).setValue(BlockStateProperties.WATERLOGGED, waterlogged));
-            player.swing(hand, true);
+            player.swing(hand, SwingAnimation.DEFAULT, true);
             world.playSound(null, pos, SoundEvents.POWDER_SNOW_PLACE, SoundSource.BLOCKS, 1f, 2f);
             ((ServerLevel)world).sendParticles(
                     new DustParticleOptions(16759902, 1.0f),
@@ -123,8 +124,8 @@ public class UseGlowstoneDustCallback {
             int level = blockState.getValue(BlockStateProperties.LEVEL);
             boolean waterlogged = blockState.getValue(BlockStateProperties.WATERLOGGED);
             world.setBlockAndUpdate(pos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
-            player.swing(hand, true);
-            world.playSound(null, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1f, 2f);
+            player.swing(hand, SwingAnimation.DEFAULT, true);
+            world.playSound(null, pos, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 1f, 2f);
             ((ServerLevel)world).sendParticles(
                     new DustParticleOptions(16759902, 1.0f),
                     pos.getX() + 0.5,
@@ -167,7 +168,7 @@ public class UseGlowstoneDustCallback {
 
     private static BlockPos getSidePos(BlockPos pos, Direction side) {
         try {
-            return new BlockPos(pos.offset(side.getStepX(), side.getStepY(), side.getStepZ()));
+            return pos.offset(side.getStepX(), side.getStepY(), side.getStepZ());
         } catch (Exception e) {
             Shroomhearth.LOG.error("Caught error: " + e);
             e.printStackTrace();

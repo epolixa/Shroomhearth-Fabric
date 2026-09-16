@@ -76,22 +76,22 @@ public abstract class BeaconBlockEntityMixin extends BlockEntity {
                             SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                             SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
                             SignText frontText = signAccessor.getFrontText(); //Text[] signText = signAccessor.getTexts();
-                            Component[] frontMessages = frontText.getMessages(false);
-                            DyeColor color = sign.getText(true).getColor(); // potentially enhance to consider front/back as random options
+                            List<Component> frontMessages = frontText.getMessages(false);
+                            DyeColor color = sign.getText(SignTextSlot.FRONT).getColor(); // potentially enhance to consider front/back as random options
                             StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < frontMessages.length; i++) // parse sign rows
+                            for (int i = 0; i < frontMessages.size(); i++) // parse sign rows
                             {
-                                Component rowText = frontMessages[i];
+                                Component rowText = frontMessages.get(i);
                                 String row = rowText.getString();
-                                if (row.length() > 0) {
-                                    if (sb.toString().length() > 0) {
+                                if (!row.isEmpty()) {
+                                    if (!sb.toString().isEmpty()) {
                                         sb.append(" ");
                                     }
                                     sb.append(row);
                                 }
                             }
 
-                            if (sb.toString().length() > 0) {
+                            if (!sb.toString().isEmpty()) {
                                 // send a title message to the player
                                 //sendSubtitleToPlayer("{\"text\":\""+sb.toString()+"\","+"\"color\":\""+ShroomhearthUtils.getDyeHex(color)+"\","+"\"bold\":"+frontText.hasGlowingText()+(showIllagerAlt?",\"font\":\"illageralt\"}]":"}"), player);
                                 sendSubtitleToPlayer2(sb.toString(), player, TextColor.fromRgb(color.getTextColor()), frontText.hasGlowingText(), showIllagerAlt);

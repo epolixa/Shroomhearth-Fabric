@@ -11,6 +11,8 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SwingAnimationType;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 
@@ -23,7 +25,7 @@ public class ItemFrameInteractionCallback {
                 ItemStack handItemStack = player.getItemInHand(hand);
                 if (handItemStack.is(Items.SHEARS) && !itemFrame.getItem().is(Items.AIR) && !itemFrame.isInvisible()) {
                     itemFrame.setInvisible(true);
-                    player.swing(hand, true);
+                    player.swing(hand, SwingAnimation.DEFAULT, true);
                     world.playSound(null, itemFrame.blockPosition(), SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1f, 1.2f);
                     if (!player.isCreative()) handItemStack.hurtAndBreak(1, player, ShroomhearthUtils.getEquipmentSlotFromHand(hand));
                     ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "frameless", "frameless");

@@ -10,6 +10,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.entity.SignTextSlot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class MOTD {
                 SignBlockEntity sign = signs.get(random.nextInt(signs.size()));
                 SignBlockEntityAccessor signAccessor = (SignBlockEntityAccessor)sign;
                 SignText frontText = signAccessor.getFrontText();
-                Component[] signTexts = frontText.getMessages(false);
+                List<Component> signTexts = frontText.getMessages(false);
                 StringBuilder signMessage = new StringBuilder();
                 for (Component rowText : signTexts) { // parse sign rows
                     String row = rowText.getString();
@@ -56,7 +58,7 @@ public class MOTD {
                 //server.getServerMetadata().setDescription(Text.Serializer.fromJson(motdJSON));
 
                 StringBuilder motd = new StringBuilder();
-                motd.append(ShroomhearthUtils.getDyeColorCode(sign.getText(true).getColor()));
+                motd.append(ShroomhearthUtils.getDyeColorCode(sign.getText(SignTextSlot.FRONT).getColor()));
                 if (frontText.hasGlowingText()) motd.append(ChatFormatting.BOLD);
                 motd.append(signMessage);
                 motd.append(ChatFormatting.RESET);

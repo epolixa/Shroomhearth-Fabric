@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +34,7 @@ public class UseEchoShardCallback {
             if (state.getBlock().equals(Blocks.SCULK_SHRIEKER) && handItemStack.is(Items.ECHO_SHARD) && !player.isShiftKeyDown()) {
                 if (!state.getValue(BlockStateProperties.CAN_SUMMON)) {
                     world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.CAN_SUMMON, true));
-                    player.swing(hand, true);
+                    player.swing(hand, SwingAnimation.DEFAULT, true);
                     world.playSound(null, pos, SoundEvents.SCULK_SHRIEKER_BREAK, SoundSource.BLOCKS, 1f, 0.8f);
                     if (!player.isCreative()) {
                         handItemStack.shrink(1);
@@ -59,7 +60,7 @@ public class UseEchoShardCallback {
                     Vec3 pos = livingEntity.position();
                     AABB box = livingEntity.getLocalBoundsForPose(livingEntity.getPose());
                     livingEntity.setSilent(true);
-                    player.swing(hand, true);
+                    player.swing(hand, SwingAnimation.DEFAULT, true);
                     world.playSound(null, livingEntity.blockPosition(), SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.NEUTRAL, 1f, 0.8f);
                     ((ServerLevel)world).sendParticles(
                             ParticleTypes.SCULK_CHARGE_POP,

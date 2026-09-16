@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractChestBlock;
@@ -95,7 +96,7 @@ public class UseBlockOrientationToolCallback {
 
         world.setBlock(pos, nextState, Block.UPDATE_CLIENTS);
         world.updateNeighborsAt(pos, state.getBlock(), null);
-        player.swing(hand, true);
+        player.swing(hand, SwingAnimation.DEFAULT, true);
         world.playSound(null, pos, state.getSoundType().getHitSound(), SoundSource.BLOCKS, 0.8f, 1.1f);
         ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "tilt_controls", "tilt_controls");
         return InteractionResult.SUCCESS;

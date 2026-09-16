@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -105,7 +106,7 @@ public class UseCauldronCallback {
                         if (itemStack.isEmpty()) {
                             player.setItemInHand(hand, washedStack);
                         } else if (!player.getInventory().add(washedStack)) {
-                            player.drop(washedStack, false);
+                            player.drop(washedStack, false, Prediction.SERVER_ONLY);
                         }
 
                         ShroomhearthUtils.grantAdvancement(player, Shroomhearth.MOD_ID, "all_washed_up", "all_washed_up");
